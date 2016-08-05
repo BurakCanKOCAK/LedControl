@@ -378,6 +378,7 @@ public class Opening extends Activity implements OnClickListener {
                         break;
 
                     case cBluetooth.BL_CONNECTED_OK:
+                        Toast.makeText(activity.getBaseContext(),"System Connected",Toast.LENGTH_LONG).show();
                         Log.i("::OPENING.java::", "::: handleMessage() => BL_CONNECTED_OK :::");
                         // RelLay.setBackgroundResource(R.drawable.back_green); //
                         // tvData.setText("Connected"); // Ba�lant�

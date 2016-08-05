@@ -22,6 +22,7 @@ package com.bkocak.ledcontrol;
         import android.os.Build;
         import android.os.Handler;
         import android.util.Log;
+        import android.widget.Toast;
 
 public class cBluetooth {
 
@@ -86,7 +87,7 @@ public class cBluetooth {
     }
     //********************************************************************************************************
     public boolean BT_Connect(String address, boolean listen_InStream) {
-        Log.d(TAG, "...On Resume...");
+        Log.d(TAG, "Connecting to : "+address+"...");
 
         boolean connected = false;
 

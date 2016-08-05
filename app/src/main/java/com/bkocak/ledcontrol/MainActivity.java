@@ -1,5 +1,5 @@
 package com.bkocak.ledcontrol;
-//********************************************************************************************************
+//**************************************************************************************************
 import java.lang.ref.WeakReference;
 import java.util.Set;
 import android.app.Activity;
@@ -28,7 +28,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-//********************************************************************************************************
+//**************************************************************************************************
 public class MainActivity extends Activity implements OnClickListener {
     private static final String FILENAME = "myFile.txt";
     static Intent openMain;
@@ -39,6 +39,7 @@ public class MainActivity extends Activity implements OnClickListener {
     // private static String address = "20:14:04:29:35:28"; // (Nawroz City)
     //private static String address = "98:D3:31:B3:11:8F";
     private static String address = "00:14:04:01:33:64";
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     private static cBluetooth bl = null;
     private static boolean BT_is_connect;
     private String cmdSend = "";
@@ -78,12 +79,14 @@ public class MainActivity extends Activity implements OnClickListener {
         wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Power Lock On");
         wl.acquire();
 
+/*
         Thread connection = new Thread() {
             public void run() {
                 bl.checkBTState();
             }
         };
         connection.start();
+*/
 
         SharedPreferences sharedPref = getSharedPreferences("data",
                 MODE_PRIVATE);
@@ -290,7 +293,7 @@ public class MainActivity extends Activity implements OnClickListener {
                         break;
 
                     case cBluetooth.BL_CONNECTED_OK:
-
+                        Toast.makeText(activity.getBaseContext(),"System Connected",Toast.LENGTH_LONG).show();
                         if (block_name.equals("C")) {
                             // block_name="C";
                             tvBTStatus.setText("Connected Block : " + "C");
