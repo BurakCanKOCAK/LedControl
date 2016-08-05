@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "68065104763",
+    "firebase_url": "https://ledcontrol-9a2b6.firebaseio.com",
+    "project_id": "ledcontrol-9a2b6",
+    "storage_bucket": "ledcontrol-9a2b6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68065104763:android:315659a51c210642",
+        "android_client_info": {
+          "package_name": "com.bkocak.ledcontrol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "68065104763-sp86ku4u34mbu6iuht4bj1oqli7v72c1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIeajBpqLrH7yoKt0-sxt-3bP3lQSKBxQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

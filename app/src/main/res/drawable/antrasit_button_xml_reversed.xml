@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:drawable="@drawable/beige_button_reversed" android:state_pressed="true"></item>
+    <item android:drawable="@drawable/beige_button_reversed" android:state_focused="true"></item>
+    <item android:drawable="@drawable/antrasit2_reversed"></item>
+
+</selector>
