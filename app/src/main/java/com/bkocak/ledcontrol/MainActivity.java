@@ -1,7 +1,9 @@
 package com.bkocak.ledcontrol;
 //**************************************************************************************************
+
 import java.lang.ref.WeakReference;
 import java.util.Set;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -28,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 //**************************************************************************************************
 public class MainActivity extends Activity implements OnClickListener {
     private static final String FILENAME = "myFile.txt";
@@ -66,6 +69,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private static Button bALLC, bALLB, bALLA;
     private PowerManager.WakeLock wl;
     private static StringBuilder sb = new StringBuilder();
+
     //********************************************************************************************************
     // --------ON CREATE -------------------------------
     @Override
@@ -202,7 +206,7 @@ public class MainActivity extends Activity implements OnClickListener {
             RelLay = (RelativeLayout) findViewById(R.id.RelLay_keyboard);
 
             // ------------------SEND BUTTON CLICK LISTENER----------------
-			/*
+            /*
 			 * Send.setOnClickListener(new OnClickListener() {
 			 *
 			 * @Override public void onClick(View v) { // TODO Auto-generated
@@ -226,6 +230,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
         mHandler.postDelayed(sRunnable, 600000);
     }
+
     //********************************************************************************************************
     // ***********END OF ON CREATE***************************
     private final MyHandler mHandler = new MyHandler(this);
@@ -234,6 +239,7 @@ public class MainActivity extends Activity implements OnClickListener {
         public void run() {
         }
     };
+
     //********************************************************************************************************
     // ---------------- HANDLER ---------------------------------
     private static class MyHandler extends Handler {
@@ -250,7 +256,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 switch (msg.what) {
                     case cBluetooth.BL_NOT_AVAILABLE:
                         // tvBTStatus.setText("BT Not Available");
-                        Log.e("::Main_Activity::HM::",":::BLUETOOTH_NOT_AVAILABLE::");
+                        Log.e("::Main_Activity::HM::", ":::BLUETOOTH_NOT_AVAILABLE::");
                         Toast.makeText(activity.getBaseContext(),
                                 "Bluetooth is not available", Toast.LENGTH_SHORT)
                                 .show();
@@ -293,7 +299,7 @@ public class MainActivity extends Activity implements OnClickListener {
                         break;
 
                     case cBluetooth.BL_CONNECTED_OK:
-                        Toast.makeText(activity.getBaseContext(),"System Connected",Toast.LENGTH_LONG).show();
+                        Toast.makeText(activity.getBaseContext(), "System Connected", Toast.LENGTH_LONG).show();
                         if (block_name.equals("C")) {
                             // block_name="C";
                             tvBTStatus.setText("Connected Block : " + "C");
@@ -386,6 +392,7 @@ public class MainActivity extends Activity implements OnClickListener {
             connection.start();
         }
     }
+
     // ****************END OF HANDLER ****************************
     // ----------------ON--------------------------------------------
 	/*
@@ -419,6 +426,7 @@ public class MainActivity extends Activity implements OnClickListener {
         }
 
     }
+
     //********************************************************************************************************
     // ------------------BROADCAST RECEIVER ----------------------
     final BroadcastReceiver bReceiver = new BroadcastReceiver() {
@@ -437,6 +445,7 @@ public class MainActivity extends Activity implements OnClickListener {
             }
         }
     };
+
     //********************************************************************************************************
     // ------------------------BT OFF--------------------------
     public void off(View view) {
@@ -449,6 +458,7 @@ public class MainActivity extends Activity implements OnClickListener {
         Toast.makeText(getApplicationContext(), "Bluetooth turned off",
                 Toast.LENGTH_LONG).show();
     }
+
     //********************************************************************************************************
     // --------------------ON DESTROY --------------------
     //********************************************************************************************************
@@ -515,6 +525,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		 * Komut.setEnabled(false); }
 		 */
     }
+
     //********************************************************************************************************
     // -----------------ON PAUSE ---------------------
     @Override
@@ -524,6 +535,7 @@ public class MainActivity extends Activity implements OnClickListener {
         // BT_is_connect = bl.BT_Connect(address, false);
         bl.BT_onPause();
     }
+
     //********************************************************************************************************
 	/*
 	 * @Override public void onBackPressed() { // TODO Auto-generated method
