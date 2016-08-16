@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +57,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private static TextView tvData, tvDatatoSend, tvBlock, tvBTStatus;
     private static RelativeLayout RelLay;
     private static EditText eT_sell;
+    private static SlidingDrawer slidingDrawer1;
     private static int daire = 0, daire2 = 0;
     private BluetoothAdapter myBluetoothAdapter;
     private Set<BluetoothDevice> pairedDevices;
@@ -69,8 +71,13 @@ public class MainActivity extends Activity implements OnClickListener {
     private static Button bALLC, bALLB, bALLA;
     private PowerManager.WakeLock wl;
     private static StringBuilder sb = new StringBuilder();
+    //--------------------------------------------------------------------------------------------//
+    //In order to block connection order
+    private String[] blocks = {"A1", "B1", "C1", "D2", "C2", "B2", "A2"};
+    //Thresholds
+    private int[] numberOfFlats = {48, 48, 48, 24, 24, 24, 24};
 
-    //********************************************************************************************************
+    //--------------------------------------------------------------------------------------------//
     // --------ON CREATE -------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +116,12 @@ public class MainActivity extends Activity implements OnClickListener {
         } else {
             // Indicator = (ImageView) findViewById(R.id.ivIndicator);
             // Indicator.setBackgroundResource(R.drawable.red);
-            // Button Numerical---------
+            //--------------------------------------------------------------------------------------------//
+            //Block general operations . To enable Sliding drawer , comment out setVisibility code line
+            slidingDrawer1 = (SlidingDrawer)findViewById(R.id.slidingDrawer1);
+            slidingDrawer1.setVisibility(View.INVISIBLE);
+            //--------------------------------------------------------------------------------------------//
+            //Buttons
             bMainMenu = (Button) findViewById(R.id.bMainMenu);
             b1 = (Button) findViewById(R.id.bOne);
             b2 = (Button) findViewById(R.id.bTwo);
@@ -207,7 +219,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
             // ------------------SEND BUTTON CLICK LISTENER----------------
             /*
-			 * Send.setOnClickListener(new OnClickListener() {
+             * Send.setOnClickListener(new OnClickListener() {
 			 *
 			 * @Override public void onClick(View v) { // TODO Auto-generated
 			 * method stub cmdSend = String.valueOf(Komut.getText().toString());
@@ -216,8 +228,8 @@ public class MainActivity extends Activity implements OnClickListener {
             // ***************END OF SEND BUTTON **********************
 
             // Connection--------------------------------------------------------------StART
-			/*
-			 * onBtn = (Button) findViewById(R.id.turnOn); //
+            /*
+             * onBtn = (Button) findViewById(R.id.turnOn); //
 			 * ------------ON_BUTTON CLICK LIST. -------------------
 			 * onBtn.setOnClickListener(new OnClickListener() {
 			 *
@@ -395,8 +407,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
     // ****************END OF HANDLER ****************************
     // ----------------ON--------------------------------------------
-	/*
-	 * public void on(View view) { if (!myBluetoothAdapter.isEnabled()) {
+    /*
+     * public void on(View view) { if (!myBluetoothAdapter.isEnabled()) {
 	 *
 	 * Intent turnOnIntent = new Intent(
 	 * BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -505,7 +517,7 @@ public class MainActivity extends Activity implements OnClickListener {
         Log.e("::Main_Activity::OR::", ":::OnResume:End::");
 
 		/*
-		 *
+         *
 		 *
 		 * if (myBluetoothAdapter.isEnabled()) {
 		 *
@@ -537,7 +549,7 @@ public class MainActivity extends Activity implements OnClickListener {
     }
 
     //********************************************************************************************************
-	/*
+    /*
 	 * @Override public void onBackPressed() { // TODO Auto-generated method
 	 * stub super.onBackPressed(); BT_is_connect = bl.BT_Connect(address,
 	 * false); // Intent intent = new Intent(this, Opening.class); //
@@ -1040,4 +1052,23 @@ public class MainActivity extends Activity implements OnClickListener {
         }
 
     }
+
+    //--------------------------------------------------------------------------------------------//
+    private int countBlockThresholdValue(String blockName) {
+        int index = 0;
+        for (String block : blocks) {
+            if (block.equals(blockName)) {
+                int threshold = 0;
+                for (int i = 0; i < index; i++) {
+                    threshold += numberOfFlats[i];
+                }
+                return threshold;
+            } else {
+                index++;
+            }
+        }
+        return 0;
+    }
+    //--------------------------------------------------------------------------------------------//
+
 }
