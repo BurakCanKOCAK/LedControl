@@ -71,13 +71,6 @@ public class MainActivity extends Activity implements OnClickListener {
     private static Button bALLC, bALLB, bALLA;
     private PowerManager.WakeLock wl;
     private static StringBuilder sb = new StringBuilder();
-    //--------------------------------------------------------------------------------------------//
-    //In order to block connection order
-    private String[] blocks = {"A1", "B1", "C1", "D2", "C2", "B2", "A2"};
-    //Thresholds
-    private int[] numberOfFlats = {48, 48, 48, 24, 24, 24, 24};
-
-    //--------------------------------------------------------------------------------------------//
     // --------ON CREATE -------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1053,22 +1046,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
     }
 
-    //--------------------------------------------------------------------------------------------//
-    private int countBlockThresholdValue(String blockName) {
-        int index = 0;
-        for (String block : blocks) {
-            if (block.equals(blockName)) {
-                int threshold = 0;
-                for (int i = 0; i < index; i++) {
-                    threshold += numberOfFlats[i];
-                }
-                return threshold;
-            } else {
-                index++;
-            }
-        }
-        return 0;
-    }
-    //--------------------------------------------------------------------------------------------//
+
 
 }

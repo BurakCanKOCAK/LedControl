@@ -35,6 +35,13 @@ public class Opening extends Activity implements OnClickListener {
     //private static String address = "20:14:04:29:35:28"; // (Nawroz City)
     //private static String address = "98:D3:31:B3:11:8F";
     private static String address = "00:14:04:01:33:64";
+    //--------------------------------------------------------------------------------------------//
+    //In order to block connection order
+    public static String[] blocks = {"A1", "B1", "C1", "D2", "C2", "B2", "A2"};
+    //Thresholds
+    public static int[] numberOfFlats = {48, 48, 48, 24, 24, 24, 24};
+    //--------------------------------------------------------------------------------------------//
+
     private static cBluetooth bl = null;
     private static boolean BT_is_connect;
     private static final int REQUEST_ENABLE_BT = 1;
@@ -73,7 +80,6 @@ public class Opening extends Activity implements OnClickListener {
         setContentView(R.layout.opening_xml);
         bl = new cBluetooth(this, mHandler);
         bl.checkBTState();
-
         bl.sendData("0000");
         myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -532,8 +538,25 @@ public class Opening extends Activity implements OnClickListener {
             }
         };
         timer.start();
-        Log.e("::OPENING::CTRL::ON_RESUME::", ":::ON RESUME ANOUNCED::");
+        Log.e("::OPENING::ON_RESUME::", ":::ON RESUME ANOUNCED::");
 
     }
+    //--------------------------------------------------------------------------------------------//
+    public int calculateBlockThresholdValue(String blockName) {
+        int index = 0;
+        for (String block : Opening.blocks) {
+            if (block.equals(blockName)) {
+                int threshold = 0;
+                for (int i = 0; i < index; i++) {
+                    threshold += Opening.numberOfFlats[i];
+                }
+                return threshold;
+            } else {
+                index++;
+            }
+        }
+        return 0;
+    }
+    //--------------------------------------------------------------------------------------------//
     //********************************************************************************************************
 }
