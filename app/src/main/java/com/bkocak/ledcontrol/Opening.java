@@ -175,7 +175,6 @@ public class Opening extends Activity implements OnClickListener {
     //********************************************************************************************************
     public void BTOn(final View view) {
         Log.i("::OPENING.java::", ":::BTOn():::");
-        Log.i("::OPENING.java::", "::: - BT ON Button Pressed - :::");
         BT_is_connect = bl.BT_Connect(address, false);
         try {
             Thread.sleep(500);

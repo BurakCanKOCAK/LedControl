@@ -100,7 +100,7 @@
         android:id="@+id/one_to_three2"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:layout_above="@+id/one_to_three"
+        android:layout_above="@+id/one_to_three3"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
         android:weightSum="2" >

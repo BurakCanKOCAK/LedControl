@@ -199,13 +199,14 @@ public class MainActivity extends Activity implements OnClickListener {
             tvDatatoSend = (TextView) findViewById(R.id.tvDatatoSend);
             tvBlock = (TextView) findViewById(R.id.tvBlock);
 
-            if (block_name.equals("C")) {
-                tvBlock.setText("C" + " Block Selected");
-            } else if (block_name.equals("D")) {
-                tvBlock.setText("D" + " Block Selected");
-            } else if (block_name.equals("E")) {
-                tvBlock.setText("E" + " Block Selected");
-            }
+            tvBlock.setText(block_name+ " Block Selected");
+           // if (block_name.equals("C")) {
+           //     tvBlock.setText("C" + " Block Selected");
+           // } else if (block_name.equals("D")) {
+           //     tvBlock.setText("D" + " Block Selected");
+           // } else if (block_name.equals("E")) {
+           //     tvBlock.setText("E" + " Block Selected");
+           // }
             // tvBlock.setText(block_name + " Block Selected");
             tvBTStatus = (TextView) findViewById(R.id.tvBTStatus);
             RelLay = (RelativeLayout) findViewById(R.id.RelLay_keyboard);
@@ -236,16 +237,16 @@ public class MainActivity extends Activity implements OnClickListener {
         mHandler.postDelayed(sRunnable, 600000);
     }
 
-    //********************************************************************************************************
+    //**********************************************************************************************
     // ***********END OF ON CREATE***************************
     private final MyHandler mHandler = new MyHandler(this);
-    //********************************************************************************************************
+    //**********************************************************************************************
     private final static Runnable sRunnable = new Runnable() {
         public void run() {
         }
     };
 
-    //********************************************************************************************************
+    //**********************************************************************************************
     // ---------------- HANDLER ---------------------------------
     private static class MyHandler extends Handler {
         private final WeakReference<MainActivity> mActivity;
@@ -278,17 +279,15 @@ public class MainActivity extends Activity implements OnClickListener {
                     case cBluetooth.BL_REQUEST_ENABLE:
                         Log.e("::Main_Activity::HM::",
                                 ":::BLUETOOTH_ENABLE_REQUEST_SENT::");
-                        tvBTStatus.setText("Connecting Block : " + block_name);
+                        tvBTStatus.setText("Connecting to " + block_name+"...");
                         BluetoothAdapter.getDefaultAdapter();
                         Intent enableBtIntent = new Intent(
                                 BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                        tvData.setText("Connected");
                         activity.startActivityForResult(enableBtIntent, 1);
-                        RelLay.setBackgroundResource(R.drawable.back_green);
                         break;
                     case cBluetooth.BL_SOCKET_FAILED:
                         // tvBTStatus.setText("BT Socket Failed!");
-                        Toast.makeText(activity.getBaseContext(), "Please Wait",
+                        Toast.makeText(activity.getBaseContext(), "Connection Error!",
                                 Toast.LENGTH_SHORT).show();
                         RelLay.setBackgroundResource(R.drawable.back_red);
                         bTop.setBackgroundResource(R.drawable.head_red);
@@ -304,30 +303,28 @@ public class MainActivity extends Activity implements OnClickListener {
                         break;
 
                     case cBluetooth.BL_CONNECTED_OK:
+                        tvData.setText("Connected");
+                        RelLay.setBackgroundResource(R.drawable.back_green);
                         Toast.makeText(activity.getBaseContext(), "System Connected", Toast.LENGTH_LONG).show();
-                        if (block_name.equals("C")) {
-                            // block_name="C";
-                            tvBTStatus.setText("Connected Block : " + "C");
-                        } else if (block_name.equals("D")) {
-                            // block_name="D";
-                            tvBTStatus.setText("Connected Block : " + "D");
-                        } else if (block_name.equals("E")) {
-                            // block_name="E";
-                            tvBTStatus.setText("Connected Block : " + "E");
-                        }
+                        tvBTStatus.setText("Connected to "+block_name);
+                        //if (block_name.equals("C")) {
+                        //    // block_name="C";
+                        //    tvBTStatus.setText("Connected Block : " + "C");
+                        //} else if (block_name.equals("D")) {
+                        //   // block_name="D";
+                        //    tvBTStatus.setText("Connected Block : " + "D");
+                        //} else if (block_name.equals("E")) {
+                        //    // block_name="E";
+                        //    tvBTStatus.setText("Connected Block : " + "E");
+                        //}
                         // tvBTStatus.setText("Connected Block : "+block_name);
                         RelLay.setBackgroundResource(R.drawable.back_green);
                         tvData.setText("Connected"); // Ba�lant�
-                        Log.e("::Main_Activity::HM::",
-                                ":::BLUETOOTH_CONNECTED_OK::");
+                        Log.e("::Main_Activity::",
+                                "::BLUETOOTH_CONNECTED_OK::");
 
-                        // bl.sendData("0000");
-                        // Sa�land�ysa-----------------------------------
-
-                        // *******************************************************
                         break;
-                    // **********************************RECEIVE FUNCTION
-                    // *******************************************
+
                     case cBluetooth.RECIEVE_MESSAGE: // if message is recieved (����
                         // ��������� ��������)
                         byte[] readBuf = (byte[]) msg.obj;
@@ -413,7 +410,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	 * } else { Toast.makeText(getApplicationContext(),
 	 * "Bluetooth is already on", Toast.LENGTH_LONG).show(); } }
 	 */
-    //********************************************************************************************************
+    //**********************************************************************************************
     // --------------------ACTIVITY RESULT--------------------------
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -422,17 +419,17 @@ public class MainActivity extends Activity implements OnClickListener {
             if (myBluetoothAdapter.isEnabled()) {
                 tvData.setText("Connected");
                 System.out.println(":::REMOTE DEVICE CONNECTED:::");
-                bTop.setBackgroundResource(R.drawable.head_red);
+                bTop.setBackgroundResource(R.drawable.head_green);
             } else {
                 tvData.setText("Disconnected");
                 System.out.println(":::REMOTE DEVICE DISCONNECTED:::");
-                bTop.setBackgroundResource(R.drawable.head_green);
+                bTop.setBackgroundResource(R.drawable.head_red);
             }
         }
 
     }
 
-    //********************************************************************************************************
+    //**********************************************************************************************
     // ------------------BROADCAST RECEIVER ----------------------
     final BroadcastReceiver bReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -451,7 +448,7 @@ public class MainActivity extends Activity implements OnClickListener {
         }
     };
 
-    //********************************************************************************************************
+    //**********************************************************************************************
     // ------------------------BT OFF--------------------------
     public void off(View view) {
         // Indicator.setBackgroundResource(R.drawable.red);
@@ -464,9 +461,9 @@ public class MainActivity extends Activity implements OnClickListener {
                 Toast.LENGTH_LONG).show();
     }
 
-    //********************************************************************************************************
+    //**********************************************************************************************
     // --------------------ON DESTROY --------------------
-    //********************************************************************************************************
+    //**********************************************************************************************
     // ---------------------ON RESUME---------------------
     @Override
     protected void onResume() {
@@ -531,7 +528,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		 */
     }
 
-    //********************************************************************************************************
+    //**********************************************************************************************
     // -----------------ON PAUSE ---------------------
     @Override
     protected void onPause() {
@@ -541,7 +538,7 @@ public class MainActivity extends Activity implements OnClickListener {
         bl.BT_onPause();
     }
 
-    //********************************************************************************************************
+    //**********************************************************************************************
     /*
 	 * @Override public void onBackPressed() { // TODO Auto-generated method
 	 * stub super.onBackPressed(); BT_is_connect = bl.BT_Connect(address,
