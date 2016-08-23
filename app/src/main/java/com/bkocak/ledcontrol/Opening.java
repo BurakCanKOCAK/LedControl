@@ -4,8 +4,10 @@ package com.bkocak.ledcontrol;
  * Created by BurakCan on 18/06/2016.
  */
 //********************************************************************************************************
+
 import java.lang.ref.WeakReference;
 import java.util.Set;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -25,6 +27,7 @@ import android.view.Window;
 import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.Toast;
+
 //********************************************************************************************************
 @SuppressWarnings("deprecation")
 public class Opening extends Activity implements OnClickListener {
@@ -36,12 +39,19 @@ public class Opening extends Activity implements OnClickListener {
     //private static String address = "98:D3:31:B3:11:8F";
     private static String address = "00:14:04:01:33:64";
     //--------------------------------------------------------------------------------------------//
-    //In order to block connection order
+    //Block list
     public static String[] blocks = {"A1", "B1", "C1", "D2", "C2", "B2", "A2"};
     //Thresholds
     public static int[] numberOfFlats = {48, 48, 48, 24, 24, 24, 24};
     //--------------------------------------------------------------------------------------------//
-
+    //Code list
+    private static String codeEffect = "9100";
+    private static String codeAllOn = "8888";
+    private static String codeAllOff = "0000";
+    private static String  codeEnvironment = "4100";
+    //--------------------------------------------------------------------------------------------//
+    private static Button blockA1, blockA2, blockB1, blockB2, blockC1, blockC2, blockD2;
+    //--------------------------------------------------------------------------------------------//
     private static cBluetooth bl = null;
     private static boolean BT_is_connect;
     private static final int REQUEST_ENABLE_BT = 1;
@@ -49,9 +59,7 @@ public class Opening extends Activity implements OnClickListener {
     private BluetoothAdapter myBluetoothAdapter;
     private static AbsoluteLayout mainL;
     private Set<BluetoothDevice> pairedDevices;
-    static Button aBLOCK, bBLOCK, cBLOCK, dBLOCK, eBLOCK, fBLOCK, gBLOCK,
-            hBLOCK, iBLOCK, jBLOCK, kBLOCK, lBLOCK, mButtonEffect2, ButtonAOn,
-            ButtonBOn, ButtonCOn,  bOnSale1_1D,bALLA,bALLB,bALLC,bALLD,bALLE,bShops,bTerasli,
+    static Button mButtonEffect2, ButtonAOn, ButtonBOn, ButtonCOn, bOnSale1_1D, bALLA, bALLB, bALLC, bALLD, bALLE, bEnvironment, bTerasli,
             Button1_1D;
     static Button b1_1;
     static Button b2_1;
@@ -71,6 +79,7 @@ public class Opening extends Activity implements OnClickListener {
     static Button ButtonShops;
     static Button ButtonEffect;
     private PowerManager.WakeLock wl;
+
     //********************************************************************************************************
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,17 +109,11 @@ public class Opening extends Activity implements OnClickListener {
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Power Lock On");
         wl.acquire();
-        aBLOCK = (Button) findViewById(R.id.bABLOCK);
-        bBLOCK = (Button) findViewById(R.id.bBBLOCK);
-        cBLOCK = (Button) findViewById(R.id.bCBLOCK);
 
-        // ButtonAOn=(Button)findViewById(R.id.ButtonAOn);
-        // ButtonBOn=(Button)findViewById(R.id.ButtonBOn);
-        // ButtonCOn=(Button)findViewById(R.id.ButtonCOn);
         b2_1 = (Button) findViewById(R.id.Button2_1);
-        bOnSale2_1= (Button) findViewById(R.id.bOnSale2_1);
+        bOnSale2_1 = (Button) findViewById(R.id.bOnSale2_1);
         b2_1D = (Button) findViewById(R.id.Button2_1D);
-        bOnSale2_1D= (Button) findViewById(R.id.bOnSale2_1D);
+        bOnSale2_1D = (Button) findViewById(R.id.bOnSale2_1D);
         ButtonLEDON = (Button) findViewById(R.id.ButtonLEDON);
         ButtonLEDOFF = (Button) findViewById(R.id.ButtonLEDOFF);
         ButtonEffect = (Button) findViewById(R.id.ButtonEffect);
@@ -122,12 +125,9 @@ public class Opening extends Activity implements OnClickListener {
         bALLC = (Button) findViewById(R.id.bALLC);
         bALLD = (Button) findViewById(R.id.bALLD);
         bALLE = (Button) findViewById(R.id.bALLE);
-        bShops = (Button) findViewById(R.id.bShops);
+        bEnvironment = (Button) findViewById(R.id.bEnvironment);
 
         bSold.setOnClickListener(this);
-        aBLOCK.setOnClickListener(this);
-        bBLOCK.setOnClickListener(this);
-        cBLOCK.setOnClickListener(this);
         b2_1.setOnClickListener(this);
         bOnSale2_1.setOnClickListener(this);
         b2_1D.setOnClickListener(this);
@@ -141,24 +141,45 @@ public class Opening extends Activity implements OnClickListener {
         bALLC.setOnClickListener(this);
         bALLD.setOnClickListener(this);
         bALLE.setOnClickListener(this);
-        bShops.setOnClickListener(this);
-        // ButtonAOn.setOnClickListener(this);
-        // ButtonBOn.setOnClickListener(this);
-        // ButtonCOn.setOnClickListener(this);
+        bEnvironment.setOnClickListener(this);
+        //--------------------------------------------------------------------------------------------//
+        blockA1 = (Button) findViewById(R.id.bA1BLOCK);
+        blockA2 = (Button) findViewById(R.id.bA2BLOCK);
+        blockB1 = (Button) findViewById(R.id.bB1BLOCK);
+        blockB2 = (Button) findViewById(R.id.bB2BLOCK);
+        blockC1 = (Button) findViewById(R.id.bC1BLOCK);
+        blockC2 = (Button) findViewById(R.id.bC2BLOCK);
+        blockD2 = (Button) findViewById(R.id.bD2BLOCK);
+
+        blockA1.setOnClickListener(this);
+        blockA2.setOnClickListener(this);
+        blockB1.setOnClickListener(this);
+        blockB2.setOnClickListener(this);
+        blockC1.setOnClickListener(this);
+        blockC2.setOnClickListener(this);
+        blockD2.setOnClickListener(this);
+        //--------------------------------------------------------------------------------------------//
         // buttonDisable();
         mHandler.postDelayed(sRunnable, 600000);
-        //////////////////////////////////////
         SpecialSettings();
-        //////////////////////////////////////
     }
+
     //********************************************************************************************************
     private void SpecialSettings() {
         // TODO Auto-generated method stub
-        bShops.setVisibility(View.INVISIBLE);
         b2_1D.setVisibility(View.INVISIBLE);
+        b2_1.setVisibility(View.INVISIBLE);
+        b1_1.setVisibility(View.INVISIBLE);
+        bOnSale1_1.setVisibility(View.INVISIBLE);
+        bOnSale2_1.setVisibility(View.INVISIBLE);
         bOnSale2_1D.setVisibility(View.INVISIBLE);
         bTerasli.setVisibility(View.INVISIBLE);
+        bALLE.setVisibility(View.INVISIBLE);
+        bALLD.setVisibility(View.INVISIBLE);
+        bALLC.setVisibility(View.INVISIBLE);
+        bSold.setVisibility(View.INVISIBLE);
     }
+
     //********************************************************************************************************
     public void BTOff(View view) {
         Log.i("::OPENING.java::", "::: BTOff() :::");
@@ -172,6 +193,7 @@ public class Opening extends Activity implements OnClickListener {
             e.printStackTrace();
         }
     }
+
     //********************************************************************************************************
     public void BTOn(final View view) {
         Log.i("::OPENING.java::", ":::BTOn():::");
@@ -183,6 +205,7 @@ public class Opening extends Activity implements OnClickListener {
             e.printStackTrace();
         }
     }
+
     //********************************************************************************************************
     @Override
     public void onClick(View v) {
@@ -196,97 +219,131 @@ public class Opening extends Activity implements OnClickListener {
         switch (v.getId()) {
 
             case R.id.bterasli:
-                mainL.setBackgroundResource(R.drawable.block_main);
-                Log.v("::OPENING.java::","::: TERASLI DAIRELER => 5800 :::" );
+                //mainL.setBackgroundResource(R.drawable.block_main);
+                Log.v("::OPENING.java::", "::: TERASLI DAIRELER => 5800 :::");
                 bl.sendData("5800");
                 break;
 
             case R.id.bALLC:
-                mainL.setBackgroundResource(R.drawable.block_c);
-                Log.v("::OPENING.java::","::: ALL LIGHT UP : C => 4100 :::" );
+                //mainL.setBackgroundResource(R.drawable.block_c);
+                Log.v("::OPENING.java::", "::: ALL LIGHT UP : C => 4100 :::");
                 bl.sendData("4100");
                 break;
 
             case R.id.bALLD:
-                mainL.setBackgroundResource(R.drawable.block_d);
-                Log.v("::OPENING.java::","::: ALL LIGHT UP : D => 4200 :::" );
+                //mainL.setBackgroundResource(R.drawable.block_d);
+                Log.v("::OPENING.java::", "::: ALL LIGHT UP : D => 4200 :::");
                 bl.sendData("4200");
                 break;
 
             case R.id.bALLE:
-                mainL.setBackgroundResource(R.drawable.block_e);
-                Log.v("::OPENING.java::","::: ALL LIGHT UP : E => 4300 :::" );
+                //mainL.setBackgroundResource(R.drawable.block_e);
+                Log.v("::OPENING.java::", "::: ALL LIGHT UP : E => 4300 :::");
                 bl.sendData("4300");
                 break;
 
-            case R.id.bShops:
-                mainL.setBackgroundResource(R.drawable.block_f);
-                Log.v("::OPENING.java::","::: SHOPS => 5700 :::" );
-                bl.sendData("5700");
+            case R.id.bEnvironment:
+                //mainL.setBackgroundResource(R.drawable.block_f);
+                Log.v("::OPENING.java::", "::: ENVIRONMENT => 4100 :::");
+                bl.sendData(codeEnvironment);
                 break;
 
 
             case R.id.bSold:
-                mainL.setBackgroundResource(R.drawable.block_main);
-                Log.v("::OPENING.java::","::: ALL OnSale => 9400 :::" );
+                //mainL.setBackgroundResource(R.drawable.block_main);
+                Log.v("::OPENING.java::", "::: ALL OnSale => 9400 :::");
                 bl.sendData("9400");
                 break;
-            case R.id.bABLOCK:
-                mainL.setBackgroundResource(R.drawable.block_c);
-                name = "C";
+            //--------------------------------------------------------------------------------------------//
+            //Blocks
+            case R.id.bA1BLOCK:
+                //mainL.setBackgroundResource(R.drawable.block_c);
+                name = "A1";
                 editor.putString(key, name);
                 editor.commit();
                 openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
                 startActivity(openMain);
 
                 break;
-            case R.id.bBBLOCK:
-                mainL.setBackgroundResource(R.drawable.block_d);
-                name = "D";
+            case R.id.bA2BLOCK:
+                //mainL.setBackgroundResource(R.drawable.block_d);
+                name = "A2";
                 editor.putString(key, name);
                 editor.commit();
                 openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
                 startActivity(openMain);
 
                 break;
-            case R.id.bCBLOCK:
-                mainL.setBackgroundResource(R.drawable.block_e);
-                name = "E";
+            case R.id.bB1BLOCK:
+                //mainL.setBackgroundResource(R.drawable.block_e);
+                name = "B1";
                 editor.putString(key, name);
                 editor.commit();
                 openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
                 startActivity(openMain);
                 break;
 
-
+            case R.id.bB2BLOCK:
+                //mainL.setBackgroundResource(R.drawable.block_e);
+                name = "B2";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                startActivity(openMain);
+                break;
+            case R.id.bC1BLOCK:
+                //mainL.setBackgroundResource(R.drawable.block_e);
+                name = "C1";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                startActivity(openMain);
+                break;
+            case R.id.bC2BLOCK:
+                //mainL.setBackgroundResource(R.drawable.block_e);
+                name = "C2";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                startActivity(openMain);
+                break;
+            case R.id.bD2BLOCK:
+                //mainL.setBackgroundResource(R.drawable.block_e);
+                name = "D2";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                startActivity(openMain);
+                break;
+            //--------------------------------------------------------------------------------------------//
             case R.id.Button1_1:
-                mainL.setBackgroundResource(R.drawable.block_main);
+                //mainL.setBackgroundResource(R.drawable.block_main);
                 bl.sendData("5100");
                 Log.v("::OPENING.java::", "::: 1+1  All => 5100 :::");
 
                 break;
 
             case R.id.bOnSale1_1:
-                mainL.setBackgroundResource(R.drawable.block_main);
+                //mainL.setBackgroundResource(R.drawable.block_main);
                 Log.v("::OPENING.java::", "::: 1+1  Sold => 5400 :::");
                 bl.sendData("5400");
                 break;
 
 
             case R.id.Button2_1:
-                mainL.setBackgroundResource(R.drawable.block_main);
+                //mainL.setBackgroundResource(R.drawable.block_main);
                 Log.v("::OPENING.java::", "::: All 2+1 => 5200 :::");
                 bl.sendData("5200");
                 break;
 
             case R.id.bOnSale2_1:
-                mainL.setBackgroundResource(R.drawable.block_main);
+                //mainL.setBackgroundResource(R.drawable.block_main);
                 Log.v("::OPENING.java::", "::: 2+1 Sold => 5500 :::");
                 bl.sendData("5500");
                 break;
 
             case R.id.bOnSale2_1D:
-                mainL.setBackgroundResource(R.drawable.block_main);
+                //mainL.setBackgroundResource(R.drawable.block_main);
                 Log.v("::OPENING.java::", "::: 3+1 Sold => 5600 :::");
                 bl.sendData("5600");
                 break;
@@ -298,24 +355,24 @@ public class Opening extends Activity implements OnClickListener {
 
 
             case R.id.ButtonLEDON:
-                mainL.setBackgroundResource(R.drawable.block_allon);
+                //mainL.setBackgroundResource(R.drawable.block_allon);
                 Log.v("::OPENING.java::", "::: ALL ON => 8888 :::");
-                bl.sendData("8888");
+                bl.sendData(codeAllOn);
                 break;
 
             case R.id.ButtonLEDOFF:
-                mainL.setBackgroundResource(R.drawable.block_main);
+                //mainL.setBackgroundResource(R.drawable.block_main);
                 Log.v("::OPENING.java::", "::: ALL OFF => 0000 :::");
-                bl.sendData("0000");
+                bl.sendData(codeAllOff);
                 break;
 
             case R.id.ButtonEffect:
-                mainL.setBackgroundResource(R.drawable.block_main);
+                //mainL.setBackgroundResource(R.drawable.block_main);
                 Log.v(":::OPENING.java::", "::: Effect => 9100 :::");
-                bl.sendData("9100");
+                bl.sendData(codeEffect);
                 break;
-	/*	case R.id.ButtonAOn:
-			bl.sendData("3500");
+    /*	case R.id.ButtonAOn:
+            bl.sendData("3500");
 			Log.d(":::OPENING.java::", "Effect = 3500");
 			break;
 		case R.id.ButtonBOn:
@@ -329,6 +386,7 @@ public class Opening extends Activity implements OnClickListener {
 		*/
         }
     }
+
     //********************************************************************************************************
     private final MyHandler mHandler = new MyHandler(this);
     //********************************************************************************************************
@@ -336,14 +394,17 @@ public class Opening extends Activity implements OnClickListener {
         public void run() {
         }
     };
+
     //********************************************************************************************************
     // ---------------- HANDLER ---------------------------------
     private static class MyHandler extends Handler {
         private final WeakReference<Opening> mActivity;
+
         //********************************************************
         public MyHandler(Opening activity) {
             mActivity = new WeakReference<Opening>(activity);
         }
+
         //********************************************************
         @Override
         public void handleMessage(Message msg) {
@@ -383,7 +444,7 @@ public class Opening extends Activity implements OnClickListener {
                         break;
 
                     case cBluetooth.BL_CONNECTED_OK:
-                        Toast.makeText(activity.getBaseContext(),"System Connected",Toast.LENGTH_LONG).show();
+                        Toast.makeText(activity.getBaseContext(), "System Connected", Toast.LENGTH_LONG).show();
                         Log.i("::OPENING.java::", "::: handleMessage() => BL_CONNECTED_OK :::");
                         // RelLay.setBackgroundResource(R.drawable.back_green); //
                         // tvData.setText("Connected"); // Ba�lant�
@@ -393,6 +454,7 @@ public class Opening extends Activity implements OnClickListener {
                 }
             }
         }
+
         //********************************************************
         private void socket() {
             // TODO Auto-generated method stub
@@ -403,10 +465,12 @@ public class Opening extends Activity implements OnClickListener {
             };
             connection.start();
         }
+
         //********************************************************
         private void buttonDisable() {
 
         }
+
         //********************************************************************************************************
         private void buttonEnable() {
             // TODO Auto-generated method stub
@@ -418,6 +482,7 @@ public class Opening extends Activity implements OnClickListener {
             ButtonEffect.setEnabled(true);
         }
     }   //********************************************************
+
     // ****************END OF HANDLER ****************************
     // ----------------ON--------------------------------------------
     public void on(View view) {
@@ -435,6 +500,7 @@ public class Opening extends Activity implements OnClickListener {
                     Toast.LENGTH_LONG).show();
         }
     }
+
     //********************************************************************************************************
     // --------------------ACTIVITY RESULT--------------------------
     @Override
@@ -451,6 +517,7 @@ public class Opening extends Activity implements OnClickListener {
         }
 
     }
+
     //********************************************************************************************************
     // ------------------BROADCAST RECEIVER ----------------------
     final BroadcastReceiver bReceiver = new BroadcastReceiver() {
@@ -465,6 +532,7 @@ public class Opening extends Activity implements OnClickListener {
             }
         }
     };
+
     // *********************************************************
     // ------------------------BT OFF--------------------------
     //********************************************************************************************************
@@ -477,6 +545,7 @@ public class Opening extends Activity implements OnClickListener {
         Toast.makeText(getApplicationContext(), "Bluetooth turned off",
                 Toast.LENGTH_LONG).show();
     }
+
     //********************************************************************************************************
     @Override
     protected void onPause() {
@@ -484,12 +553,13 @@ public class Opening extends Activity implements OnClickListener {
         super.onPause();
         bl.BT_onPause();
     }
+
     //********************************************************************************************************
     @Override
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        mainL.setBackgroundResource(R.drawable.block_main);
+        mainL.setBackgroundResource(R.drawable.background_mazara_main);
         final Dialog emailDialog = new Dialog(Opening.this,
                 android.R.style.Theme_DeviceDefault);
         emailDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -540,8 +610,9 @@ public class Opening extends Activity implements OnClickListener {
         Log.e("::OPENING::ON_RESUME::", ":::ON RESUME ANOUNCED::");
 
     }
+
     //--------------------------------------------------------------------------------------------//
-    public int calculateBlockThresholdValue(String blockName) {
+    public static int calculateBlockThresholdValue(String blockName) {
         int index = 0;
         for (String block : Opening.blocks) {
             if (block.equals(blockName)) {

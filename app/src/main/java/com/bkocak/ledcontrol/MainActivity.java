@@ -71,6 +71,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private static Button bALLC, bALLB, bALLA;
     private PowerManager.WakeLock wl;
     private static StringBuilder sb = new StringBuilder();
+
     // --------ON CREATE -------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +112,7 @@ public class MainActivity extends Activity implements OnClickListener {
             // Indicator.setBackgroundResource(R.drawable.red);
             //--------------------------------------------------------------------------------------------//
             //Block general operations . To enable Sliding drawer , comment out setVisibility code line
-            slidingDrawer1 = (SlidingDrawer)findViewById(R.id.slidingDrawer1);
+            slidingDrawer1 = (SlidingDrawer) findViewById(R.id.slidingDrawer1);
             slidingDrawer1.setVisibility(View.INVISIBLE);
             //--------------------------------------------------------------------------------------------//
             //Buttons
@@ -199,14 +200,14 @@ public class MainActivity extends Activity implements OnClickListener {
             tvDatatoSend = (TextView) findViewById(R.id.tvDatatoSend);
             tvBlock = (TextView) findViewById(R.id.tvBlock);
 
-            tvBlock.setText(block_name+ " Block Selected");
-           // if (block_name.equals("C")) {
-           //     tvBlock.setText("C" + " Block Selected");
-           // } else if (block_name.equals("D")) {
-           //     tvBlock.setText("D" + " Block Selected");
-           // } else if (block_name.equals("E")) {
-           //     tvBlock.setText("E" + " Block Selected");
-           // }
+            tvBlock.setText(block_name + " Block Selected");
+            // if (block_name.equals("C")) {
+            //     tvBlock.setText("C" + " Block Selected");
+            // } else if (block_name.equals("D")) {
+            //     tvBlock.setText("D" + " Block Selected");
+            // } else if (block_name.equals("E")) {
+            //     tvBlock.setText("E" + " Block Selected");
+            // }
             // tvBlock.setText(block_name + " Block Selected");
             tvBTStatus = (TextView) findViewById(R.id.tvBTStatus);
             RelLay = (RelativeLayout) findViewById(R.id.RelLay_keyboard);
@@ -279,7 +280,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     case cBluetooth.BL_REQUEST_ENABLE:
                         Log.e("::Main_Activity::HM::",
                                 ":::BLUETOOTH_ENABLE_REQUEST_SENT::");
-                        tvBTStatus.setText("Connecting to " + block_name+"...");
+                        tvBTStatus.setText("Connecting to " + block_name + "...");
                         BluetoothAdapter.getDefaultAdapter();
                         Intent enableBtIntent = new Intent(
                                 BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -306,7 +307,7 @@ public class MainActivity extends Activity implements OnClickListener {
                         tvData.setText("Connected");
                         RelLay.setBackgroundResource(R.drawable.back_green);
                         Toast.makeText(activity.getBaseContext(), "System Connected", Toast.LENGTH_LONG).show();
-                        tvBTStatus.setText("Connected to "+block_name);
+                        tvBTStatus.setText("Connected to " + block_name);
                         //if (block_name.equals("C")) {
                         //    // block_name="C";
                         //    tvBTStatus.setText("Connected Block : " + "C");
@@ -540,7 +541,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
     //**********************************************************************************************
     /*
-	 * @Override public void onBackPressed() { // TODO Auto-generated method
+     * @Override public void onBackPressed() { // TODO Auto-generated method
 	 * stub super.onBackPressed(); BT_is_connect = bl.BT_Connect(address,
 	 * false); // Intent intent = new Intent(this, Opening.class); //
 	 * startActivity(intent); }
@@ -550,7 +551,7 @@ public class MainActivity extends Activity implements OnClickListener {
         // TODO Auto-generated method stub
 
 		/*
-		 * if (reconnect_flag == true) { myBluetoothAdapter.enable();
+         * if (reconnect_flag == true) { myBluetoothAdapter.enable();
 		 * bl.BT_Connect(address, false); reconnect_flag = false;
 		 *
 		 * }
@@ -559,7 +560,7 @@ public class MainActivity extends Activity implements OnClickListener {
         switch (v.getId()) {
 
 		/*
-		 * case R.id.bTop: bTop.setBackgroundResource(R.drawable.head_red);
+         * case R.id.bTop: bTop.setBackgroundResource(R.drawable.head_red);
 		 * tvData.setText("Connecting..."); bl.checkBTState(); // -/
 		 * bl.BT_Connect(address, false); break;
 		 */
@@ -569,8 +570,8 @@ public class MainActivity extends Activity implements OnClickListener {
                 startActivity(openMain);
 
                 break;
-
-            case R.id.bSell:
+//--------------------------------------------------------------------------------------------//
+/*          case R.id.bSell:
 
                 if (eT_sell.getText().toString().matches("")) {
                     Log.e("::::::ERROR:::::", eT_sell.getText().toString());
@@ -674,33 +675,17 @@ public class MainActivity extends Activity implements OnClickListener {
                     }
 
                 }
-                break;
-
+                break;*/
+            //--------------------------------------------------------------------------------------------//
             case R.id.bOn:
-
-                if (block_name.equals("C")) {
-                    if (saved_list[daire] == 1) {
-                        fucker = false;
-                    } else {
-                        saved_list[daire] = 1;
-                        fucker = true;
-                    }
-                }
-                if (block_name.equals("D")) {
-                    if (saved_list[daire + 435] == 1) {
-                        fucker = false;
-                    } else {
-                        saved_list[daire + 435] = 1;
-                        fucker = true;
-                    }
-                }
-                if (block_name.equals("E")) {
-                    if (saved_list[daire + 435 + 44] == 1) {
-                        fucker = false;
-                    } else {
-                        saved_list[daire + 435 + 44] = 1;
-                        fucker = true;
-                    }
+                //Edit currently on leds list
+                if (saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] == 1) {
+                    //Daire yanik konumdaysa tekrar data gondermeyi engelle
+                    fucker = false;
+                } else {
+                    //Daire yanik degil ; yananlar listesine daireyi ekle.
+                    saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] = 1;
+                    fucker = true;
                 }
 
                 if (daire == 0) {
@@ -708,49 +693,17 @@ public class MainActivity extends Activity implements OnClickListener {
                     Log.v("::CTRL_ON_FUNC::", "hata1");
                 }
 
+                //fucker  ->  flatIsOff ?
                 if (fucker) {
                     if (daire == 0) {
                         tvData.setText("-");
                     }
-                    // ***************C BLOCK-1
-                    if (block_name.equals("C") && daire < 436 && daire > 0) {
-                        Log.v("::CTRL_ON_FUNC::", "--STARTING TO SEND--");
-                        daire = daire + 1000;
-                        cmdSend = Integer.toString(daire);
-                        Log.v("C BLOCK MESAJ :  ", daire + "(" + daire + ")");
-                        tvDatatoSend.setTextColor(Color.GREEN);
-                        bl.sendData(cmdSend);
-                        daire = 0;
-                    }
-                    // *************D BLOCK-2
-                    else if (block_name.equals("D") && daire < 45 && daire > 0) {
-                        Log.v("::CTRL_ON_FUNC::", "--STARTING TO SEND--");
-                        daire2 = daire + 435 + 1000;
-                        cmdSend = Integer.toString(daire2);
-                        Log.v("D BLOCK MESAJ :  ", daire2 + "(" + daire + ")");
-                        tvDatatoSend.setTextColor(Color.GREEN);
-                        Log.v("::CTRL_ON_FUNC::", "hata 2");
-                        bl.sendData(cmdSend);
-                        daire = 0;
-                    }
-
-                    // **************E BLOCK-3
-                    else if (block_name.equals("E") && daire < 326 && daire > 0) {
-                        Log.v("::CTRL_ON_FUNC::", "--STARTING TO SEND--");
-                        daire2 = daire + 435 + 44 + 1000;
-                        cmdSend = Integer.toString(daire2);
-                        Log.v("E BLOCK MESAJ : ", daire2 + "(" + daire + ")");
-                        tvDatatoSend.setTextColor(Color.GREEN);
-                        bl.sendData(cmdSend);
-                        daire = 0;
-                    }
-
-                    // /********** INVALID MESSAGES
-                    else {
-                        Log.v("::CTRL_ON_FUNC::", "--INVALID COMBINATION--");
-                        Log.e("INVALID MESSAGE :", Integer.toString(daire));
-                        tvDatatoSend.setTextColor(Color.RED);
-                    }
+                    Log.v("::CTRL_ON_FUNC::", "--STARTING TO SEND--");
+                    daire = daire + Opening.calculateBlockThresholdValue(block_name) + 1000;
+                    cmdSend = Integer.toString(daire);
+                    Log.v("Block : "+block_name, " ( Flat : " + daire + " )");
+                    tvDatatoSend.setTextColor(Color.GREEN);
+                    bl.sendData(cmdSend);
                     daire = 0;
                     daire2 = 0;
                     break;
@@ -760,37 +713,24 @@ public class MainActivity extends Activity implements OnClickListener {
                 daire = 0;
                 daire2 = 0;
                 break;
+            //--------------------------------------------------------------------------------------------//
             case R.id.bOff:
 
-                if (block_name.equals("C")) {
-                    if (saved_list[daire] == 0) {
-                        fucker2 = false;
-                    } else {
-                        saved_list[daire] = 0;
-                        fucker2 = true;
-                    }
-                }
-                if (block_name.equals("D")) {
-                    if (saved_list[daire + 435] == 0) {
-                        fucker2 = false;
-                    } else {
-                        saved_list[daire + 435] = 0;
-                        fucker2 = true;
-                    }
-                }
-                if (block_name.equals("E")) {
-                    if (saved_list[daire + 435 + 44] == 0) {
-                        fucker2 = false;
-                    } else {
-                        saved_list[daire + 435 + 44] = 0;
-                        fucker2 = true;
-                    }
+                if (saved_list[daire] == 0) {
+                    //Daire sonukse tekrar sondurme komutunu gondermeyi engellemek icin fucker2=false
+                    fucker2 = false;
+                } else {
+                    //Daire yanik konumda , sondurme komutunu gonderebilmek icin fucker2=true set et ve
+                    // yanan daireler listesinde dairenin degerini "0" (sonuk) yap
+                    saved_list[daire] = 0;
+                    fucker2 = true;
                 }
 
                 if (daire == 0) {
                     fucker2 = true;
                 }
 
+                //fucker2 -> isFlatOn ?
                 if (fucker2) {
                     if (daire == 0) {
                         tvData.setText("-");
@@ -962,6 +902,9 @@ public class MainActivity extends Activity implements OnClickListener {
                 if (daire > 50) {
                     break;
                 }
+                if (tvDatatoSend.toString().contains("-")) {
+                    break;
+                }
                 daire = daire * 10 + 0;
                 tvDatatoSend.setTextColor(Color.BLACK);
                 tvDatatoSend.setText(Integer.toString(daire));
@@ -1042,7 +985,6 @@ public class MainActivity extends Activity implements OnClickListener {
         }
 
     }
-
 
 
 }
