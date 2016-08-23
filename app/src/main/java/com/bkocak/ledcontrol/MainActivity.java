@@ -696,7 +696,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 //fucker  ->  flatIsOff ?
                 if (fucker) {
                     if (daire == 0) {
-                        tvData.setText("-");
+                        tvDatatoSend.setText("-");
                     }
                     Log.v("::CTRL_ON_FUNC::", "--STARTING TO SEND--");
                     cmdSend = Integer.toString(daire + Opening.calculateBlockThresholdValue(block_name) + 1000);
@@ -732,7 +732,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 //fucker2 -> isFlatOn ?
                 if (fucker2) {
                     if (daire == 0) {
-                        tvData.setText("-");
+                        tvDatatoSend.setText("-");
                     }
                     // ***************C BLOCK-1
 
@@ -741,7 +741,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     for (int i = 0; i <= (4 - length); i++) {
                         data2Send += "0";
                     }
-                    data2Send += daire;
+                    data2Send += daire + Opening.calculateBlockThresholdValue(block_name);
 
                     Log.v("Block : " + block_name +" :", " Flat : " + daire + "( Off | Data : " + data2Send +
                             " )");
