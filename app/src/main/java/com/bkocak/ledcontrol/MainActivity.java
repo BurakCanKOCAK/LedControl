@@ -701,7 +701,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     Log.v("::CTRL_ON_FUNC::", "--STARTING TO SEND--");
                     daire = daire + Opening.calculateBlockThresholdValue(block_name) + 1000;
                     cmdSend = Integer.toString(daire);
-                    Log.v("Block : "+block_name, " ( Flat : " + daire + " )");
+                    Log.v("Block : " + block_name, " ( Flat : " + daire + " )");
                     tvDatatoSend.setTextColor(Color.GREEN);
                     bl.sendData(cmdSend);
                     daire = 0;
@@ -736,179 +736,111 @@ public class MainActivity extends Activity implements OnClickListener {
                         tvData.setText("-");
                     }
                     // ***************C BLOCK-1
-                    if (block_name.equals("C") && daire < 100 && daire > 9) {
-                        bl.sendData("0");
-                        bl.sendData("0");
-                        cmdSend = Integer.toString(daire);
-                        Log.v("C BLOCK MESAJ : OFF ", "1" + "0" + daire + "("
-                                + daire + ")");
-                        tvDatatoSend.setTextColor(Color.DKGRAY);
-                        bl.sendData(cmdSend);
-                        daire = 0;
-                    } else if (block_name.equals("C") && daire < 10 && daire > 0) {
-                        bl.sendData("0");
-                        bl.sendData("0");
-                        bl.sendData("0");
-                        cmdSend = Integer.toString(daire);
-                        Log.v("C BLOCK MESAJ : OFF", "1" + "0" + "0" + daire + "("
-                                + daire + ")");
-                        tvDatatoSend.setTextColor(Color.DKGRAY);
-                        bl.sendData(cmdSend);
-                        daire = 0;
-                    } else if (block_name.equals("C") && daire < 436 && daire > 99) {
-                        bl.sendData("0");
-                        cmdSend = Integer.toString(daire);
-                        Log.v("C BLOCK MESAJ : OFF", "1" + daire + "(" + daire
-                                + ")");
-                        tvDatatoSend.setTextColor(Color.DKGRAY);
-                        bl.sendData(cmdSend);
-                        daire = 0;
-                    }
-                    // *************D BLOCK-2
-                    else if (block_name.equals("D") && daire < 45 && daire > 0) {
-                        bl.sendData("0");
-                        daire2 = daire + 435;
-                        cmdSend = Integer.toString(daire2);
-                        Log.v("D BLOCK MESAJ : OFF", "1" + "0" + daire2 + "("
-                                + daire + ")");
-                        tvDatatoSend.setTextColor(Color.DKGRAY);
-                        bl.sendData(cmdSend);
-                        daire = 0;
-                    }
 
-                    // **************E BLOCK-3
-                    else if (block_name.equals("E") && daire < 326 && daire > 0) {
-                        bl.sendData("0");
-                        daire2 = daire + 435 + 44;
-                        cmdSend = Integer.toString(daire2);
-                        Log.v("E BLOCK MESAJ : OFF", daire2 + "(" + daire + ")");
-                        tvDatatoSend.setTextColor(Color.DKGRAY);
-                        bl.sendData(cmdSend);
-                        daire = 0;
+                    int length = (int) (Math.log10(daire + Opening.calculateBlockThresholdValue(block_name)) + 1);
+                    String data2Send = "";
+                    for (int i = 0; i < (4 - length); i++) {
+                        data2Send += "0";
                     }
+                    data2Send += daire;
 
-                    // /***********ALL ON
-                    // /********** INVALID MESSAGES
-                    else if (daire == 0) {
-                        tvDatatoSend.setTextColor(Color.GREEN);
-                        Log.v("MODE :", "OFF");
-                        bl.sendData(Integer.toString(daire));
-                        bl.sendData(Integer.toString(daire));
-                        bl.sendData(Integer.toString(daire));
-                        bl.sendData(Integer.toString(daire));
-                        tvDatatoSend.setText("OFF");
-                        for (int i = 0; i < 865; i++) {
-                            saved_list[i] = 0;
-                        }
-                        daire = 0;
-                    }// --------------------------
-                    else {
-
-                        Log.e("INVALID MESSAGE :", Integer.toString(daire));
-                        tvDatatoSend.setTextColor(Color.RED);
+                    Log.v("Block : " + block_name, " Flat : " + daire + "( Off | Data : " + data2Send +
+                            " )");
+                    tvDatatoSend.setTextColor(Color.DKGRAY);
+                    bl.sendData(data2Send);
+                    daire = 0;
+                } else if (daire == 0) {
+                    tvDatatoSend.setTextColor(Color.GREEN);
+                    Log.v("MODE :", "OFF");
+                    bl.sendData(Integer.toString(daire));
+                    bl.sendData(Integer.toString(daire));
+                    bl.sendData(Integer.toString(daire));
+                    bl.sendData(Integer.toString(daire));
+                    tvDatatoSend.setText("OFF");
+                    for (int i = 0; i < 865; i++) {
+                        saved_list[i] = 0;
                     }
                     daire = 0;
-                    daire2 = 0;
-                    break;
+                }// --------------------------
+                else {
+
+                    Log.e("INVALID MESSAGE :", Integer.toString(daire));
+                    tvDatatoSend.setTextColor(Color.RED);
                 }
                 daire = 0;
                 daire2 = 0;
-
                 break;
 
             case R.id.bOne:
-                if (daire > 50) {
-                    break;
+                if (checkFlatNumber(block_name, 1)) {
+                    tvDatatoSend.setTextColor(Color.BLACK);
+                    tvDatatoSend.setText(Integer.toString(daire));
                 }
-                daire = daire * 10 + 1;
-                tvDatatoSend.setTextColor(Color.BLACK);
-                tvDatatoSend.setText(Integer.toString(daire));
-
                 break;
             case R.id.bTwo:
-                if (daire > 50) {
-                    break;
+                if (checkFlatNumber(block_name, 2)) {
+                    tvDatatoSend.setTextColor(Color.BLACK);
+                    tvDatatoSend.setText(Integer.toString(daire));
                 }
-                daire = daire * 10 + 2;
-                tvDatatoSend.setTextColor(Color.BLACK);
-                tvDatatoSend.setText(Integer.toString(daire));
-
                 break;
             case R.id.bThree:
-                if (daire > 50) {
-                    break;
+                if (checkFlatNumber(block_name, 3)) {
+                    tvDatatoSend.setTextColor(Color.BLACK);
+                    tvDatatoSend.setText(Integer.toString(daire));
                 }
-                daire = daire * 10 + 3;
-                tvDatatoSend.setTextColor(Color.BLACK);
-                tvDatatoSend.setText(Integer.toString(daire));
 
                 break;
             case R.id.bFour:
-                if (daire > 50) {
-                    break;
+                if (checkFlatNumber(block_name, 4)) {
+                    tvDatatoSend.setTextColor(Color.BLACK);
+                    tvDatatoSend.setText(Integer.toString(daire));
                 }
-                daire = daire * 10 + 4;
-                tvDatatoSend.setTextColor(Color.BLACK);
-                tvDatatoSend.setText(Integer.toString(daire));
 
                 break;
 
             case R.id.bFive:
-                if (daire > 50) {
-                    break;
+                if (checkFlatNumber(block_name, 5)) {
+                    tvDatatoSend.setTextColor(Color.BLACK);
+                    tvDatatoSend.setText(Integer.toString(daire));
                 }
-                daire = daire * 10 + 5;
-                tvDatatoSend.setTextColor(Color.BLACK);
-                tvDatatoSend.setText(Integer.toString(daire));
 
                 break;
             case R.id.bSix:
-                if (daire > 50) {
-                    break;
+                if (checkFlatNumber(block_name, 6)) {
+                    tvDatatoSend.setTextColor(Color.BLACK);
+                    tvDatatoSend.setText(Integer.toString(daire));
                 }
-                daire = daire * 10 + 6;
-                tvDatatoSend.setTextColor(Color.BLACK);
-                tvDatatoSend.setText(Integer.toString(daire));
 
                 break;
             case R.id.bSeven:
-                if (daire > 50) {
-                    break;
+                if (checkFlatNumber(block_name, 7)) {
+                    tvDatatoSend.setTextColor(Color.BLACK);
+                    tvDatatoSend.setText(Integer.toString(daire));
                 }
-                daire = daire * 10 + 7;
-                tvDatatoSend.setTextColor(Color.BLACK);
-                tvDatatoSend.setText(Integer.toString(daire));
 
                 break;
             case R.id.bEight:
-                if (daire > 50) {
-                    break;
+                if (checkFlatNumber(block_name, 8)) {
+                    tvDatatoSend.setTextColor(Color.BLACK);
+                    tvDatatoSend.setText(Integer.toString(daire));
                 }
-                daire = daire * 10 + 8;
-                tvDatatoSend.setTextColor(Color.BLACK);
-                tvDatatoSend.setText(Integer.toString(daire));
 
                 break;
             case R.id.bNine:
-                if (daire > 50) {
-                    break;
+                if (checkFlatNumber(block_name, 9)) {
+                    tvDatatoSend.setTextColor(Color.BLACK);
+                    tvDatatoSend.setText(Integer.toString(daire));
                 }
-                daire = daire * 10 + 9;
-                tvDatatoSend.setTextColor(Color.BLACK);
-                tvDatatoSend.setText(Integer.toString(daire));
 
                 break;
             case R.id.bZero:
-                if (daire > 50) {
-                    break;
-                }
                 if (tvDatatoSend.toString().contains("-")) {
                     break;
                 }
-                daire = daire * 10 + 0;
-                tvDatatoSend.setTextColor(Color.BLACK);
-                tvDatatoSend.setText(Integer.toString(daire));
-
+                if (checkFlatNumber(block_name, 0)) {
+                    tvDatatoSend.setTextColor(Color.BLACK);
+                    tvDatatoSend.setText(Integer.toString(daire));
+                }
                 break;
 
             case R.id.b2_1:
@@ -984,6 +916,22 @@ public class MainActivity extends Activity implements OnClickListener {
 
         }
 
+    }
+
+    private boolean checkFlatNumber(String block, int numberPressed) {
+        int number = daire * 10 + numberPressed;
+        for (int i = 0; i < Opening.blocks.length; i++) {
+            if (block_name.equals(Opening.blocks[i])) {
+                if (number <= Opening.numberOfFlats[i]) {
+                    daire = daire * 10 + numberPressed;
+                    return true;
+                } else {
+                    return false;
+                }
+
+            }
+        }
+        return false;
     }
 
 
