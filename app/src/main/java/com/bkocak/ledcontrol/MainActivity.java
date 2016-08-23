@@ -716,13 +716,13 @@ public class MainActivity extends Activity implements OnClickListener {
             //--------------------------------------------------------------------------------------------//
             case R.id.bOff:
 
-                if (saved_list[daire] == 0) {
+                if (saved_list[daire+Opening.calculateBlockThresholdValue(block_name)] == 0) {
                     //Daire sonukse tekrar sondurme komutunu gondermeyi engellemek icin fucker2=false
                     fucker2 = false;
                 } else {
                     //Daire yanik konumda , sondurme komutunu gonderebilmek icin fucker2=true set et ve
                     // yanan daireler listesinde dairenin degerini "0" (sonuk) yap
-                    saved_list[daire] = 0;
+                    saved_list[daire+Opening.calculateBlockThresholdValue(block_name)] = 0;
                     fucker2 = true;
                 }
 
