@@ -42,7 +42,8 @@ public class MainActivity extends Activity implements OnClickListener {
     // private static String address = "30:14:06:09:09:34";// (Bulancak/Giresun)
     // private static String address = "20:14:04:29:35:28"; // (Nawroz City)
     //private static String address = "98:D3:31:B3:11:8F";
-    private static String address = "00:14:04:01:33:64";
+    private static String address = "00:14:04:01:33:64"; //Benim modul
+    //private static String address = "20:16:03:10:85:85"; //1071 Mazara
     ////////////////////////////////////////////////////////////////////////////////////////////////
     private static cBluetooth bl = null;
     private static boolean BT_is_connect;
