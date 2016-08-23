@@ -738,7 +738,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
                     int length = (int) (Math.log10(daire + Opening.calculateBlockThresholdValue(block_name)) + 1);
                     String data2Send = "";
-                    for (int i = 0; i <= (4 - length); i++) {
+                    for (int i = 0; i < (4 - length); i++) {
                         data2Send += "0";
                     }
                     data2Send += daire + Opening.calculateBlockThresholdValue(block_name);
