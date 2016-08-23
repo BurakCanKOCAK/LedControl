@@ -699,9 +699,8 @@ public class MainActivity extends Activity implements OnClickListener {
                         tvData.setText("-");
                     }
                     Log.v("::CTRL_ON_FUNC::", "--STARTING TO SEND--");
-                    daire = daire + Opening.calculateBlockThresholdValue(block_name) + 1000;
-                    cmdSend = Integer.toString(daire);
-                    Log.v("Block : " + block_name, " ( Flat : " + daire + " )");
+                    cmdSend = Integer.toString(daire + Opening.calculateBlockThresholdValue(block_name) + 1000);
+                    Log.v("Block : " + block_name, " Flat : " + daire + " ( On | Data : "+cmdSend+" )");
                     tvDatatoSend.setTextColor(Color.GREEN);
                     bl.sendData(cmdSend);
                     daire = 0;
@@ -739,7 +738,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
                     int length = (int) (Math.log10(daire + Opening.calculateBlockThresholdValue(block_name)) + 1);
                     String data2Send = "";
-                    for (int i = 0; i < (4 - length); i++) {
+                    for (int i = 0; i <= (4 - length); i++) {
                         data2Send += "0";
                     }
                     data2Send += daire;
