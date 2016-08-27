@@ -16,6 +16,7 @@ import android.os.PowerManager;
 public class logoActivity extends Activity {
     private PowerManager.WakeLock wl;
 
+
     // ********************************************************************************************************
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +28,11 @@ public class logoActivity extends Activity {
         wl.acquire();
         //Enables Bluetooth If Not Enabled
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!mBluetoothAdapter.isEnabled()) {
-            setBluetooth(true);
+        Config config = new Config();
+        if(!config.isEmulatorMode()) {
+            if (!mBluetoothAdapter.isEnabled()) {
+                setBluetooth(true);
+            }
         }
         //
         Thread timer = new Thread(){

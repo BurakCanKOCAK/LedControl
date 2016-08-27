@@ -49,7 +49,7 @@ public class Opening extends Activity implements OnClickListener {
     private static String codeEffect = "9100";
     private static String codeAllOn = "8888";
     private static String codeAllOff = "0000";
-    private static String  codeEnvironment = "4100";
+    private static String codeEnvironment = "4100";
     //--------------------------------------------------------------------------------------------//
     private static Button blockA1, blockA2, blockB1, blockB2, blockC1, blockC2, blockD2;
     //--------------------------------------------------------------------------------------------//
@@ -80,6 +80,7 @@ public class Opening extends Activity implements OnClickListener {
     static Button ButtonShops;
     static Button ButtonEffect;
     private PowerManager.WakeLock wl;
+    Config config = new Config();
 
     //********************************************************************************************************
     @Override
@@ -88,24 +89,25 @@ public class Opening extends Activity implements OnClickListener {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.opening_xml);
-        bl = new cBluetooth(this, mHandler);
-        bl.checkBTState();
-        bl.sendData("0000");
-        myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!config.isEmulatorMode()) {
+            bl = new cBluetooth(this, mHandler);
+            bl.checkBTState();
+            bl.sendData("0000");
+            myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        Thread t = new Thread() {
-            public void run() {
-                bl.sendData("9999");
-                try {
-                    sleep(3000);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+            Thread t = new Thread() {
+                public void run() {
+                    bl.sendData("9999");
+                    try {
+                        sleep(3000);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
-            }
-        };
-        t.start();
-
+            };
+            t.start();
+        }
         mainL = (AbsoluteLayout) findViewById(R.id.MainLayout);
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Power Lock On");
@@ -372,19 +374,7 @@ public class Opening extends Activity implements OnClickListener {
                 Log.v(":::OPENING.java::", "::: Effect => 9100 :::");
                 bl.sendData(codeEffect);
                 break;
-    /*	case R.id.ButtonAOn:
-            bl.sendData("3500");
-			Log.d(":::OPENING.java::", "Effect = 3500");
-			break;
-		case R.id.ButtonBOn:
-			bl.sendData("3600");
-			Log.d(":::OPENING.java::", "Effect = 3600");
-			break;
-		case R.id.ButtonCOn:
-			bl.sendData("3700");
-			Log.d(":::OPENING.java::", "Effect = 3700");
-			break;
-		*/
+
         }
     }
 
@@ -552,7 +542,9 @@ public class Opening extends Activity implements OnClickListener {
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
-        bl.BT_onPause();
+        if(!config.isEmulatorMode()) {
+            bl.BT_onPause();
+        }
     }
 
     //********************************************************************************************************
@@ -568,46 +560,50 @@ public class Opening extends Activity implements OnClickListener {
         emailDialog.setCancelable(false);
         emailDialog.setContentView(R.layout.dialoglayout);
         emailDialog.show();
-        Thread connection = new Thread() {
+        if (!config.isEmulatorMode()) {
+            Thread connection = new Thread() {
 
-            public void run() {
-                BT_is_connect = bl.BT_Connect(address, false);
-                bl.sendData("9999");
-
-            }
-        };
-        connection.start();
-        Thread timer = new Thread() {
-            public void run() {
-                try {
-                    sleep(1000);
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    emailDialog.dismiss();
+                public void run() {
+                    BT_is_connect = bl.BT_Connect(address, false);
                     bl.sendData("9999");
 
-                    Thread timer2 = new Thread() {
-                        public void run() {
-                            try {
-                                sleep(4000);
+                }
+            };
+            connection.start();
+        }
 
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } finally {
-                                emailDialog.dismiss();
+            Thread timer = new Thread() {
+                public void run() {
+                    try {
+                        sleep(1000);
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+                        emailDialog.dismiss();
+                        //bl.sendData("9999");  //UNCOMMENT
+
+                        Thread timer2 = new Thread() {
+                            public void run() {
+                                try {
+                                    sleep(4000);
+
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    emailDialog.dismiss();
+
+                                }
 
                             }
+                        };
+                        timer2.start();
+                    }
 
-                        }
-                    };
-                    timer2.start();
                 }
+            };
+            timer.start();
 
-            }
-        };
-        timer.start();
         Log.e("::OPENING::ON_RESUME::", ":::ON RESUME ANOUNCED::");
 
     }
@@ -629,5 +625,17 @@ public class Opening extends Activity implements OnClickListener {
         return 0;
     }
     //--------------------------------------------------------------------------------------------//
-    //********************************************************************************************************
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 }

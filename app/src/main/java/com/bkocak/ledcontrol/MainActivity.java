@@ -27,13 +27,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.server.converter.StringToIntConverter;
+
 //**************************************************************************************************
 public class MainActivity extends Activity implements OnClickListener {
+    //IDEAS :
+    //TODO      1)Use sharedPrefs for already on or off flats use : "A1_10" ("XX_YY , XX:BlockName YY:Flat Number
+    //TODO  and save as boolean  "1" for already on , "0" for off flats.
+    //TODO      2)Assign already onFlats' numbers to listView on every onCreate method recall and update list every
+    //TODO  on/off button pressed
+    //----------------------------------------------------------------------------------------------
     private static final String FILENAME = "myFile.txt";
     static Intent openMain;
     // private String address = "00:14:03:18:20:95";
@@ -44,6 +53,9 @@ public class MainActivity extends Activity implements OnClickListener {
     //private static String address = "98:D3:31:B3:11:8F";
     private static String address = "00:14:04:01:33:64"; //Benim modul
     //private static String address = "20:16:03:10:85:85"; //1071 Mazara
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public SharedPreferences sharedPref;
+    SharedPreferences.Editor editor = sharedPref.edit();
     ////////////////////////////////////////////////////////////////////////////////////////////////
     private static cBluetooth bl = null;
     private static boolean BT_is_connect;
@@ -66,12 +78,16 @@ public class MainActivity extends Activity implements OnClickListener {
     private Handler mUiHandler;
     private Handler mBackgroundHandler;
     private static int[] saved_list = new int[10000];
+    private static Boolean[] isFlatOnList;
     private ArrayAdapter<String> BTArrayAdapter;
-    static boolean fucker = true;
-    static boolean fucker2 = true;
+    static boolean isFlatOff = true;
+    static boolean isFlatOn = true;
     private static Button bALLC, bALLB, bALLA;
     private PowerManager.WakeLock wl;
     private static StringBuilder sb = new StringBuilder();
+    private static ListView lvOnFlatNumbers;
+
+    Config config = new Config();
 
     // --------ON CREATE -------------------------------
     @Override
@@ -79,8 +95,22 @@ public class MainActivity extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.keyboard_xml);
 
-        bl = new cBluetooth(this, mHandler);
+        if (!config.isEmulatorMode()) {
+            bl = new cBluetooth(this, mHandler);
+            bl.sendData("9999");
+            // take an instance of BluetoothAdapter - Bluetooth radio
+            myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            // setPrefButtons();
+            if (myBluetoothAdapter == null) {
+                // Bluetooth adapter yoksa disable et
 
+                Toast.makeText(getApplicationContext(),
+                        "Your device does not support Bluetooth", Toast.LENGTH_LONG)
+                        .show();
+            }
+        }
+
+        getFlatStatus();
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Power Lock On");
         wl.acquire();
@@ -94,126 +124,118 @@ public class MainActivity extends Activity implements OnClickListener {
         connection.start();
 */
 
-        SharedPreferences sharedPref = getSharedPreferences("data",
+        this.sharedPref = getSharedPreferences("data",
                 MODE_PRIVATE);
         block_name = sharedPref.getString("block", "null");
 
-        bl.sendData("9999");
-        // take an instance of BluetoothAdapter - Bluetooth radio
-        myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        // setPrefButtons();
-        if (myBluetoothAdapter == null) {
-            // Bluetooth adapter yoksa disable et
 
-            Toast.makeText(getApplicationContext(),
-                    "Your device does not support Bluetooth", Toast.LENGTH_LONG)
-                    .show();
-        } else {
-            // Indicator = (ImageView) findViewById(R.id.ivIndicator);
-            // Indicator.setBackgroundResource(R.drawable.red);
-            //--------------------------------------------------------------------------------------------//
-            //Block general operations . To enable Sliding drawer , comment out setVisibility code line
-            slidingDrawer1 = (SlidingDrawer) findViewById(R.id.slidingDrawer1);
-            slidingDrawer1.setVisibility(View.INVISIBLE);
-            //--------------------------------------------------------------------------------------------//
-            //Buttons
-            bMainMenu = (Button) findViewById(R.id.bMainMenu);
-            b1 = (Button) findViewById(R.id.bOne);
-            b2 = (Button) findViewById(R.id.bTwo);
-            b3 = (Button) findViewById(R.id.bThree);
-            b4 = (Button) findViewById(R.id.bFour);
-            b5 = (Button) findViewById(R.id.bFive);
-            b6 = (Button) findViewById(R.id.bSix);
-            b7 = (Button) findViewById(R.id.bSeven);
-            b8 = (Button) findViewById(R.id.bEight);
-            b9 = (Button) findViewById(R.id.bNine);
-            b0 = (Button) findViewById(R.id.bZero);
-            bSondur = (Button) findViewById(R.id.bOff);
-            bYak = (Button) findViewById(R.id.bOn);
-            bTop = (Button) findViewById(R.id.bTop);
-            bSell = (Button) findViewById(R.id.bSell);
-            bUnSell = (Button) findViewById(R.id.bUnSell);
-            onSale = (Button) findViewById(R.id.onSale);
+        // Indicator = (ImageView) findViewById(R.id.ivIndicator);
+        // Indicator.setBackgroundResource(R.drawable.red);
+        //--------------------------------------------------------------------------------------------//
+        //Block general operations . To enable Sliding drawer , comment out setVisibility code line
+        slidingDrawer1 = (SlidingDrawer) findViewById(R.id.slidingDrawer1);
+        slidingDrawer1.setVisibility(View.INVISIBLE);
+        //--------------------------------------------------------------------------------------------//
+        //Buttons
+        bMainMenu = (Button) findViewById(R.id.bMainMenu);
+        b1 = (Button) findViewById(R.id.bOne);
+        b2 = (Button) findViewById(R.id.bTwo);
+        b3 = (Button) findViewById(R.id.bThree);
+        b4 = (Button) findViewById(R.id.bFour);
+        b5 = (Button) findViewById(R.id.bFive);
+        b6 = (Button) findViewById(R.id.bSix);
+        b7 = (Button) findViewById(R.id.bSeven);
+        b8 = (Button) findViewById(R.id.bEight);
+        b9 = (Button) findViewById(R.id.bNine);
+        b0 = (Button) findViewById(R.id.bZero);
+        bSondur = (Button) findViewById(R.id.bOff);
+        bYak = (Button) findViewById(R.id.bOn);
+        bTop = (Button) findViewById(R.id.bTop);
+        bSell = (Button) findViewById(R.id.bSell);
+        bUnSell = (Button) findViewById(R.id.bUnSell);
+        onSale = (Button) findViewById(R.id.onSale);
+        lvOnFlatNumbers = (ListView) findViewById(R.id.lvOnFlatNumbers);
 
-            eT_sell = (EditText) findViewById(R.id.eT_sell);
-            // eT_sell.setText("0");
-            bb2_1 = (Button) findViewById(R.id.b2_1);
-            bb3_1 = (Button) findViewById(R.id.b3_1);
+        eT_sell = (EditText) findViewById(R.id.eT_sell);
+        // eT_sell.setText("0");
+        bb2_1 = (Button) findViewById(R.id.b2_1);
+        bb3_1 = (Button) findViewById(R.id.b3_1);
 
-            bBTOn = (Button) findViewById(R.id.bBTOn);
-            bBTOff = (Button) findViewById(R.id.bBTOff);
-            bBTOn.setVisibility(View.INVISIBLE);
-            bBTOff.setVisibility(View.INVISIBLE);
-            bErase = (Button) findViewById(R.id.bErase);
-            // *************************
-            // ONCLICK THIS ------------
-            b1.setOnClickListener(this);
-            b2.setOnClickListener(this);
-            b3.setOnClickListener(this);
-            b4.setOnClickListener(this);
-            b5.setOnClickListener(this);
-            b6.setOnClickListener(this);
-            b7.setOnClickListener(this);
-            b8.setOnClickListener(this);
-            b8.setOnClickListener(this);
-            b9.setOnClickListener(this);
-            b0.setOnClickListener(this);
-            bSondur.setOnClickListener(this);
-            bYak.setOnClickListener(this);
-            bTop.setOnClickListener(this);
-            bSell.setOnClickListener(this);
-            bUnSell.setOnClickListener(this);
-            onSale.setOnClickListener(this);
+        bBTOn = (Button) findViewById(R.id.bBTOn);
+        bBTOff = (Button) findViewById(R.id.bBTOff);
+        bBTOn.setVisibility(View.INVISIBLE);
+        bBTOff.setVisibility(View.INVISIBLE);
+        bErase = (Button) findViewById(R.id.bErase);
+        // *************************
+        // ONCLICK THIS ------------
+        b1.setOnClickListener(this);
+        b2.setOnClickListener(this);
+        b3.setOnClickListener(this);
+        b4.setOnClickListener(this);
+        b5.setOnClickListener(this);
+        b6.setOnClickListener(this);
+        b7.setOnClickListener(this);
+        b8.setOnClickListener(this);
+        b8.setOnClickListener(this);
+        b9.setOnClickListener(this);
+        b0.setOnClickListener(this);
+        bSondur.setOnClickListener(this);
+        bYak.setOnClickListener(this);
+        bTop.setOnClickListener(this);
+        bSell.setOnClickListener(this);
+        bUnSell.setOnClickListener(this);
+        onSale.setOnClickListener(this);
 
-            bb2_1.setOnClickListener(this);
-            bb3_1.setOnClickListener(this);
+        bb2_1.setOnClickListener(this);
+        bb3_1.setOnClickListener(this);
 
-            bErase.setOnClickListener(this);
-            bMainMenu.setOnClickListener(this);
-            setPrefButtons();
-            // ------------------BT ON--------------
-            bBTOn.setOnClickListener(new OnClickListener() {
+        bErase.setOnClickListener(this);
+        bMainMenu.setOnClickListener(this);
+        setPrefButtons();
+        // ------------------BT ON--------------
+        bBTOn.setOnClickListener(new OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    tvData.setText("Connecting...");
-                    BT_is_connect = bl.BT_Connect(address, false);
-                }
-            });
-            // ------------------BT OFF-----------
-            bBTOff.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                tvData.setText("Connecting...");
+                BT_is_connect = bl.BT_Connect(address, false);
+            }
+        });
+        // ------------------BT OFF-----------
+        bBTOff.setOnClickListener(new OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    tvBTStatus.setText("BT Connection OFF");
-                    tvData.setText("Disconnected");
-                    bl.BT_onPause();
-                    // myBluetoothAdapter.disable();
-                    // RelLay.setBackgroundResource(R.drawable.back_red);
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                tvBTStatus.setText("BT Connection OFF");
+                tvData.setText("Disconnected");
+                bl.BT_onPause();
+                // myBluetoothAdapter.disable();
+                // RelLay.setBackgroundResource(R.drawable.back_red);
 
-                }
-            });
-            // **************************
+            }
+        });
 
-            tvData = (TextView) findViewById(R.id.tvData);
-            tvDatatoSend = (TextView) findViewById(R.id.tvDatatoSend);
-            tvBlock = (TextView) findViewById(R.id.tvBlock);
+        // **************************
 
-            tvBlock.setText(block_name + " Block Selected");
-            // if (block_name.equals("C")) {
-            //     tvBlock.setText("C" + " Block Selected");
-            // } else if (block_name.equals("D")) {
-            //     tvBlock.setText("D" + " Block Selected");
-            // } else if (block_name.equals("E")) {
-            //     tvBlock.setText("E" + " Block Selected");
-            // }
-            // tvBlock.setText(block_name + " Block Selected");
-            tvBTStatus = (TextView) findViewById(R.id.tvBTStatus);
-            RelLay = (RelativeLayout) findViewById(R.id.RelLay_keyboard);
+        tvData = (TextView) findViewById(R.id.tvData);
+        tvDatatoSend = (TextView) findViewById(R.id.tvDatatoSend);
+        tvBlock = (TextView) findViewById(R.id.tvBlock);
 
-            // ------------------SEND BUTTON CLICK LISTENER----------------
+        tvBlock.setText(block_name + " Block Selected");
+        // if (block_name.equals("C")) {
+        //     tvBlock.setText("C" + " Block Selected");
+        // } else if (block_name.equals("D")) {
+        //     tvBlock.setText("D" + " Block Selected");
+        // } else if (block_name.equals("E")) {
+        //     tvBlock.setText("E" + " Block Selected");
+        // }
+        // tvBlock.setText(block_name + " Block Selected");
+        tvBTStatus = (TextView) findViewById(R.id.tvBTStatus);
+        RelLay = (RelativeLayout) findViewById(R.id.RelLay_keyboard);
+
+        // ------------------SEND BUTTON CLICK LISTENER----------------
             /*
              * Send.setOnClickListener(new OnClickListener() {
 			 *
@@ -221,9 +243,9 @@ public class MainActivity extends Activity implements OnClickListener {
 			 * method stub cmdSend = String.valueOf(Komut.getText().toString());
 			 * if (BT_is_connect) bl.sendData(cmdSend); } });
 			 */
-            // ***************END OF SEND BUTTON **********************
+        // ***************END OF SEND BUTTON **********************
 
-            // Connection--------------------------------------------------------------StART
+        // Connection--------------------------------------------------------------StART
             /*
              * onBtn = (Button) findViewById(R.id.turnOn); //
 			 * ------------ON_BUTTON CLICK LIST. -------------------
@@ -232,9 +254,8 @@ public class MainActivity extends Activity implements OnClickListener {
 			 * @Override public void onClick(View v) { // TODO Auto-generated
 			 * method stub // on(v); bl.checkBTState(); } });
 			 */
-            // *************END OF ON_BUTTON************************
+        // *************END OF ON_BUTTON************************
 
-        }
 
         mHandler.postDelayed(sRunnable, 600000);
     }
@@ -480,16 +501,19 @@ public class MainActivity extends Activity implements OnClickListener {
         connectDialog.setCancelable(false);
         connectDialog.setContentView(R.layout.dialoglayout);
         connectDialog.show();
-        Thread connection = new Thread() {
-            public void run() {
-                Log.e("::Main_Activity::CT::",
-                        ":::Thread:Started::");
-                BT_is_connect = bl.BT_Connect(address, false);
-                bl.sendData("9999");
 
-            }
-        };
-        connection.start();
+        if (!config.isEmulatorMode()) {
+            Thread connection = new Thread() {
+                public void run() {
+                    Log.e("::Main_Activity::CT::",
+                            ":::Thread:Started::");
+                    BT_is_connect = bl.BT_Connect(address, false);
+                    bl.sendData("9999");
+
+                }
+            };
+            connection.start();
+        }
         Thread timer = new Thread() {
             public void run() {
                 try {
@@ -499,7 +523,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     e.printStackTrace();
                 } finally {
                     connectDialog.dismiss();
-                    bl.sendData("9999");
+                    //bl.sendData("9999");    //UNCOMMENT
                 }
 
             }
@@ -682,26 +706,26 @@ public class MainActivity extends Activity implements OnClickListener {
                 //Edit currently on leds list
                 if (saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] == 1) {
                     //Daire yanik konumdaysa tekrar data gondermeyi engelle
-                    fucker = false;
+                    isFlatOff = false;
                 } else {
                     //Daire yanik degil ; yananlar listesine daireyi ekle.
                     saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] = 1;
-                    fucker = true;
+                    isFlatOff = true;
                 }
 
                 if (daire == 0) {
-                    fucker = true;
+                    isFlatOff = true;
                     Log.v("::CTRL_ON_FUNC::", "hata1");
                 }
 
-                //fucker  ->  flatIsOff ?
-                if (fucker) {
+                //fucker  ->  isFlatOff ?
+                if (isFlatOff) {
                     if (daire == 0) {
                         tvDatatoSend.setText("-");
                     }
                     Log.v("::CTRL_ON_FUNC::", "--STARTING TO SEND--");
                     cmdSend = Integer.toString(daire + Opening.calculateBlockThresholdValue(block_name) + 1000);
-                    Log.v("Block : " + block_name +" :", " Flat : " + daire + " ( On | Data : "+cmdSend+" )");
+                    Log.v("Block : " + block_name + " :", " Flat : " + daire + " ( On | Data : " + cmdSend + " )");
                     tvDatatoSend.setTextColor(Color.GREEN);
                     bl.sendData(cmdSend);
                     daire = 0;
@@ -716,22 +740,22 @@ public class MainActivity extends Activity implements OnClickListener {
             //--------------------------------------------------------------------------------------------//
             case R.id.bOff:
 
-                if (saved_list[daire+Opening.calculateBlockThresholdValue(block_name)] == 0) {
-                    //Daire sonukse tekrar sondurme komutunu gondermeyi engellemek icin fucker2=false
-                    fucker2 = false;
+                if (saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] == 0) {
+                    //Daire sonukse tekrar sondurme komutunu gondermeyi engellemek icin isFlatOn=false
+                    isFlatOn = false;
                 } else {
-                    //Daire yanik konumda , sondurme komutunu gonderebilmek icin fucker2=true set et ve
+                    //Daire yanik konumda , sondurme komutunu gonderebilmek icin isFlatOn=true set et ve
                     // yanan daireler listesinde dairenin degerini "0" (sonuk) yap
-                    saved_list[daire+Opening.calculateBlockThresholdValue(block_name)] = 0;
-                    fucker2 = true;
+                    saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] = 0;
+                    isFlatOn = true;
                 }
 
                 if (daire == 0) {
-                    fucker2 = true;
+                    isFlatOn = true;
                 }
 
                 //fucker2 -> isFlatOn ?
-                if (fucker2) {
+                if (isFlatOn) {
                     if (daire == 0) {
                         tvDatatoSend.setText("-");
                     }
@@ -744,7 +768,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     }
                     data2Send += daire + Opening.calculateBlockThresholdValue(block_name);
 
-                    Log.v("Block : " + block_name +" :", " Flat : " + daire + "( Off | Data : " + data2Send +
+                    Log.v("Block : " + block_name + " :", " Flat : " + daire + "( Off | Data : " + data2Send +
                             " )");
                     tvDatatoSend.setTextColor(Color.DKGRAY);
                     bl.sendData(data2Send);
@@ -761,8 +785,7 @@ public class MainActivity extends Activity implements OnClickListener {
                         saved_list[i] = 0;
                     }
                     daire = 0;
-                }// --------------------------
-                else {
+                } else {
 
                     Log.e("INVALID MESSAGE :", Integer.toString(daire));
                     tvDatatoSend.setTextColor(Color.RED);
@@ -834,7 +857,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
                 break;
             case R.id.bZero:
-                if (tvDatatoSend.toString().contains("-")) {
+                if (tvDatatoSend.getText().toString().contains("-")) {
                     break;
                 }
                 if (checkFlatNumber(block_name, 0)) {
@@ -842,6 +865,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     tvDatatoSend.setText(Integer.toString(daire));
                 }
                 break;
+            //--------------------------------------------------------------------------------------
 
             case R.id.b2_1:
                 if (block_name.equals("C")) {
@@ -934,5 +958,54 @@ public class MainActivity extends Activity implements OnClickListener {
         return false;
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+    //----------------------------------------------------------------------------------------------
+    public void getFlatStatus() {
+        int index = 0;
+        for (index = 0; index < Opening.blocks.length; index++) {
+            if (Opening.blocks.equals(block_name)) {
+                break;
+            }
+            index++;
+        }
+        isFlatOnList = new Boolean[Opening.numberOfFlats[index]];
+        for (int i = 0; i < Opening.numberOfFlats[index]; i++) {
+            try {
+                isFlatOnList[i] = sharedPref.getBoolean(block_name + "_" + i, false);
+            } catch (Exception e) {
+                Log.d("Cant find flat status :", "Block :" + block_name + " - Flat :" + index);
+            }
 
+        }
+    }
+    //----------------------------------------------------------------------------------------------
+    public void setFlatStatus(int flatNumber,Boolean status) {
+        //TODO ITS NOT FINISHED !!!
+        int index = 0;
+        for (index = 0; index < Opening.blocks.length; index++) {
+            if (Opening.blocks.equals(block_name)) {
+                break;
+            }
+            index++;
+        }
+
+        int indexFlatNumber = --flatNumber;
+        isFlatOnList[indexFlatNumber]=true;
+        editor.putBoolean(block_name+"_"+indexFlatNumber, status);
+        editor.commit();
+
+    }
+    //----------------------------------------------------------------------------------------------
 }
