@@ -46,10 +46,10 @@ public class Opening extends Activity implements OnClickListener {
     public static int[] numberOfFlats = {48, 48, 48, 24, 24, 24, 24};
     //--------------------------------------------------------------------------------------------//
     //Code list
-    private static String codeEffect = "9100";
-    private static String codeAllOn = "8888";
-    private static String codeAllOff = "0000";
-    private static String codeEnvironment = "4100";
+    public static String codeEffect = "9100";
+    public static String codeAllOn = "8888";
+    public static String codeAllOff = "0000";
+    public static String codeEnvironment = "4100";
     //--------------------------------------------------------------------------------------------//
     private static Button blockA1, blockA2, blockB1, blockB2, blockC1, blockC2, blockD2;
     //--------------------------------------------------------------------------------------------//
@@ -545,6 +545,7 @@ public class Opening extends Activity implements OnClickListener {
         if(!config.isEmulatorMode()) {
             bl.BT_onPause();
         }
+
     }
 
     //********************************************************************************************************

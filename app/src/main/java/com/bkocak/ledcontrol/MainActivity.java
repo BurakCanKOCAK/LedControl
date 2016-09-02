@@ -2,6 +2,7 @@ package com.bkocak.ledcontrol;
 //**************************************************************************************************
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Set;
 
 import android.app.Activity;
@@ -55,7 +56,6 @@ public class MainActivity extends Activity implements OnClickListener {
     //private static String address = "20:16:03:10:85:85"; //1071 Mazara
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public SharedPreferences sharedPref;
-    SharedPreferences.Editor editor = sharedPref.edit();
     ////////////////////////////////////////////////////////////////////////////////////////////////
     private static cBluetooth bl = null;
     private static boolean BT_is_connect;
@@ -66,7 +66,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private static final int REQUEST_ENABLE_BT = 1;
     private static Button b1, b2, b3, b4, b5, b6, b7, b8, b9, b0, bYak,
             bSondur, bTop, bb1_1, bb2_1, bb3_1, bb4_1, bb5_1, bb6_1, bEffect,
-            bBTOff, bBTOn, bErase, bMainMenu, bSell, bUnSell, onSale;
+            bBTOff, bBTOn, bErase, bMainMenu, bSell, bUnSell, onSale, bAllOn,bAllOff;
     private static TextView tvData, tvDatatoSend, tvBlock, tvBTStatus;
     private static RelativeLayout RelLay;
     private static EditText eT_sell;
@@ -79,6 +79,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private Handler mBackgroundHandler;
     private static int[] saved_list = new int[10000];
     private static Boolean[] isFlatOnList;
+    public static ArrayList<String> FlatOnList = new ArrayList<String>()   ;
     private ArrayAdapter<String> BTArrayAdapter;
     static boolean isFlatOff = true;
     static boolean isFlatOn = true;
@@ -110,7 +111,6 @@ public class MainActivity extends Activity implements OnClickListener {
             }
         }
 
-        getFlatStatus();
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Power Lock On");
         wl.acquire();
@@ -127,7 +127,7 @@ public class MainActivity extends Activity implements OnClickListener {
         this.sharedPref = getSharedPreferences("data",
                 MODE_PRIVATE);
         block_name = sharedPref.getString("block", "null");
-
+        getFlatStatus();
 
         // Indicator = (ImageView) findViewById(R.id.ivIndicator);
         // Indicator.setBackgroundResource(R.drawable.red);
@@ -137,7 +137,10 @@ public class MainActivity extends Activity implements OnClickListener {
         slidingDrawer1.setVisibility(View.INVISIBLE);
         //--------------------------------------------------------------------------------------------//
         //Buttons
+        bAllOff = (Button)findViewById(R.id.bAllOff);
+        bAllOn = (Button)findViewById(R.id.bAllOn);
         bMainMenu = (Button) findViewById(R.id.bMainMenu);
+        bErase = (Button) findViewById(R.id.bErase);
         b1 = (Button) findViewById(R.id.bOne);
         b2 = (Button) findViewById(R.id.bTwo);
         b3 = (Button) findViewById(R.id.bThree);
@@ -155,6 +158,9 @@ public class MainActivity extends Activity implements OnClickListener {
         bUnSell = (Button) findViewById(R.id.bUnSell);
         onSale = (Button) findViewById(R.id.onSale);
         lvOnFlatNumbers = (ListView) findViewById(R.id.lvOnFlatNumbers);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, FlatOnList);
+        // Assign adapter to ListView
+        lvOnFlatNumbers.setAdapter(adapter);
 
         eT_sell = (EditText) findViewById(R.id.eT_sell);
         // eT_sell.setText("0");
@@ -165,9 +171,12 @@ public class MainActivity extends Activity implements OnClickListener {
         bBTOff = (Button) findViewById(R.id.bBTOff);
         bBTOn.setVisibility(View.INVISIBLE);
         bBTOff.setVisibility(View.INVISIBLE);
-        bErase = (Button) findViewById(R.id.bErase);
         // *************************
         // ONCLICK THIS ------------
+        bAllOff.setOnClickListener(this);
+        bAllOn.setOnClickListener(this);
+        bMainMenu.setOnClickListener(this);
+        bErase.setOnClickListener(this);
         b1.setOnClickListener(this);
         b2.setOnClickListener(this);
         b3.setOnClickListener(this);
@@ -189,8 +198,6 @@ public class MainActivity extends Activity implements OnClickListener {
         bb2_1.setOnClickListener(this);
         bb3_1.setOnClickListener(this);
 
-        bErase.setOnClickListener(this);
-        bMainMenu.setOnClickListener(this);
         setPrefButtons();
         // ------------------BT ON--------------
         bBTOn.setOnClickListener(new OnClickListener() {
@@ -592,8 +599,18 @@ public class MainActivity extends Activity implements OnClickListener {
             case R.id.bMainMenu:
                 Log.e("::GENERAL::CTRL::::", ":::BT ON BUTTON PRESSED:::");
                 openMain = new Intent("com.bkocak.ledcontrol.Opening");
+                FlatOnList.clear();
+                this.finish();
                 startActivity(openMain);
 
+                break;
+            case R.id.bAllOn:
+                Log.e("::MAIN ACTIVITY::", ":::ALL ON:::");
+                bl.sendData(Opening.codeAllOn);
+                break;
+            case R.id.bAllOff:
+                Log.e("::MAIN ACTIVITY::", ":::ALL OFF:::");
+                bl.sendData(Opening.codeAllOff);
                 break;
 //--------------------------------------------------------------------------------------------//
 /*          case R.id.bSell:
@@ -704,18 +721,17 @@ public class MainActivity extends Activity implements OnClickListener {
             //--------------------------------------------------------------------------------------------//
             case R.id.bOn:
                 //Edit currently on leds list
-                if (saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] == 1) {
+                if (saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] == 1 ) {
                     //Daire yanik konumdaysa tekrar data gondermeyi engelle
                     isFlatOff = false;
-                } else {
+                } else if(tvDatatoSend.getText().equals("-") || daire==0)
+                {
+                    isFlatOff=false;
+                }
+                else {
                     //Daire yanik degil ; yananlar listesine daireyi ekle.
                     saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] = 1;
                     isFlatOff = true;
-                }
-
-                if (daire == 0) {
-                    isFlatOff = true;
-                    Log.v("::CTRL_ON_FUNC::", "hata1");
                 }
 
                 //fucker  ->  isFlatOff ?
@@ -728,10 +744,14 @@ public class MainActivity extends Activity implements OnClickListener {
                     Log.v("Block : " + block_name + " :", " Flat : " + daire + " ( On | Data : " + cmdSend + " )");
                     tvDatatoSend.setTextColor(Color.GREEN);
                     bl.sendData(cmdSend);
+                    setFlatStatus(daire,true);
                     daire = 0;
                     daire2 = 0;
                     break;
 
+                }else
+                {
+                    Log.e("bON - Invalid Message:", Integer.toString(daire));
                 }
 
                 daire = 0;
@@ -743,6 +763,9 @@ public class MainActivity extends Activity implements OnClickListener {
                 if (saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] == 0) {
                     //Daire sonukse tekrar sondurme komutunu gondermeyi engellemek icin isFlatOn=false
                     isFlatOn = false;
+                } else if(tvDatatoSend.getText().equals("-") || daire==0)
+                {
+                    isFlatOn=false;
                 } else {
                     //Daire yanik konumda , sondurme komutunu gonderebilmek icin isFlatOn=true set et ve
                     // yanan daireler listesinde dairenin degerini "0" (sonuk) yap
@@ -750,9 +773,6 @@ public class MainActivity extends Activity implements OnClickListener {
                     isFlatOn = true;
                 }
 
-                if (daire == 0) {
-                    isFlatOn = true;
-                }
 
                 //fucker2 -> isFlatOn ?
                 if (isFlatOn) {
@@ -772,8 +792,10 @@ public class MainActivity extends Activity implements OnClickListener {
                             " )");
                     tvDatatoSend.setTextColor(Color.DKGRAY);
                     bl.sendData(data2Send);
+                    setFlatStatus(daire,false);
                     daire = 0;
-                } else if (daire == 0) {
+                }
+                /*else if (daire == 0) {
                     tvDatatoSend.setTextColor(Color.GREEN);
                     Log.v("MODE :", "OFF");
                     bl.sendData(Integer.toString(daire));
@@ -784,10 +806,11 @@ public class MainActivity extends Activity implements OnClickListener {
                     for (int i = 0; i < 865; i++) {
                         saved_list[i] = 0;
                     }
+                    setFlatStatus(daire,false);
                     daire = 0;
-                } else {
+                } */else {
 
-                    Log.e("INVALID MESSAGE :", Integer.toString(daire));
+                    Log.e(" bOff - Invalid Message", Integer.toString(daire));
                     tvDatatoSend.setTextColor(Color.RED);
                 }
                 daire = 0;
@@ -971,41 +994,64 @@ public class MainActivity extends Activity implements OnClickListener {
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
+
     //----------------------------------------------------------------------------------------------
     public void getFlatStatus() {
         int index = 0;
-        for (index = 0; index < Opening.blocks.length; index++) {
-            if (Opening.blocks.equals(block_name)) {
+        for (int j = 0; j < Opening.blocks.length; j++) {
+            if (Opening.blocks[j].equals(block_name)) {
+                index = j;
                 break;
             }
-            index++;
         }
+
         isFlatOnList = new Boolean[Opening.numberOfFlats[index]];
         for (int i = 0; i < Opening.numberOfFlats[index]; i++) {
             try {
                 isFlatOnList[i] = sharedPref.getBoolean(block_name + "_" + i, false);
+                if(isFlatOnList[i]==true)
+                {
+                    FlatOnList.add(String.valueOf(i+1));
+                    saved_list[i+1 + Opening.calculateBlockThresholdValue(block_name)]=1;
+                }
             } catch (Exception e) {
                 Log.d("Cant find flat status :", "Block :" + block_name + " - Flat :" + index);
             }
 
         }
+
     }
+
     //----------------------------------------------------------------------------------------------
-    public void setFlatStatus(int flatNumber,Boolean status) {
-        //TODO ITS NOT FINISHED !!!
+    public void setFlatStatus(int flatNumber, Boolean status) {
+        //TODO Update listView !
         int index = 0;
         for (index = 0; index < Opening.blocks.length; index++) {
-            if (Opening.blocks.equals(block_name)) {
+            if (Opening.blocks[index].equals(block_name)) {
                 break;
             }
             index++;
         }
 
         int indexFlatNumber = --flatNumber;
-        isFlatOnList[indexFlatNumber]=true;
-        editor.putBoolean(block_name+"_"+indexFlatNumber, status);
+        isFlatOnList[indexFlatNumber] = true;
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(block_name + "_" + indexFlatNumber, status);
         editor.commit();
+        FlatOnList.clear();
+        //getFlatStatus();
+        for(int i=0;i<FlatOnList.size();i++)
+        {
+           // if(FlatOnList.)
+        }
 
     }
     //----------------------------------------------------------------------------------------------
+    public void setAllFlatStatus(){
+        for (int i = 0; i < Opening.blocks.length; i++) {
+            for(int j=0; j<Opening.numberOfFlats[i];j++) {
+
+            }
+        }
+    }
 }
