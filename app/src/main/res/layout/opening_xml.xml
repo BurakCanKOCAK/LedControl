@@ -87,7 +87,7 @@
         android:background="@drawable/nawroz_on_sale" />
 
     <Button
-        android:id="@+id/Button01"
+        android:id="@+id/bConnect"
         android:layout_width="274dp"
         android:layout_height="61dp"
         android:layout_x="737dp"
@@ -99,7 +99,7 @@
         android:textSize="25dp" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/bDisconnect"
         android:layout_width="274dp"
         android:layout_height="61dp"
         android:layout_x="12dp"

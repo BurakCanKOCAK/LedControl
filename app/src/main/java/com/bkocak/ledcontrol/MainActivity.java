@@ -52,8 +52,8 @@ public class MainActivity extends Activity implements OnClickListener {
     // private static String address = "30:14:06:09:09:34";// (Bulancak/Giresun)
     // private static String address = "20:14:04:29:35:28"; // (Nawroz City)
     //private static String address = "98:D3:31:B3:11:8F";
-    private static String address = "00:14:04:01:33:64"; //Benim modul
-    //private static String address = "20:16:03:10:85:85"; //1071 Mazara
+    //private static String address = "00:14:04:01:33:64"; //Benim modul
+    private static String address = "20:16:03:10:85:85"; //1071 Mazara
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public SharedPreferences sharedPref;
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -335,7 +335,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     case cBluetooth.BL_CONNECTED_OK:
                         tvData.setText("Connected");
                         RelLay.setBackgroundResource(R.drawable.back_green);
-                        Toast.makeText(activity.getBaseContext(), "System Connected", Toast.LENGTH_LONG).show();
+                        Toast.makeText(activity.getBaseContext(), "System Connected", Toast.LENGTH_SHORT).show();
                         tvBTStatus.setText("Connected to " + block_name);
                         //if (block_name.equals("C")) {
                         //    // block_name="C";

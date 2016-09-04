@@ -37,8 +37,8 @@ public class Opening extends Activity implements OnClickListener {
     // private static String address = "30:14:06:09:09:34";//(bulancak)
     //private static String address = "20:14:04:29:35:28"; // (Nawroz City)
     //private static String address = "98:D3:31:B3:11:8F";
-    private static String address = "00:14:04:01:33:64"; //Benim modul address
-    //private static String address = "20:16:03:10:85:85"; //1071 Mazara
+    //private static String address = "00:14:04:01:33:64"; //Benim modul address
+    private static String address = "20:16:03:10:85:85"; //1071 Mazara
     //--------------------------------------------------------------------------------------------//
     //Block list
     public static String[] blocks = {"A1", "B1", "C1", "D2", "C2", "B2", "A2"};
@@ -71,9 +71,9 @@ public class Opening extends Activity implements OnClickListener {
     static Button bOnSale1_1;
     static Button bOnSale2_1;
     static Button bOnSale2_1D;
-    static Button bBTOn;
-    static Button bBTOff;
     static Button bSold;
+    static Button bDisconnect;
+    static Button bConnect;
 
     static Button ButtonLEDOFF;
     static Button ButtonLEDON;
@@ -113,6 +113,8 @@ public class Opening extends Activity implements OnClickListener {
         wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Power Lock On");
         wl.acquire();
 
+        bDisconnect = (Button)findViewById(R.id.bDisconnect);
+        bConnect = (Button)findViewById(R.id.bConnect);
         b2_1 = (Button) findViewById(R.id.Button2_1);
         bOnSale2_1 = (Button) findViewById(R.id.bOnSale2_1);
         b2_1D = (Button) findViewById(R.id.Button2_1D);
@@ -185,6 +187,7 @@ public class Opening extends Activity implements OnClickListener {
 
     //********************************************************************************************************
     public void BTOff(View view) {
+        //TODO Check bt is connected , if yes then cut connection .If no then do nothing
         Log.i("::OPENING.java::", "::: BTOff() :::");
         Log.i("::OPENING.java::", "::: - BT OFF Button Pressed - :::");
         bl.BT_onPause();
@@ -199,6 +202,7 @@ public class Opening extends Activity implements OnClickListener {
 
     //********************************************************************************************************
     public void BTOn(final View view) {
+        //TODO Check bt is connected , if yes then do nothing . If not Then connect.
         Log.i("::OPENING.java::", ":::BTOn():::");
         BT_is_connect = bl.BT_Connect(address, false);
         try {
@@ -435,7 +439,7 @@ public class Opening extends Activity implements OnClickListener {
                         break;
 
                     case cBluetooth.BL_CONNECTED_OK:
-                        Toast.makeText(activity.getBaseContext(), "System Connected", Toast.LENGTH_LONG).show();
+                        Toast.makeText(activity.getBaseContext(), "System Connected", Toast.LENGTH_SHORT).show();
                         Log.i("::OPENING.java::", "::: handleMessage() => BL_CONNECTED_OK :::");
                         // RelLay.setBackgroundResource(R.drawable.back_green); //
                         // tvData.setText("Connected"); // Ba�lant�
