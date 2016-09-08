@@ -2,6 +2,37 @@ package com.bkocak.ledcontrol;
 
 /**
  * Created by BurakCan on 18/06/2016.
+ * <p>
+ * Class for Bluetooth
+ *
+ * @version 1.2.1
+ * 14.08.2013
+ * Koltykov A.V. http://cxem.net, http://english.cxem.net
+ * <p>
+ * Class for Bluetooth
+ * @version 1.2.1
+ * 14.08.2013
+ * Koltykov A.V. http://cxem.net, http://english.cxem.net
+ * <p>
+ * Class for Bluetooth
+ * @version 1.2.1
+ * 14.08.2013
+ * Koltykov A.V. http://cxem.net, http://english.cxem.net
+ * <p>
+ * Class for Bluetooth
+ * @version 1.2.1
+ * 14.08.2013
+ * Koltykov A.V. http://cxem.net, http://english.cxem.net
+ * <p>
+ * Class for Bluetooth
+ * @version 1.2.1
+ * 14.08.2013
+ * Koltykov A.V. http://cxem.net, http://english.cxem.net
+ * <p>
+ * Class for Bluetooth
+ * @version 1.2.1
+ * 14.08.2013
+ * Koltykov A.V. http://cxem.net, http://english.cxem.net
  */
 /**
  *  Class for Bluetooth
@@ -10,23 +41,25 @@ package com.bkocak.ledcontrol;
  *  Koltykov A.V. http://cxem.net, http://english.cxem.net
  *
  */
-        import java.io.IOException;
-        import java.io.InputStream;
-        import java.io.OutputStream;
-        import java.lang.reflect.Method;
-        import java.util.UUID;
-        import android.bluetooth.BluetoothAdapter;
-        import android.bluetooth.BluetoothDevice;
-        import android.bluetooth.BluetoothSocket;
-        import android.content.Context;
-        import android.os.Build;
-        import android.os.Handler;
-        import android.util.Log;
-        import android.widget.Toast;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Method;
+import java.util.UUID;
+
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.Context;
+import android.os.Build;
+import android.os.Handler;
+import android.util.Log;
+import android.widget.Toast;
 
 public class cBluetooth {
 
-    public final static String TAG = "::cBluetooth.java::";
+    public final static String TAG = "::BLUETOOTH_ADAPTER::";
 
     private static BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
@@ -46,6 +79,7 @@ public class cBluetooth {
     public final static int BL_SOCKET_FAILED = 4; // socket error
     public final static int RECIEVE_MESSAGE = 5; // receive message
     public final static int BL_CONNECTED_OK = 6;
+
     //********************************************************************************************************
     cBluetooth(Context context, Handler handler) {
         btAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -55,6 +89,7 @@ public class cBluetooth {
             return;
         }
     }
+
     //********************************************************************************************************
     public boolean checkBTState() {
         if (btAdapter == null) {
@@ -70,6 +105,7 @@ public class cBluetooth {
             }
         }
     }
+
     //********************************************************************************************************
     private BluetoothSocket createBluetoothSocket(BluetoothDevice device)
             throws IOException {
@@ -77,7 +113,7 @@ public class cBluetooth {
             try {
                 final Method m = device.getClass().getMethod(
                         "createInsecureRfcommSocketToServiceRecord",
-                        new Class[] { UUID.class });
+                        new Class[]{UUID.class});
                 return (BluetoothSocket) m.invoke(device, MY_UUID);
             } catch (Exception e) {
                 Log.e(TAG, "Could not create Insecure RFComm Connection", e);
@@ -85,9 +121,10 @@ public class cBluetooth {
         }
         return device.createRfcommSocketToServiceRecord(MY_UUID);
     }
+
     //********************************************************************************************************
     public boolean BT_Connect(String address, boolean listen_InStream) {
-        Log.d(TAG, "Connecting to : "+address+"...");
+        Log.d(TAG, "Connecting to : " + address + "...");
 
         boolean connected = false;
 
@@ -111,13 +148,14 @@ public class cBluetooth {
                 btAdapter.cancelDiscovery();
             }
 
-            Log.d(TAG, "...Connecting...");
+            Log.w(TAG, "...Connecting...");
             try {
                 btSocket.connect();
-                Log.d(TAG, "...Connection ok...");
+                Log.w(TAG, "...Connection ok...");
             } catch (IOException e) {
                 try {
                     btSocket.close();
+                    Log.w(TAG, "...Socket closed...");
                 } catch (IOException e2) {
                     Log.e(TAG,
                             "In BT_Connect() unable to close socket during connection failure"
@@ -128,12 +166,12 @@ public class cBluetooth {
             }
 
             // Create a data stream so we can talk to server.
-            Log.d(TAG, "...Create Socket...");
+            Log.w(TAG, "...Create Socket...");
 
             try {
                 outStream = btSocket.getOutputStream();
                 connected = true;
-                Log.e(TAG, "::::::CONNECTED:::::");
+                Log.w(TAG, "::::::CONNECTED:::::");
                 mHandler.sendEmptyMessage(BL_CONNECTED_OK);
             } catch (IOException e) {
                 Log.e(TAG,
@@ -151,9 +189,10 @@ public class cBluetooth {
         }
         return connected;
     }
+
     //********************************************************************************************************
     public void BT_onPause() {
-        Log.d(TAG, "...On Pause...");
+        Log.e(TAG, "...On Pause...");
         if (outStream != null) {
             try {
                 outStream.flush();
@@ -179,18 +218,19 @@ public class cBluetooth {
             }
         }
     }
+
     //********************************************************************************************************
     public void sendData(String message) {
         byte[] msgBuffer = message.getBytes();
 
-        Log.i(TAG, "Send data: " + message);
+        Log.w(TAG, "Send data: " + message);
 
         if (outStream != null) {
             try {
                 outStream.write(msgBuffer);
-                Log.w(TAG,":: DATA SENT ::");
+                Log.w(TAG, ":: DATA SENT ::");
             } catch (IOException e) {
-                Log.e(TAG,":: Exception occurred during write: "
+                Log.e(TAG, ":: Exception occurred during write: "
                         + e.getMessage());
                 mHandler.sendEmptyMessage(BL_SOCKET_FAILED);
                 return;
@@ -198,7 +238,8 @@ public class cBluetooth {
         } else
             Log.e(TAG, "Error Send data: outStream is Null");
     }
-    //********************************************************************************************************
+
+    //----------------------------------------------------------------------------------------------
     private class ConnectedThread extends Thread {
 
         private final InputStream mmInStream;
@@ -217,7 +258,8 @@ public class cBluetooth {
 
             mmInStream = tmpIn;
         }
-        //********************************************************************************************************
+
+        //----------------------------------------------------------------------------------------------
         public void run() {
             byte[] buffer = new byte[256]; // buffer store for the stream
             int bytes; // bytes returned from read()
@@ -232,6 +274,21 @@ public class cBluetooth {
                 } catch (IOException e) {
                     break;
                 }
+            }
+        }
+
+        //----------------------------------------------------------------------------------------------
+        public boolean closeConnection() {
+            if (btAdapter.isEnabled()) {
+                try {
+                    btAdapter.disable();
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            } else {
+                return false;
             }
         }
     }

@@ -52,8 +52,8 @@ public class MainActivity extends Activity implements OnClickListener {
     // private static String address = "30:14:06:09:09:34";// (Bulancak/Giresun)
     // private static String address = "20:14:04:29:35:28"; // (Nawroz City)
     //private static String address = "98:D3:31:B3:11:8F";
-    //private static String address = "00:14:04:01:33:64"; //Benim modul
-    private static String address = "20:16:03:10:85:85"; //1071 Mazara
+    private static String address = "00:14:04:01:33:64"; //Benim modul
+    //private static String address = "20:16:03:10:85:85"; //1071 Mazara
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public SharedPreferences sharedPref;
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private static final int REQUEST_ENABLE_BT = 1;
     private static Button b1, b2, b3, b4, b5, b6, b7, b8, b9, b0, bYak,
             bSondur, bTop, bb1_1, bb2_1, bb3_1, bb4_1, bb5_1, bb6_1, bEffect,
-            bBTOff, bBTOn, bErase, bMainMenu, bSell, bUnSell, onSale, bAllOn,bAllOff;
+            bBTOff, bBTOn, bErase, bMainMenu, bSell, bUnSell, onSale, bAllOn, bAllOff;
     private static TextView tvData, tvDatatoSend, tvBlock, tvBTStatus;
     private static RelativeLayout RelLay;
     private static EditText eT_sell;
@@ -79,7 +79,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private Handler mBackgroundHandler;
     private static int[] saved_list = new int[10000];
     private static Boolean[] isFlatOnList;
-    public static ArrayList<String> FlatOnList = new ArrayList<String>()   ;
+    public static ArrayList<String> FlatOnList = new ArrayList<String>();
     private ArrayAdapter<String> BTArrayAdapter;
     static boolean isFlatOff = true;
     static boolean isFlatOn = true;
@@ -87,7 +87,8 @@ public class MainActivity extends Activity implements OnClickListener {
     private PowerManager.WakeLock wl;
     private static StringBuilder sb = new StringBuilder();
     private static ListView lvOnFlatNumbers;
-
+    private static String TAG_MSG_HANDLER = "BT_MESSAGE_HANDLER";
+    private static String TAG_CONTROL = "CONTROL_LEVEL";
     Config config = new Config();
 
     // --------ON CREATE -------------------------------
@@ -137,8 +138,8 @@ public class MainActivity extends Activity implements OnClickListener {
         slidingDrawer1.setVisibility(View.INVISIBLE);
         //--------------------------------------------------------------------------------------------//
         //Buttons
-        bAllOff = (Button)findViewById(R.id.bAllOff);
-        bAllOn = (Button)findViewById(R.id.bAllOn);
+        bAllOff = (Button) findViewById(R.id.bAllOff);
+        bAllOn = (Button) findViewById(R.id.bAllOn);
         bMainMenu = (Button) findViewById(R.id.bMainMenu);
         bErase = (Button) findViewById(R.id.bErase);
         b1 = (Button) findViewById(R.id.bOne);
@@ -204,7 +205,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 tvData.setText("Connecting...");
                 BT_is_connect = bl.BT_Connect(address, false);
             }
@@ -214,7 +214,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 tvBTStatus.setText("BT Connection OFF");
                 tvData.setText("Disconnected");
                 bl.BT_onPause();
@@ -231,39 +230,9 @@ public class MainActivity extends Activity implements OnClickListener {
         tvBlock = (TextView) findViewById(R.id.tvBlock);
 
         tvBlock.setText(block_name + " Block Selected");
-        // if (block_name.equals("C")) {
-        //     tvBlock.setText("C" + " Block Selected");
-        // } else if (block_name.equals("D")) {
-        //     tvBlock.setText("D" + " Block Selected");
-        // } else if (block_name.equals("E")) {
-        //     tvBlock.setText("E" + " Block Selected");
-        // }
-        // tvBlock.setText(block_name + " Block Selected");
+
         tvBTStatus = (TextView) findViewById(R.id.tvBTStatus);
         RelLay = (RelativeLayout) findViewById(R.id.RelLay_keyboard);
-
-        // ------------------SEND BUTTON CLICK LISTENER----------------
-            /*
-             * Send.setOnClickListener(new OnClickListener() {
-			 *
-			 * @Override public void onClick(View v) { // TODO Auto-generated
-			 * method stub cmdSend = String.valueOf(Komut.getText().toString());
-			 * if (BT_is_connect) bl.sendData(cmdSend); } });
-			 */
-        // ***************END OF SEND BUTTON **********************
-
-        // Connection--------------------------------------------------------------StART
-            /*
-             * onBtn = (Button) findViewById(R.id.turnOn); //
-			 * ------------ON_BUTTON CLICK LIST. -------------------
-			 * onBtn.setOnClickListener(new OnClickListener() {
-			 *
-			 * @Override public void onClick(View v) { // TODO Auto-generated
-			 * method stub // on(v); bl.checkBTState(); } });
-			 */
-        // *************END OF ON_BUTTON************************
-
-
         mHandler.postDelayed(sRunnable, 600000);
     }
 
@@ -405,7 +374,6 @@ public class MainActivity extends Activity implements OnClickListener {
         }
 
         private void socket_failed() {
-            // TODO Auto-generated method stub
             Thread connection = new Thread() {
                 public void run() {
                     BT_is_connect = bl.BT_Connect(address, false);
@@ -416,7 +384,6 @@ public class MainActivity extends Activity implements OnClickListener {
                         Log.e("::Main_Activity::SF::",
                                 ":::SLEEP TIMER ENDED::");
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -444,7 +411,6 @@ public class MainActivity extends Activity implements OnClickListener {
     // --------------------ACTIVITY RESULT--------------------------
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
         if (requestCode == REQUEST_ENABLE_BT) {
             if (myBluetoothAdapter.isEnabled()) {
                 tvData.setText("Connected");
@@ -498,7 +464,6 @@ public class MainActivity extends Activity implements OnClickListener {
     @Override
     protected void onResume() {
         Log.e("::Main_Activity::OR::", ":::OnResume:Start	::");
-        // TODO Auto-generated method stub
         super.onResume();
         Log.e("::Main_Activity::OR::",
                 ":::Creating Connecting Dialog::");
@@ -565,24 +530,14 @@ public class MainActivity extends Activity implements OnClickListener {
     // -----------------ON PAUSE ---------------------
     @Override
     protected void onPause() {
-        // TODO Auto-generated method stub
         super.onPause();
         // BT_is_connect = bl.BT_Connect(address, false);
         bl.BT_onPause();
     }
 
-    //**********************************************************************************************
-    /*
-     * @Override public void onBackPressed() { // TODO Auto-generated method
-	 * stub super.onBackPressed(); BT_is_connect = bl.BT_Connect(address,
-	 * false); // Intent intent = new Intent(this, Opening.class); //
-	 * startActivity(intent); }
-	 */
     @Override
     public void onClick(View v) {
-        // TODO Auto-generated method stub
-
-		/*
+        /*
          * if (reconnect_flag == true) { myBluetoothAdapter.enable();
 		 * bl.BT_Connect(address, false); reconnect_flag = false;
 		 *
@@ -607,13 +562,16 @@ public class MainActivity extends Activity implements OnClickListener {
             case R.id.bAllOn:
                 Log.e("::MAIN ACTIVITY::", ":::ALL ON:::");
                 bl.sendData(Opening.codeAllOn);
+                setAllFlatStatusOff();
                 break;
             case R.id.bAllOff:
                 Log.e("::MAIN ACTIVITY::", ":::ALL OFF:::");
                 bl.sendData(Opening.codeAllOff);
+                setAllFlatStatusOff();
                 break;
 //--------------------------------------------------------------------------------------------//
-/*          case R.id.bSell:
+/*          TODO OnSale & Sale methods will be implemented if necessary.
+             case R.id.bSell:
 
                 if (eT_sell.getText().toString().matches("")) {
                     Log.e("::::::ERROR:::::", eT_sell.getText().toString());
@@ -721,14 +679,12 @@ public class MainActivity extends Activity implements OnClickListener {
             //--------------------------------------------------------------------------------------------//
             case R.id.bOn:
                 //Edit currently on leds list
-                if (saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] == 1 ) {
+                if (saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] == 1) {
                     //Daire yanik konumdaysa tekrar data gondermeyi engelle
                     isFlatOff = false;
-                } else if(tvDatatoSend.getText().equals("-") || daire==0)
-                {
-                    isFlatOff=false;
-                }
-                else {
+                } else if (tvDatatoSend.getText().equals("-") || daire == 0) {
+                    isFlatOff = false;
+                } else {
                     //Daire yanik degil ; yananlar listesine daireyi ekle.
                     saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] = 1;
                     isFlatOff = true;
@@ -741,16 +697,15 @@ public class MainActivity extends Activity implements OnClickListener {
                     }
                     Log.v("::CTRL_ON_FUNC::", "--STARTING TO SEND--");
                     cmdSend = Integer.toString(daire + Opening.calculateBlockThresholdValue(block_name) + 1000);
-                    Log.v("Block : " + block_name + " :", " Flat : " + daire + " ( On | Data : " + cmdSend + " )");
+                    Log.w("Block : " + block_name + " :", " Flat : " + daire + " ( On | Data : " + cmdSend + " )");
                     tvDatatoSend.setTextColor(Color.GREEN);
                     bl.sendData(cmdSend);
-                    setFlatStatus(daire,true);
+                    setFlatStatus(daire, true);
                     daire = 0;
                     daire2 = 0;
                     break;
 
-                }else
-                {
+                } else {
                     Log.e("bON - Invalid Message:", Integer.toString(daire));
                 }
 
@@ -763,9 +718,8 @@ public class MainActivity extends Activity implements OnClickListener {
                 if (saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] == 0) {
                     //Daire sonukse tekrar sondurme komutunu gondermeyi engellemek icin isFlatOn=false
                     isFlatOn = false;
-                } else if(tvDatatoSend.getText().equals("-") || daire==0)
-                {
-                    isFlatOn=false;
+                } else if (tvDatatoSend.getText().equals("-") || daire == 0) {
+                    isFlatOn = false;
                 } else {
                     //Daire yanik konumda , sondurme komutunu gonderebilmek icin isFlatOn=true set et ve
                     // yanan daireler listesinde dairenin degerini "0" (sonuk) yap
@@ -773,13 +727,11 @@ public class MainActivity extends Activity implements OnClickListener {
                     isFlatOn = true;
                 }
 
-
                 //fucker2 -> isFlatOn ?
                 if (isFlatOn) {
                     if (daire == 0) {
                         tvDatatoSend.setText("-");
                     }
-                    // ***************C BLOCK-1
 
                     int length = (int) (Math.log10(daire + Opening.calculateBlockThresholdValue(block_name)) + 1);
                     String data2Send = "";
@@ -788,11 +740,11 @@ public class MainActivity extends Activity implements OnClickListener {
                     }
                     data2Send += daire + Opening.calculateBlockThresholdValue(block_name);
 
-                    Log.v("Block : " + block_name + " :", " Flat : " + daire + "( Off | Data : " + data2Send +
+                    Log.w("Block : " + block_name + " :", " Flat : " + daire + "( Off | Data : " + data2Send +
                             " )");
                     tvDatatoSend.setTextColor(Color.DKGRAY);
                     bl.sendData(data2Send);
-                    setFlatStatus(daire,false);
+                    setFlatStatus(daire, false);
                     daire = 0;
                 }
                 /*else if (daire == 0) {
@@ -808,7 +760,8 @@ public class MainActivity extends Activity implements OnClickListener {
                     }
                     setFlatStatus(daire,false);
                     daire = 0;
-                } */else {
+                } */
+                else {
 
                     Log.e(" bOff - Invalid Message", Integer.toString(daire));
                     tvDatatoSend.setTextColor(Color.RED);
@@ -935,15 +888,9 @@ public class MainActivity extends Activity implements OnClickListener {
         }
 
     }
-    //********************************************************************************************************
-    // ****************END OF ON PAUSE****************************
-    // ---------------SHOW TEXT DEBUG -----------------------------
 
-    // **************END OF SHOW TEXT DEBUG ***************
-
-    // **************connection handler************
+    //----------------------------------------------------------------------------------------------
     private static void setPrefButtons() {
-        // TODO Auto-generated method stub
         if (block_name.equals("C")) {
 
             bb2_1.setVisibility(View.VISIBLE);
@@ -965,6 +912,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
     }
 
+    //----------------------------------------------------------------------------------------------
     private boolean checkFlatNumber(String block, int numberPressed) {
         int number = daire * 10 + numberPressed;
         for (int i = 0; i < Opening.blocks.length; i++) {
@@ -981,6 +929,7 @@ public class MainActivity extends Activity implements OnClickListener {
         return false;
     }
 
+    //----------------------------------------------------------------------------------------------
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -1009,16 +958,18 @@ public class MainActivity extends Activity implements OnClickListener {
         for (int i = 0; i < Opening.numberOfFlats[index]; i++) {
             try {
                 isFlatOnList[i] = sharedPref.getBoolean(block_name + "_" + i, false);
-                if(isFlatOnList[i]==true)
-                {
-                    FlatOnList.add(String.valueOf(i+1));
-                    saved_list[i+1 + Opening.calculateBlockThresholdValue(block_name)]=1;
+                if (isFlatOnList[i] == true) {
+                    FlatOnList.add(String.valueOf(i + 1));
+                    saved_list[i + 1 + Opening.calculateBlockThresholdValue(block_name)] = 1;
+                } else {
+                    saved_list[i + 1 + Opening.calculateBlockThresholdValue(block_name)] = 0;
                 }
             } catch (Exception e) {
-                Log.d("Cant find flat status :", "Block :" + block_name + " - Flat :" + index);
+                Log.e("Cant find flat status :", "Block :" + block_name + " - Flat :" + index);
             }
 
         }
+
 
     }
 
@@ -1040,18 +991,22 @@ public class MainActivity extends Activity implements OnClickListener {
         editor.commit();
         FlatOnList.clear();
         //getFlatStatus();
-        for(int i=0;i<FlatOnList.size();i++)
-        {
-           // if(FlatOnList.)
+        for (int i = 0; i < FlatOnList.size(); i++) {
+            // if(FlatOnList.)
         }
 
     }
-    //----------------------------------------------------------------------------------------------
-    public void setAllFlatStatus(){
-        for (int i = 0; i < Opening.blocks.length; i++) {
-            for(int j=0; j<Opening.numberOfFlats[i];j++) {
 
+    //----------------------------------------------------------------------------------------------
+    public void setAllFlatStatusOff() {
+        for (int i = 0; i < Opening.blocks.length; i++) {
+            for (int j = 0; j < Opening.numberOfFlats[i]; j++) {
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean(Opening.blocks[i] + "_" + j, false);
+                editor.commit();
             }
         }
+        Log.e(TAG_CONTROL, "...All flat status cleared !...");
+        getFlatStatus();
     }
 }

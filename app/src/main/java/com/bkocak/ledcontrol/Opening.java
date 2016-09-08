@@ -37,8 +37,8 @@ public class Opening extends Activity implements OnClickListener {
     // private static String address = "30:14:06:09:09:34";//(bulancak)
     //private static String address = "20:14:04:29:35:28"; // (Nawroz City)
     //private static String address = "98:D3:31:B3:11:8F";
-    //private static String address = "00:14:04:01:33:64"; //Benim modul address
-    private static String address = "20:16:03:10:85:85"; //1071 Mazara
+    private static String address = "00:14:04:01:33:64"; //Benim modul address
+    //private static String address = "20:16:03:10:85:85"; //1071 Mazara
     //--------------------------------------------------------------------------------------------//
     //Block list
     public static String[] blocks = {"A1", "B1", "C1", "D2", "C2", "B2", "A2"};
@@ -190,6 +190,7 @@ public class Opening extends Activity implements OnClickListener {
         //TODO Check bt is connected , if yes then cut connection .If no then do nothing
         Log.i("::OPENING.java::", "::: BTOff() :::");
         Log.i("::OPENING.java::", "::: - BT OFF Button Pressed - :::");
+
         bl.BT_onPause();
         // myBluetoothAdapter.disable();
         try {
