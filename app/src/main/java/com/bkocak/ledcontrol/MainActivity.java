@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.webkit.ConsoleMessage;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,12 +53,13 @@ public class MainActivity extends Activity implements OnClickListener {
     // private static String address = "30:14:06:09:09:34";// (Bulancak/Giresun)
     // private static String address = "20:14:04:29:35:28"; // (Nawroz City)
     //private static String address = "98:D3:31:B3:11:8F";
-    private static String address = "00:14:04:01:33:64"; //Benim modul
-    //private static String address = "20:16:03:10:85:85"; //1071 Mazara
+    //private static String address = "00:14:04:01:33:64"; //Benim modul
+    private static String address = "20:16:03:10:85:85"; //1071 Manzara
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public SharedPreferences sharedPref;
     ////////////////////////////////////////////////////////////////////////////////////////////////
     private static cBluetooth bl = null;
+    ArrayAdapter<String> adapter;
     private static boolean BT_is_connect;
     private String cmdSend = "";
     private static boolean flag = false;
@@ -79,8 +81,10 @@ public class MainActivity extends Activity implements OnClickListener {
     private Handler mBackgroundHandler;
     private static int[] saved_list = new int[10000];
     private static Boolean[] isFlatOnList;
-    public static ArrayList<String> FlatOnList = new ArrayList<String>();
+
+    public ArrayList<String> FlatOnList;
     private ArrayAdapter<String> BTArrayAdapter;
+
     static boolean isFlatOff = true;
     static boolean isFlatOn = true;
     private static Button bALLC, bALLB, bALLA;
@@ -96,7 +100,23 @@ public class MainActivity extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.keyboard_xml);
+        //
+        lvOnFlatNumbers = (ListView) findViewById(R.id.lvOnFlatNumbers);
+        FlatOnList = new ArrayList<String>();
+        adapter = new ArrayAdapter<String>(this, R.layout.list_item, R.id.txtItem, FlatOnList);
+        lvOnFlatNumbers.setAdapter(adapter);
+        lvOnFlatNumbers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                Object o = lvOnFlatNumbers.getItemAtPosition(position);
+                String str=(String)o;//As you are using Default String Adapter
+                tvDatatoSend.setText(str);
+                tvDatatoSend.setTextColor(Color.BLACK);
+                daire=Integer.valueOf(str);
+            }
+        });
+        //
         if (!config.isEmulatorMode()) {
             bl = new cBluetooth(this, mHandler);
             bl.sendData("9999");
@@ -158,10 +178,6 @@ public class MainActivity extends Activity implements OnClickListener {
         bSell = (Button) findViewById(R.id.bSell);
         bUnSell = (Button) findViewById(R.id.bUnSell);
         onSale = (Button) findViewById(R.id.onSale);
-        lvOnFlatNumbers = (ListView) findViewById(R.id.lvOnFlatNumbers);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, FlatOnList);
-        // Assign adapter to ListView
-        lvOnFlatNumbers.setAdapter(adapter);
 
         eT_sell = (EditText) findViewById(R.id.eT_sell);
         // eT_sell.setText("0");
@@ -562,11 +578,17 @@ public class MainActivity extends Activity implements OnClickListener {
             case R.id.bAllOn:
                 Log.e("::MAIN ACTIVITY::", ":::ALL ON:::");
                 bl.sendData(Opening.codeAllOn);
+                tvDatatoSend.setText("-");
+                tvDatatoSend.setTextColor(Color.GREEN);
+                daire=0;
                 setAllFlatStatusOff();
                 break;
             case R.id.bAllOff:
                 Log.e("::MAIN ACTIVITY::", ":::ALL OFF:::");
                 bl.sendData(Opening.codeAllOff);
+                tvDatatoSend.setText("-");
+                tvDatatoSend.setTextColor(Color.RED);
+                daire=0;
                 setAllFlatStatusOff();
                 break;
 //--------------------------------------------------------------------------------------------//
@@ -742,7 +764,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
                     Log.w("Block : " + block_name + " :", " Flat : " + daire + "( Off | Data : " + data2Send +
                             " )");
-                    tvDatatoSend.setTextColor(Color.DKGRAY);
+                    tvDatatoSend.setTextColor(Color.GRAY);
                     bl.sendData(data2Send);
                     setFlatStatus(daire, false);
                     daire = 0;
@@ -914,17 +936,19 @@ public class MainActivity extends Activity implements OnClickListener {
 
     //----------------------------------------------------------------------------------------------
     private boolean checkFlatNumber(String block, int numberPressed) {
-        int number = daire * 10 + numberPressed;
-        for (int i = 0; i < Opening.blocks.length; i++) {
-            if (block_name.equals(Opening.blocks[i])) {
-                if (number <= Opening.numberOfFlats[i]) {
-                    daire = daire * 10 + numberPressed;
-                    return true;
-                } else {
-                    return false;
+        if (daire != 0 || numberPressed != 0) {
+            int number = daire * 10 + numberPressed;
+            for (int i = 0; i < Opening.blocks.length; i++) {
+                if (block_name.equals(Opening.blocks[i])) {
+                    if (number <= Opening.numberOfFlats[i]) {
+                        daire = daire * 10 + numberPressed;
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
-
             }
+            return false;
         }
         return false;
     }
@@ -960,6 +984,8 @@ public class MainActivity extends Activity implements OnClickListener {
                 isFlatOnList[i] = sharedPref.getBoolean(block_name + "_" + i, false);
                 if (isFlatOnList[i] == true) {
                     FlatOnList.add(String.valueOf(i + 1));
+                    adapter.notifyDataSetChanged();
+
                     saved_list[i + 1 + Opening.calculateBlockThresholdValue(block_name)] = 1;
                 } else {
                     saved_list[i + 1 + Opening.calculateBlockThresholdValue(block_name)] = 0;
@@ -967,10 +993,7 @@ public class MainActivity extends Activity implements OnClickListener {
             } catch (Exception e) {
                 Log.e("Cant find flat status :", "Block :" + block_name + " - Flat :" + index);
             }
-
         }
-
-
     }
 
     //----------------------------------------------------------------------------------------------
@@ -990,7 +1013,8 @@ public class MainActivity extends Activity implements OnClickListener {
         editor.putBoolean(block_name + "_" + indexFlatNumber, status);
         editor.commit();
         FlatOnList.clear();
-        //getFlatStatus();
+        adapter.notifyDataSetChanged();
+        getFlatStatus();
         for (int i = 0; i < FlatOnList.size(); i++) {
             // if(FlatOnList.)
         }
@@ -1007,6 +1031,8 @@ public class MainActivity extends Activity implements OnClickListener {
             }
         }
         Log.e(TAG_CONTROL, "...All flat status cleared !...");
+        FlatOnList.clear();
+        adapter.notifyDataSetChanged();
         getFlatStatus();
     }
 }

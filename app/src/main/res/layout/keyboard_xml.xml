@@ -78,21 +78,21 @@
                     android:id="@+id/bAllOn"
                     android:layout_marginLeft="-10dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
+                    android:layout_height="70dp"
                     android:layout_marginTop="120dp"
                     android:background="@drawable/bton_rightxml"
                     android:text="AllOn"
-                    android:textColor="@android:color/background_light"
+                    android:textColor="@android:color/holo_green_dark"
                     android:textSize="25dp" />
 
                 <Button
                     android:id="@+id/bAllOff"
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
+                    android:layout_height="70dp"
                     android:layout_marginLeft="-10dp"
                     android:background="@drawable/btoff_xml"
                     android:text="AllOff"
-                    android:textColor="@android:color/background_light"
+                    android:textColor="@android:color/holo_red_light"
                     android:textSize="25dp" />
             </LinearLayout>
 
