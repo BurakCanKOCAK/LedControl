@@ -10,6 +10,8 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+import android.util.Log;
 
 /**
  * Created by Burak on 24/08/16.
@@ -20,10 +22,13 @@ public class AdminPanel extends Activity implements View.OnClickListener{
     private Button bUpdateMacAddress;
     private String macAddress;
     SharedPreferences sharedPrefs;
+    SharedPreferences.Editor editor;
+    String key = "MAC_ADDRESS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("::GENERAL::CTRL::::", "3333");
         setContentView(R.layout.admin_panel);
         initializeContent();
     }
@@ -52,13 +57,14 @@ public class AdminPanel extends Activity implements View.OnClickListener{
                 }
                 if(letterCounter==17)
                 {
-
+                    updateMacAddress();
                 }
             }
         });
 
         sharedPrefs  = getSharedPreferences("config",MODE_PRIVATE);
         macAddress = sharedPrefs.getString("MAC_ADDRESS", "XX:XX:XX:XX:XX:XX");
+        editor = sharedPrefs.edit();
         etMacAddress.setText(macAddress);
     }
 
@@ -68,7 +74,21 @@ public class AdminPanel extends Activity implements View.OnClickListener{
         {
             case R.id.bUpdateMacAddress:
                 //TODO Get MAC Address and commit to shared preferences.
+                int letterCounter=etMacAddress.getText().toString().replace(":","").length();
+                if(letterCounter==12)
+                {
+                    updateMacAddress();
+                }else
+                {
+                    Toast.makeText(this.getBaseContext(),"Address 16 haneli olmali!",Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
+    }
+    public void updateMacAddress()
+    {
+        String name = etMacAddress.getText().toString();
+        editor.putString(key, name);
+        editor.commit();
     }
 }

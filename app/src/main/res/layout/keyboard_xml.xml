@@ -361,6 +361,7 @@
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+
             android:layout_centerHorizontal="true"
             android:background="@drawable/blacky"
             android:orientation="vertical">
@@ -369,6 +370,7 @@
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_vertical"
                 android:text="::: Functions :::"
@@ -391,7 +393,49 @@
                 android:layout_height="100dp"
                 android:layout_marginTop="50dp"
                 android:orientation="horizontal"
+                android:weightSum="4">
+
+                <EditText
+                    android:id="@+id/eT_sell"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="number|none" />
+
+                <Button
+                    android:id="@+id/bSell"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/key"
+                    android:text="Set as Sold" />
+
+                <Button
+                    android:id="@+id/bUnSell"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/key"
+                    android:text="Set as Not Sold" />
+
+                <Button
+                    android:id="@+id/bOnSale"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/key"
+                    android:text="Show on Sales" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/zeroliness"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal"
                 android:weightSum="2">
+
 
                 <Button
                     android:id="@+id/b2_1"
@@ -412,47 +456,6 @@
                     android:text="Block On Sales"
                     android:textColor="@android:color/background_light"
                     android:textSize="25dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/zeroliness"
-                android:layout_width="match_parent"
-                android:layout_height="90dp"
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal"
-                android:weightSum="4">
-
-                <EditText
-                    android:id="@+id/eT_sell"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="number" />
-
-                <Button
-                    android:id="@+id/bSell"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/key"
-                    android:text="Set as Sold" />
-
-                <Button
-                    android:id="@+id/bUnSell"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/key"
-                    android:text="Set as Not Sold" />
-
-                <Button
-                    android:id="@+id/onSale"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/key"
-                    android:text="Show on Sales" />
             </LinearLayout>
         </LinearLayout>
     </SlidingDrawer>

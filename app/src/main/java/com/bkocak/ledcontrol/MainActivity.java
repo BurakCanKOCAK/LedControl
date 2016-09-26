@@ -54,7 +54,7 @@ public class MainActivity extends Activity implements OnClickListener {
     // private static String address = "20:14:04:29:35:28"; // (Nawroz City)
     //private static String address = "98:D3:31:B3:11:8F";
     //private static String address = "00:14:04:01:33:64"; //Benim modul
-    private static String address = "20:16:03:10:85:85"; //1071 Manzara
+    private static String address = "98:D3:32:10:52:F6"; //Karabuk (Patyo) - 2016
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public SharedPreferences sharedPref;
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private static final int REQUEST_ENABLE_BT = 1;
     private static Button b1, b2, b3, b4, b5, b6, b7, b8, b9, b0, bYak,
             bSondur, bTop, bb1_1, bb2_1, bb3_1, bb4_1, bb5_1, bb6_1, bEffect,
-            bBTOff, bBTOn, bErase, bMainMenu, bSell, bUnSell, onSale, bAllOn, bAllOff;
+            bBTOff, bBTOn, bErase, bMainMenu, bSell, bUnSell, bOnSale, bAllOn, bAllOff;
     private static TextView tvData, tvDatatoSend, tvBlock, tvBTStatus;
     private static RelativeLayout RelLay;
     private static EditText eT_sell;
@@ -81,6 +81,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private Handler mBackgroundHandler;
     private static int[] saved_list = new int[10000];
     private static Boolean[] isFlatOnList;
+    private static int adminCount = 0;
 
     public ArrayList<String> FlatOnList;
     private ArrayAdapter<String> BTArrayAdapter;
@@ -110,10 +111,10 @@ public class MainActivity extends Activity implements OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 Object o = lvOnFlatNumbers.getItemAtPosition(position);
-                String str=(String)o;//As you are using Default String Adapter
+                String str = (String) o;//As you are using Default String Adapter
                 tvDatatoSend.setText(str);
                 tvDatatoSend.setTextColor(Color.BLACK);
-                daire=Integer.valueOf(str);
+                daire = Integer.valueOf(str);
             }
         });
         //
@@ -155,13 +156,16 @@ public class MainActivity extends Activity implements OnClickListener {
         //--------------------------------------------------------------------------------------------//
         //Block general operations . To enable Sliding drawer , comment out setVisibility code line
         slidingDrawer1 = (SlidingDrawer) findViewById(R.id.slidingDrawer1);
-        slidingDrawer1.setVisibility(View.INVISIBLE);
+        slidingDrawer1.setVisibility(View.VISIBLE);   //To disable slidingDrawer1 , make here INVISIBLE
         //--------------------------------------------------------------------------------------------//
         //Buttons
         bAllOff = (Button) findViewById(R.id.bAllOff);
         bAllOn = (Button) findViewById(R.id.bAllOn);
         bMainMenu = (Button) findViewById(R.id.bMainMenu);
         bErase = (Button) findViewById(R.id.bErase);
+
+        tvData = (TextView) findViewById(R.id.tvData);
+
         b1 = (Button) findViewById(R.id.bOne);
         b2 = (Button) findViewById(R.id.bTwo);
         b3 = (Button) findViewById(R.id.bThree);
@@ -177,7 +181,7 @@ public class MainActivity extends Activity implements OnClickListener {
         bTop = (Button) findViewById(R.id.bTop);
         bSell = (Button) findViewById(R.id.bSell);
         bUnSell = (Button) findViewById(R.id.bUnSell);
-        onSale = (Button) findViewById(R.id.onSale);
+        bOnSale = (Button) findViewById(R.id.bOnSale);
 
         eT_sell = (EditText) findViewById(R.id.eT_sell);
         // eT_sell.setText("0");
@@ -210,11 +214,11 @@ public class MainActivity extends Activity implements OnClickListener {
         bTop.setOnClickListener(this);
         bSell.setOnClickListener(this);
         bUnSell.setOnClickListener(this);
-        onSale.setOnClickListener(this);
+        bOnSale.setOnClickListener(this);
 
         bb2_1.setOnClickListener(this);
         bb3_1.setOnClickListener(this);
-
+        tvData.setOnClickListener(this);
         setPrefButtons();
         // ------------------BT ON--------------
         bBTOn.setOnClickListener(new OnClickListener() {
@@ -567,6 +571,15 @@ public class MainActivity extends Activity implements OnClickListener {
 		 * tvData.setText("Connecting..."); bl.checkBTState(); // -/
 		 * bl.BT_Connect(address, false); break;
 		 */
+            case R.id.tvData:
+                adminCount++;
+                if (adminCount == 200) {
+                    adminCount = 0;
+                    Intent openMain2 = new Intent("com.bkocak.ledcontrol.AdminPanel");
+                    startActivity(openMain2);
+                }
+                break;
+
             case R.id.bMainMenu:
                 Log.e("::GENERAL::CTRL::::", ":::BT ON BUTTON PRESSED:::");
                 openMain = new Intent("com.bkocak.ledcontrol.Opening");
@@ -580,7 +593,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 bl.sendData(Opening.codeAllOn);
                 tvDatatoSend.setText("-");
                 tvDatatoSend.setTextColor(Color.GREEN);
-                daire=0;
+                daire = 0;
                 setAllFlatStatusOff();
                 break;
             case R.id.bAllOff:
@@ -588,117 +601,118 @@ public class MainActivity extends Activity implements OnClickListener {
                 bl.sendData(Opening.codeAllOff);
                 tvDatatoSend.setText("-");
                 tvDatatoSend.setTextColor(Color.RED);
-                daire=0;
+                daire = 0;
                 setAllFlatStatusOff();
                 break;
 //--------------------------------------------------------------------------------------------//
-/*          TODO OnSale & Sale methods will be implemented if necessary.
-             case R.id.bSell:
+//          TODO OnSale & Sale methods will be implemented if necessary.
+            case R.id.b2_1:  //DISABLED
+                if (block_name.equals("C")) {
+                    bl.sendData("4100");
+                } else if (block_name.equals("D")) {
+                    bl.sendData("4200");
+                } else if (block_name.equals("E")) {
+                    bl.sendData("4300");
+                }
 
-                if (eT_sell.getText().toString().matches("")) {
+                tvDatatoSend.setTextColor(Color.MAGENTA);
+                // tvDatatoSend.setText("2+1");
+                break;
+            case R.id.b3_1: //DISABLED
+                if (block_name.equals("C")) {
+                    bl.sendData("4400");
+                } else if (block_name.equals("D")) {
+                    bl.sendData("4500");
+                } else if (block_name.equals("E")) {
+                    bl.sendData("4600");
+                }
+                tvDatatoSend.setTextColor(Color.MAGENTA);
+                // tvDatatoSend.setText("3+1");
+                break;
+
+            case R.id.bSell:
+
+                int flatNumberSell=0;
+                try{
+                    flatNumberSell=Integer.parseInt(eT_sell.getText().toString());
+                }catch (Exception e)  //NUMERIK OLMAYAN KARAKTER IRILMESI DURUMU
+                {
+                    Toast.makeText(this.getBaseContext(),
+                            "Please enter a valid flat number to sell.",Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                if (eT_sell.getText().toString().matches("")) { //BOS BIRAKILMASI DURUMU
                     Log.e("::::::ERROR:::::", eT_sell.getText().toString());
                     Toast.makeText(this.getBaseContext(),
                             "Please enter a valid flat number to sell.",
                             Toast.LENGTH_SHORT).show();
 
                     break;
+                }else if(flatNumberSell>Opening.numberOfFlats[0] || flatNumberSell==0)  // 56DAN BUYUK DAIRE NUMARASI GIRILMESI DURUMU
+                {
+                    Log.e("::::::ERROR:::::", eT_sell.getText().toString());
+                    Toast.makeText(this.getBaseContext(),
+                            "Please enter a valid flat number to sell.(Max Flat Number is "+Opening.numberOfFlats[0]+")",
+                            Toast.LENGTH_SHORT).show();
+                    break;
                 }
 
-                int aa = Integer.parseInt(eT_sell.getText().toString());
-
-                if (block_name.equals("C")) {
-                    if (aa > 435) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 435 flats on the Block C",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        aa += 3000;
-                        bl.sendData(Integer.toString(aa));
-                        Log.v(block_name + " den SATILDI : ",
-                                Integer.toString(aa - 3000));
-                    }
-
-                } else if (block_name.equals("D")) {
-                    if (aa > 44) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 44 flats on the Block D",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        aa += 3000;
-                        aa += 435;
-                        bl.sendData(Integer.toString(aa));
-                        Log.v(block_name + " den SATILDI : ",
-                                Integer.toString(aa - 3435));
-                    }
-
-                } else if (block_name.equals("E")) {
-                    if (aa > 325) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 325 flats on the Block E",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        aa += 3000;
-                        aa += 479;
-                        bl.sendData(Integer.toString(aa));
-                        Log.v(block_name + " den SATILDI : ",
-                                Integer.toString(aa - 3479));
-                    }
-
+                switch(block_name)
+                {
+                    case "Main":
+                        flatNumberSell += 3000;
+                        bl.sendData(Integer.toString(flatNumberSell));
+                        Log.e("[ FLAT SOLD ]::[ "+ block_name+" ]::[ FLAT NUMBER : ",
+                                Integer.toString(flatNumberSell - 3000)+" ]");
+                        break;
                 }
 
                 break;
 
             case R.id.bUnSell:
-                if (eT_sell.getText().toString().matches("")) {
-                    System.out.println(eT_sell.getText());
+                int flatNumberUnSell=0;
+                try{
+                    flatNumberUnSell=Integer.parseInt(eT_sell.getText().toString());
+                }catch (Exception e)  //NUMERIK OLMAYAN KARAKTER IRILMESI DURUMU
+                {
+                    Toast.makeText(this.getBaseContext(),
+                            "Please enter a valid flat number to unsell.",Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                if (eT_sell.getText().toString().matches("")) { //BOS BIRAKILMASI DURUMU
+                    Log.e("::::::ERROR:::::", eT_sell.getText().toString());
                     Toast.makeText(this.getBaseContext(),
                             "Please enter a valid flat number to unsell.",
                             Toast.LENGTH_SHORT).show();
+
+                    break;
+                }else if(flatNumberUnSell>Opening.numberOfFlats[0] || flatNumberUnSell==0)  // 56DAN BUYUK DAIRE NUMARASI GIRILMESI DURUMU
+                {
+                    Log.e("::::::ERROR:::::", eT_sell.getText().toString());
+                    Toast.makeText(this.getBaseContext(),
+                            "Please enter a valid flat number to unsell.(Max Flat Number is "+Opening.numberOfFlats[0]+")",
+                            Toast.LENGTH_SHORT).show();
                     break;
                 }
-                int aa2 = Integer.parseInt(eT_sell.getText().toString());
 
-                if (block_name.equals("C")) {
-                    if (aa2 > 435) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 435 flats on the Block C !",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        aa2 += 2000;
-                        bl.sendData(Integer.toString(aa2));
-                        Log.v(block_name + "C den Geri Al�nd� : ",
-                                Integer.toString(aa2 - 2000));
-                    }
-
-                } else if (block_name.equals("D")) {
-                    if (aa2 > 44) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 44 flats on the Block D !",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        aa2 += 2000;
-                        aa2 += 435;
-                        bl.sendData(Integer.toString(aa2));
-                        Log.v(block_name + "D den Geri Al�nd� : ",
-                                Integer.toString(aa2 - 2435));
-                    }
-
-                } else if (block_name.equals("E")) {
-                    if (aa2 > 325) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 325 flats on the Block E !",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        aa2 += 2000;
-                        aa2 += 479;
-                        bl.sendData(Integer.toString(aa2));
-                        Log.v(block_name + "E den Geri Al�nd� : ",
-                                Integer.toString(aa2 - 2479));
-                    }
-
+                switch(block_name)
+                {
+                    case "Main":
+                        flatNumberUnSell += 2000;
+                        bl.sendData(Integer.toString(flatNumberUnSell));
+                        Log.e("[ FLAT UN SOLD ]::[ "+ block_name+" ]::[ FLAT NUMBER : ",
+                                Integer.toString(flatNumberUnSell - 2000)+" ]");
+                        break;
                 }
-                break;*/
-            //--------------------------------------------------------------------------------------------//
+
+
+                break;
+
+            case R.id.bOnSale:
+                Log.v("::OPENING.java::", "[ ON SALE ALL ][ 9400 ]:::");
+                bl.sendData("9400");
+                break;
+//--------------------------------------------------------------------------------------------//
             case R.id.bOn:
                 //Edit currently on leds list
                 if (saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] == 1) {
@@ -864,39 +878,6 @@ public class MainActivity extends Activity implements OnClickListener {
                 }
                 break;
             //--------------------------------------------------------------------------------------
-
-            case R.id.b2_1:
-                if (block_name.equals("C")) {
-                    bl.sendData("4100");
-                } else if (block_name.equals("D")) {
-                    bl.sendData("4200");
-                } else if (block_name.equals("E")) {
-                    bl.sendData("4300");
-                }
-
-                tvDatatoSend.setTextColor(Color.MAGENTA);
-                // tvDatatoSend.setText("2+1");
-                break;
-            case R.id.b3_1:
-                if (block_name.equals("C")) {
-                    bl.sendData("4400");
-                } else if (block_name.equals("D")) {
-                    bl.sendData("4500");
-                } else if (block_name.equals("E")) {
-                    bl.sendData("4600");
-                }
-                tvDatatoSend.setTextColor(Color.MAGENTA);
-                // tvDatatoSend.setText("3+1");
-                break;
-            case R.id.onSale:
-                if (block_name.equals("C")) {
-                    bl.sendData("9410");
-                } else if (block_name.equals("D")) {
-                    bl.sendData("9420");
-                } else if (block_name.equals("E")) {
-                    bl.sendData("9430");
-                }
-                break;
             case R.id.bErase:
                 daire = daire / 10;
                 if (daire == 0) {
@@ -913,6 +894,10 @@ public class MainActivity extends Activity implements OnClickListener {
 
     //----------------------------------------------------------------------------------------------
     private static void setPrefButtons() {
+
+        bb2_1.setVisibility(View.INVISIBLE);
+        bb3_1.setVisibility(View.INVISIBLE);
+
         if (block_name.equals("C")) {
 
             bb2_1.setVisibility(View.VISIBLE);
