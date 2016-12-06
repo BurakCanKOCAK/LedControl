@@ -17,11 +17,10 @@ import java.util.Random;
  * Created by BurakCan on 11/07/2016.
  */
 public class Registration extends Activity {
+    private static final String FIREBASE_URL = "https://ledcontrol-9a2b6.firebaseio.com/";
     Button register;
     TextView textView;
     EditText editText;
-
-    private static final String FIREBASE_URL = "https://ledcontrol-9a2b6.firebaseio.com/";
     private String mUsername;
     private Firebase mFirebaseRef;
     private ValueEventListener mConnectedListener;
@@ -44,7 +43,7 @@ public class Registration extends Activity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User mUser=new User(editText.getText().toString(),"password");
+                User mUser = new User(editText.getText().toString(), "password");
                 saveToFirebase(mUser);
             }
         });
@@ -54,9 +53,9 @@ public class Registration extends Activity {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void initialize() {
-        register =(Button)findViewById(R.id.bRegister);
-        textView=(TextView)findViewById(R.id.tvRegister);
-        editText=(EditText)findViewById(R.id.etRegister);
+        register = (Button) findViewById(R.id.bRegister);
+        textView = (TextView) findViewById(R.id.tvRegister);
+        editText = (EditText) findViewById(R.id.etRegister);
 
     }
 
@@ -71,14 +70,12 @@ public class Registration extends Activity {
         }
     }
 
-    private void saveToFirebase(User user)
-    {
+    private void saveToFirebase(User user) {
         Firebase ref = new Firebase("https://ledcontrol-9a2b6.firebaseio.com/");
         Firebase alanRef = ref.child("Users").child("Username");
         this.user = user;
         alanRef.setValue(user);
     }
-
 
 
 }

@@ -5,9 +5,6 @@ package com.bkocak.ledcontrol;
  */
 //********************************************************************************************************
 
-import java.lang.ref.WeakReference;
-import java.util.Set;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -28,10 +25,39 @@ import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
+import java.util.Set;
+
 //********************************************************************************************************
 @SuppressWarnings("deprecation")
 public class Opening extends Activity implements OnClickListener {
-    Intent openMain;
+    private static final int REQUEST_ENABLE_BT = 1;
+    //********************************************************************************************************
+    private final static Runnable sRunnable = new Runnable() {
+        public void run() {
+        }
+    };
+    //--------------------------------------------------------------------------------------------//
+    //Block list
+    public static String[] blocks = {"D-Block", "E-Block"};
+    //Thresholds
+    public static int[] numberOfFlats = {20, 28};
+    //--------------------------------------------------------------------------------------------//
+    //Code list
+    public static String codeEffect = "9100";
+    public static String codeAllOn = "8888";
+    public static String codeAllOff = "0000";
+    public static String codeOnSaleBlockD = "4100";
+    public static String codeOnSaleBlockE = "4200";
+    public static String codeOnSale = "9400";
+    public static String codeBlockD = "5100";
+    public static String codeBlockE = "5200";
+    public static String codeCommercial = "5300";
+    static Button bDisconnect;
+    static Button bConnect;
+    static Button ButtonLEDOFF;
+    static Button ButtonLEDON;
+    static Button ButtonEffect;
     // 30:14:06:09:09:34 (yeni)
     // private static String address = "30:14:06:26:03:67"; //(tiflis)
     // private static String address = "30:14:06:09:09:34";//(bulancak)
@@ -39,41 +65,56 @@ public class Opening extends Activity implements OnClickListener {
     //private static String address = "98:D3:31:B3:11:8F";
     //private static String address = "00:14:04:01:33:64"; //Benim modul address
     //private static String address = "20:16:03:10:85:85"; //1071 Manzara - 2016
-    private static String address = "98:D3:32:10:52:F6"; //Karabuk (Patyo) - 2016
+    //private static String address = "98:D3:32:10:52:F6"; //Karabuk (Patyo) - 2016
+    private static String address = "20:15:04:29:57:32"; //Huseyin Test(Patyo) - 2016
     //--------------------------------------------------------------------------------------------//
-    //Block list
-    public static String[] blocks = {"Main"};
-    //Thresholds
-    public static int[] numberOfFlats = {56};
-    //--------------------------------------------------------------------------------------------//
-    //Code list
-    public static String codeEffect = "9100";
-    public static String codeAllOn = "8888";
-    public static String codeAllOff = "0000";
-    public static String codeType1 = "4100";
-    public static String codeType2 = "4300";
-    public static String codeOnSaleType1 = "4200";
-    public static String codeOnSaleType2 = "4400";
-    public static String codeOnSale = "9400";
-    //--------------------------------------------------------------------------------------------//
-    private static Button bMainBlock,bType1,bType2,bOnSaleType1,bOnSaleType2,bEffect,bOnSale;
-    //--------------------------------------------------------------------------------------------//
-    public SharedPreferences sharedPref;
-
+    private static Button bMainBlock, bOnSaleType1, bOnSaleType2, bEffect, bOnSale;
+    //Test Mode Buttons
+    private static Button bBlockE, bBlockD, bBlockD_On, bBlockE_On, bCommercial, bBlockEOnSale, bBlockDOnSale;
     private static cBluetooth bl = null;
     private static boolean BT_is_connect;
-    private static final int REQUEST_ENABLE_BT = 1;
+    private static AbsoluteLayout mainL;
+    //********************************************************************************************************
+    // ------------------BROADCAST RECEIVER ----------------------
+    final BroadcastReceiver bReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            // When discovery finds a device
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // Get the BluetoothDevice object from the Intent
+                BluetoothDevice device = intent
+                        .getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+            }
+        }
+    };
+    //********************************************************************************************************
+    private final MyHandler mHandler = new MyHandler(this);
+    //--------------------------------------------------------------------------------------------//
+    public SharedPreferences sharedPref;
+    Intent openMain;
+    Config config = new Config();
     private String cmdSend = "";
     private BluetoothAdapter myBluetoothAdapter;
-    private static AbsoluteLayout mainL;
     private Set<BluetoothDevice> pairedDevices;
-    static Button bDisconnect;
-    static Button bConnect;
-    static Button ButtonLEDOFF;
-    static Button ButtonLEDON;
-    static Button ButtonEffect;
     private PowerManager.WakeLock wl;
-    Config config = new Config();
+
+    //--------------------------------------------------------------------------------------------//
+    public static int calculateBlockThresholdValue(String blockName) {
+        int index = 0;
+        for (String block : Opening.blocks) {
+            if (block.equals(blockName)) {
+                int threshold = 0;
+                for (int i = 0; i < index; i++) {
+                    threshold += Opening.numberOfFlats[i];
+                }
+                return threshold;
+            } else {
+                index++;
+            }
+        }
+        return 0;
+    }
 
     //********************************************************************************************************
     @Override
@@ -111,8 +152,8 @@ public class Opening extends Activity implements OnClickListener {
         wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Power Lock On");
         wl.acquire();
 
-        bDisconnect = (Button)findViewById(R.id.bDisconnect);
-        bConnect = (Button)findViewById(R.id.bConnect);
+        bDisconnect = (Button) findViewById(R.id.bDisconnect);
+        bConnect = (Button) findViewById(R.id.bConnect);
         ButtonLEDON = (Button) findViewById(R.id.ButtonLEDON);
         ButtonLEDOFF = (Button) findViewById(R.id.ButtonLEDOFF);
         bEffect = (Button) findViewById(R.id.bEffect);
@@ -123,19 +164,29 @@ public class Opening extends Activity implements OnClickListener {
         ButtonLEDON.setOnClickListener(this);
         bEffect.setOnClickListener(this);
         //--------------------------------------------------------------------------------------------//
-        bType1 = (Button) findViewById(R.id.bType1);
-        bType2 = (Button) findViewById(R.id.bType2);
+        bBlockDOnSale = (Button) findViewById(R.id.bBlockDOnSale);
+        bBlockEOnSale = (Button) findViewById(R.id.bBlockEOnSale);
         bOnSaleType1 = (Button) findViewById(R.id.bOnSaleType1);
         bOnSaleType2 = (Button) findViewById(R.id.bOnSaleType2);
         bOnSale = (Button) findViewById(R.id.bOnSale);
-        bMainBlock = (Button) findViewById(R.id.bMainBlock);
+        //bMainBlock = (Button) findViewById(R.id.bMainBlock);
+        bBlockD = (Button) findViewById(R.id.bBlockD);
+        bBlockD_On = (Button) findViewById(R.id.bBlockD_On);
+        bBlockE = (Button) findViewById(R.id.bBlockE);
+        bBlockE_On = (Button) findViewById(R.id.bBlockE_On);
+        bCommercial = (Button) findViewById(R.id.bCommercial);
 
-        bType1.setOnClickListener(this);
-        bType2.setOnClickListener(this);
+        bBlockDOnSale.setOnClickListener(this);
+        bBlockEOnSale.setOnClickListener(this);
         bOnSaleType1.setOnClickListener(this);
         bOnSaleType2.setOnClickListener(this);
         bOnSale.setOnClickListener(this);
-        bMainBlock.setOnClickListener(this);
+        //bMainBlock.setOnClickListener(this);
+        bBlockD.setOnClickListener(this);
+        bBlockD_On.setOnClickListener(this);
+        bBlockE.setOnClickListener(this);
+        bBlockE_On.setOnClickListener(this);
+        bCommercial.setOnClickListener(this);
         //--------------------------------------------------------------------------------------------//
         // buttonDisable();
         mHandler.postDelayed(sRunnable, 600000);
@@ -201,34 +252,40 @@ public class Opening extends Activity implements OnClickListener {
 
         switch (v.getId()) {
 
-            case R.id.bType1:
-                //mainL.setBackgroundResource(R.drawable.block_f);
-                Log.v("::OPENING.java::", "[ TYPE 1 ][ 4100 ]:::");
-                bl.sendData(codeType1);
+            case R.id.bBlockD_On:
+                mainL.setBackgroundResource(R.drawable.block_d);
+                Log.v("::OPENING.java::", "[ D-BLOCK ][ 5100 ]:::");
+                bl.sendData(codeBlockD);
                 break;
 
-            case R.id.bType2:
-                //mainL.setBackgroundResource(R.drawable.block_main);
-                Log.v("::OPENING.java::", "[ TYPE 2 ][ 4300 ]:::");
-                bl.sendData(codeType2);
+            case R.id.bBlockDOnSale:
+                mainL.setBackgroundResource(R.drawable.block_d);
+                Log.v("::OPENING.java::", "[ D-BLOCK-ONSALE ][ 4100 ]:::");
+                bl.sendData(codeOnSaleBlockD);
                 break;
 
-            case R.id.bOnSaleType1:
-                //mainL.setBackgroundResource(R.drawable.block_main);
-                Log.v("::OPENING.java::", "[ ON SALE TYPE 1 ][ 4200 ]:::");
-                bl.sendData(codeOnSaleType1);
+            case R.id.bBlockE_On:
+                mainL.setBackgroundResource(R.drawable.block_e);
+                Log.v("::OPENING.java::", "[ E-BLOCK ][ 5200 ]:::");
+                bl.sendData(codeBlockE);
                 break;
 
-            case R.id.bOnSaleType2:
-                //mainL.setBackgroundResource(R.drawable.block_main);
-                Log.v("::OPENING.java::", "[ ON SALE TYPE 2 ][ 4400 ]:::");
-                bl.sendData(codeOnSaleType2);
+            case R.id.bBlockEOnSale:
+                mainL.setBackgroundResource(R.drawable.block_e);
+                Log.v("::OPENING.java::", "[ E-BLOCK-ONSALE ][ 4200 ]:::");
+                bl.sendData(codeOnSaleBlockE);
                 break;
 
             case R.id.bOnSale:
-                //mainL.setBackgroundResource(R.drawable.block_main);
+                mainL.setBackgroundResource(R.drawable.block_allon);
                 Log.v("::OPENING.java::", "[ ON SALE ALL ][ 9400 ]:::");
                 bl.sendData(codeOnSale);
+                break;
+
+            case R.id.bCommercial:
+                mainL.setBackgroundResource(R.drawable.block_f);
+                Log.v("::OPENING.java::", "[ COMMERCIAL ][ 5300 ]:::");
+                bl.sendData(codeCommercial);
                 break;
 
             //--------------------------------------------------------------------------------------------//
@@ -251,7 +308,7 @@ public class Opening extends Activity implements OnClickListener {
                 startActivity(openMain);
 
                 break;
-*/
+
             case R.id.bMainBlock:
                 //mainL.setBackgroundResource(R.drawable.block_e);
                 name = "Main";
@@ -260,23 +317,40 @@ public class Opening extends Activity implements OnClickListener {
                 openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
                 startActivity(openMain);
                 break;
+*/
+            case R.id.bBlockD:
+                mainL.setBackgroundResource(R.drawable.block_d);
+                name = "D-Block";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                startActivity(openMain);
+                break;
+            case R.id.bBlockE:
+                mainL.setBackgroundResource(R.drawable.block_e);
+                name = "E-Block";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                startActivity(openMain);
+                break;
             //--------------------------------------------------------------------------------------------//
             case R.id.ButtonLEDON:
-                //mainL.setBackgroundResource(R.drawable.block_allon);
+                mainL.setBackgroundResource(R.drawable.block_allon);
                 Log.v("::OPENING.java::", "[ ALL ON ][ 8888 ]");
                 bl.sendData(codeAllOn);
                 setAllFlatStatusOff();
                 break;
 
             case R.id.ButtonLEDOFF:
-                //mainL.setBackgroundResource(R.drawable.block_main);
+                mainL.setBackgroundResource(R.drawable.block_main);
                 Log.v("::OPENING.java::", "[ ALL OFF ][ 0000 ]");
                 bl.sendData(codeAllOff);
                 setAllFlatStatusOff();
                 break;
 
             case R.id.bEffect:
-                //mainL.setBackgroundResource(R.drawable.block_main);
+                mainL.setBackgroundResource(R.drawable.block_main);
                 Log.v(":::OPENING.java::", "[ Effect ][ 9100 ]");
                 bl.sendData(codeEffect);
                 break;
@@ -284,13 +358,152 @@ public class Opening extends Activity implements OnClickListener {
         }
     }
 
-    //********************************************************************************************************
-    private final MyHandler mHandler = new MyHandler(this);
-    //********************************************************************************************************
-    private final static Runnable sRunnable = new Runnable() {
-        public void run() {
+    // ****************END OF HANDLER ****************************
+    // ----------------ON--------------------------------------------
+    public void on(View view) {
+        if (!myBluetoothAdapter.isEnabled()) {
+
+            Intent turnOnIntent = new Intent(
+                    BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(turnOnIntent, REQUEST_ENABLE_BT);
+
+            Toast.makeText(getApplicationContext(), "Bluetooth turned on",
+                    Toast.LENGTH_LONG).show();
+
+        } else {
+            Toast.makeText(getApplicationContext(), "Bluetooth is already on",
+                    Toast.LENGTH_LONG).show();
         }
-    };
+    }
+
+    //********************************************************************************************************
+    // --------------------ACTIVITY RESULT--------------------------
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO Auto-generated method stub
+        if (requestCode == REQUEST_ENABLE_BT) {
+            if (myBluetoothAdapter.isEnabled()) {
+                // tvData.setText("Connecting...");
+                // bTop.setBackgroundResource(R.drawable.head_red);
+            } else {
+                // tvData.setText("Disconnected");
+                // bTop.setBackgroundResource(R.drawable.head_green);
+            }
+        }
+
+    }
+
+    // *********************************************************
+    // ------------------------BT OFF--------------------------
+    //********************************************************************************************************
+    public void off(View view) {
+        // Indicator.setBackgroundResource(R.drawable.red);
+        myBluetoothAdapter.disable();
+        // text.setText("Status: Disconnected");
+        // Send.setEnabled(false);
+        // Komut.setEnabled(false);
+        Toast.makeText(getApplicationContext(), "Bluetooth turned off",
+                Toast.LENGTH_LONG).show();
+    }
+
+    //********************************************************************************************************
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        if (!config.isEmulatorMode()) {
+            bl.BT_onPause();
+        }
+
+    }
+
+    //********************************************************************************************************
+    @Override
+    protected void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+        mainL.setBackgroundResource(R.drawable.block_main);
+        final Dialog emailDialog = new Dialog(Opening.this,
+                android.R.style.Theme_DeviceDefault);
+        emailDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        emailDialog.setCancelable(false);
+        emailDialog.setContentView(R.layout.dialoglayout);
+        emailDialog.show();
+        if (!config.isEmulatorMode()) {
+            Thread connection = new Thread() {
+
+                public void run() {
+                    BT_is_connect = bl.BT_Connect(address, false);
+                    bl.sendData("9999");
+
+                }
+            };
+            connection.start();
+        }
+
+        Thread timer = new Thread() {
+            public void run() {
+                try {
+                    sleep(1000);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    emailDialog.dismiss();
+                    //bl.sendData("9999");  //UNCOMMENT
+
+                    Thread timer2 = new Thread() {
+                        public void run() {
+                            try {
+                                sleep(4000);
+
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } finally {
+                                emailDialog.dismiss();
+
+                            }
+
+                        }
+                    };
+                    timer2.start();
+                }
+
+            }
+        };
+        timer.start();
+
+        Log.e("::OPENING::ON_RESUME::", ":::ON RESUME ANOUNCED::");
+
+    }
+
+    //--------------------------------------------------------------------------------------------//
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
+    public void setAllFlatStatusOff() {
+        for (int i = 0; i < Opening.blocks.length; i++) {
+            for (int j = 0; j < Opening.numberOfFlats[i]; j++) {
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean(Opening.blocks[i] + "_" + j, false);
+                Log.e("CLEAR => ", Opening.blocks[i] + "_" + j);
+                editor.commit();
+            }
+        }
+        Log.e("Opening.java", "...All flat status cleared !...");
+    }
 
     //********************************************************************************************************
     // ---------------- HANDLER ---------------------------------
@@ -363,182 +576,4 @@ public class Opening extends Activity implements OnClickListener {
             connection.start();
         }
     }   //********************************************************
-
-    // ****************END OF HANDLER ****************************
-    // ----------------ON--------------------------------------------
-    public void on(View view) {
-        if (!myBluetoothAdapter.isEnabled()) {
-
-            Intent turnOnIntent = new Intent(
-                    BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(turnOnIntent, REQUEST_ENABLE_BT);
-
-            Toast.makeText(getApplicationContext(), "Bluetooth turned on",
-                    Toast.LENGTH_LONG).show();
-
-        } else {
-            Toast.makeText(getApplicationContext(), "Bluetooth is already on",
-                    Toast.LENGTH_LONG).show();
-        }
-    }
-
-    //********************************************************************************************************
-    // --------------------ACTIVITY RESULT--------------------------
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
-        if (requestCode == REQUEST_ENABLE_BT) {
-            if (myBluetoothAdapter.isEnabled()) {
-                // tvData.setText("Connecting...");
-                // bTop.setBackgroundResource(R.drawable.head_red);
-            } else {
-                // tvData.setText("Disconnected");
-                // bTop.setBackgroundResource(R.drawable.head_green);
-            }
-        }
-
-    }
-
-    //********************************************************************************************************
-    // ------------------BROADCAST RECEIVER ----------------------
-    final BroadcastReceiver bReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            // When discovery finds a device
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // Get the BluetoothDevice object from the Intent
-                BluetoothDevice device = intent
-                        .getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-            }
-        }
-    };
-
-    // *********************************************************
-    // ------------------------BT OFF--------------------------
-    //********************************************************************************************************
-    public void off(View view) {
-        // Indicator.setBackgroundResource(R.drawable.red);
-        myBluetoothAdapter.disable();
-        // text.setText("Status: Disconnected");
-        // Send.setEnabled(false);
-        // Komut.setEnabled(false);
-        Toast.makeText(getApplicationContext(), "Bluetooth turned off",
-                Toast.LENGTH_LONG).show();
-    }
-
-    //********************************************************************************************************
-    @Override
-    protected void onPause() {
-        // TODO Auto-generated method stub
-        super.onPause();
-        if(!config.isEmulatorMode()) {
-            bl.BT_onPause();
-        }
-
-    }
-
-    //********************************************************************************************************
-    @Override
-    protected void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
-        mainL.setBackgroundResource(R.drawable.karabuk);
-        final Dialog emailDialog = new Dialog(Opening.this,
-                android.R.style.Theme_DeviceDefault);
-        emailDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        emailDialog.setCancelable(false);
-        emailDialog.setContentView(R.layout.dialoglayout);
-        emailDialog.show();
-        if (!config.isEmulatorMode()) {
-            Thread connection = new Thread() {
-
-                public void run() {
-                    BT_is_connect = bl.BT_Connect(address, false);
-                    bl.sendData("9999");
-
-                }
-            };
-            connection.start();
-        }
-
-            Thread timer = new Thread() {
-                public void run() {
-                    try {
-                        sleep(1000);
-
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } finally {
-                        emailDialog.dismiss();
-                        //bl.sendData("9999");  //UNCOMMENT
-
-                        Thread timer2 = new Thread() {
-                            public void run() {
-                                try {
-                                    sleep(4000);
-
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                } finally {
-                                    emailDialog.dismiss();
-
-                                }
-
-                            }
-                        };
-                        timer2.start();
-                    }
-
-                }
-            };
-            timer.start();
-
-        Log.e("::OPENING::ON_RESUME::", ":::ON RESUME ANOUNCED::");
-
-    }
-
-    //--------------------------------------------------------------------------------------------//
-    public static int calculateBlockThresholdValue(String blockName) {
-        int index = 0;
-        for (String block : Opening.blocks) {
-            if (block.equals(blockName)) {
-                int threshold = 0;
-                for (int i = 0; i < index; i++) {
-                    threshold += Opening.numberOfFlats[i];
-                }
-                return threshold;
-            } else {
-                index++;
-            }
-        }
-        return 0;
-    }
-    //--------------------------------------------------------------------------------------------//
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-    }
-
-    public void setAllFlatStatusOff() {
-        for (int i = 0; i < Opening.blocks.length; i++) {
-            for (int j = 0; j < Opening.numberOfFlats[i]; j++) {
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(Opening.blocks[i] + "_" + j, false);
-                Log.e("CLEAR => ",Opening.blocks[i] + "_" + j);
-                editor.commit();
-            }
-        }
-        Log.e("Opening.java", "...All flat status cleared !...");
-    }
 }

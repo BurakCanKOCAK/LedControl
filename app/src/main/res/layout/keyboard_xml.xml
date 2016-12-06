@@ -17,18 +17,18 @@
         <Button
             android:id="@+id/bTop"
             android:layout_width="fill_parent"
-            android:layout_height="30dp"
+            android:layout_height="30px"
             android:layout_weight="1"
             android:background="@drawable/top_button"
             android:text=""
             android:textColor="@android:color/background_light"
-            android:textSize="25dp"
+            android:textSize="25px"
             android:visibility="invisible" />
 
         <LinearLayout
             android:id="@+id/seven_to_nine2"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="50px"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -40,7 +40,7 @@
                 android:background="@drawable/btonxml"
                 android:text="BT ON"
                 android:textColor="@android:color/background_light"
-                android:textSize="15dp" />
+                android:textSize="15px" />
 
             <Button
                 android:id="@+id/bBTOff"
@@ -50,7 +50,7 @@
                 android:background="@drawable/btoff_xml"
                 android:text="BT OFF"
                 android:textColor="@android:color/background_light"
-                android:textSize="15dp" />
+                android:textSize="15px" />
         </LinearLayout>
 
         <TextView
@@ -61,39 +61,39 @@
             android:gravity="center_vertical"
             android:text="Connection Awaiting"
             android:textColor="@android:color/darker_gray"
-            android:textSize="40dp" />
+            android:textSize="40px" />
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="360dp"
+            android:layout_height="360px"
             android:weightSum="1">
 
             <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="365dp"
+                android:layout_width="100px"
+                android:layout_height="365px"
                 android:orientation="vertical">
 
 
                 <Button
                     android:id="@+id/bAllOn"
-                    android:layout_marginLeft="-10dp"
+                    android:layout_marginLeft="-10px"
                     android:layout_width="wrap_content"
-                    android:layout_height="70dp"
-                    android:layout_marginTop="120dp"
+                    android:layout_height="70px"
+                    android:layout_marginTop="120px"
                     android:background="@drawable/bton_rightxml"
                     android:text="AllOn"
                     android:textColor="@android:color/holo_green_dark"
-                    android:textSize="25dp" />
+                    android:textSize="25px" />
 
                 <Button
                     android:id="@+id/bAllOff"
                     android:layout_width="wrap_content"
-                    android:layout_height="70dp"
-                    android:layout_marginLeft="-10dp"
+                    android:layout_height="70px"
+                    android:layout_marginLeft="-10px"
                     android:background="@drawable/btoff_xml"
                     android:text="AllOff"
                     android:textColor="@android:color/holo_red_light"
-                    android:textSize="25dp" />
+                    android:textSize="25px" />
             </LinearLayout>
 
             <TextView
@@ -103,29 +103,29 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0.3"
                 android:gravity="center"
-                android:paddingTop="80dp"
+                android:paddingTop="80px"
                 android:text="-"
                 android:textColor="@android:color/black"
-                android:textSize="175dp" />
+                android:textSize="175px" />
 
             <ListView
                 android:id="@+id/lvOnFlatNumbers"
                 style="@style/horizontalList"
                 android:layout_width="wrap_content"
-                android:layout_height="360dp"
+                android:layout_height="360px"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0.7"
                 android:gravity="center_vertical"
-                android:paddingTop="50dp"
+                android:paddingTop="50px"
                 android:textColor="@android:color/black"
-                android:textSize="125dp" />
+                android:textSize="125px" />
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/oneAnan"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="60px"
         android:layout_above="@+id/one_to_three2"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
@@ -141,13 +141,13 @@
             android:gravity="center_horizontal"
             android:text="-"
             android:textColor="@android:color/holo_green_light"
-            android:textSize="25dp" />
+            android:textSize="25px" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/one_to_three2"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="65px"
         android:layout_above="@+id/one_to_three3"
         android:layout_centerHorizontal="true"
         android:background="@drawable/gray_back"
@@ -163,7 +163,7 @@
             android:background="@drawable/key"
             android:text="Main Menu"
             android:textColor="@android:color/background_light"
-            android:textSize="25dp" />
+            android:textSize="25px" />
 
         <Button
             android:id="@+id/bErase"
@@ -174,13 +174,13 @@
             android:background="@drawable/key"
             android:text="Erase"
             android:textColor="@android:color/background_light"
-            android:textSize="25dp" />
+            android:textSize="25px" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/one_to_three3"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="90px"
         android:layout_above="@+id/four_to_six"
         android:layout_centerHorizontal="true"
         android:background="@drawable/gray_back"
@@ -195,7 +195,7 @@
             android:background="@drawable/key"
             android:text="1"
             android:textColor="@android:color/background_light"
-            android:textSize="25dp" />
+            android:textSize="25px" />
 
         <Button
             android:id="@+id/bTwo"
@@ -205,7 +205,7 @@
             android:background="@drawable/key"
             android:text="2"
             android:textColor="@android:color/background_light"
-            android:textSize="25dp" />
+            android:textSize="25px" />
 
         <Button
             android:id="@+id/bThree"
@@ -215,13 +215,13 @@
             android:background="@drawable/key"
             android:text="3"
             android:textColor="@android:color/background_light"
-            android:textSize="25dp" />
+            android:textSize="25px" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/four_to_six"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="90px"
         android:layout_above="@+id/seven_to_nine"
         android:background="@drawable/gray_back"
         android:orientation="horizontal"
@@ -235,7 +235,7 @@
             android:background="@drawable/key"
             android:text="4"
             android:textColor="@android:color/background_light"
-            android:textSize="25dp" />
+            android:textSize="25px" />
 
         <Button
             android:id="@+id/bFive"
@@ -245,7 +245,7 @@
             android:background="@drawable/key"
             android:text="5"
             android:textColor="@android:color/background_light"
-            android:textSize="25dp" />
+            android:textSize="25px" />
 
         <Button
             android:id="@+id/bSix"
@@ -255,13 +255,13 @@
             android:background="@drawable/key"
             android:text="6"
             android:textColor="@android:color/background_light"
-            android:textSize="25dp" />
+            android:textSize="25px" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/seven_to_nine"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="90px"
         android:layout_above="@+id/zeroline"
         android:background="@drawable/gray_back"
         android:orientation="horizontal"
@@ -275,7 +275,7 @@
             android:background="@drawable/key"
             android:text="7"
             android:textColor="@android:color/background_light"
-            android:textSize="25dp" />
+            android:textSize="25px" />
 
         <Button
             android:id="@+id/bEight"
@@ -285,7 +285,7 @@
             android:background="@drawable/key"
             android:text="8"
             android:textColor="@android:color/background_light"
-            android:textSize="25dp" />
+            android:textSize="25px" />
 
         <Button
             android:id="@+id/bNine"
@@ -295,48 +295,48 @@
             android:background="@drawable/key"
             android:text="9"
             android:textColor="@android:color/background_light"
-            android:textSize="25dp" />
+            android:textSize="25px" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/zeroline"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="90px"
         android:layout_alignParentBottom="true"
         android:background="@drawable/gray_back"
         android:orientation="horizontal"
-        android:paddingBottom="27dp"
+        android:paddingBottom="27px"
         android:weightSum="3">
 
         <Button
             android:id="@+id/bOff"
-            android:layout_width="70dp"
+            android:layout_width="70px"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/off_button"
             android:text="OFF"
             android:textColor="@android:color/background_light"
-            android:textSize="25dp" />
+            android:textSize="25px" />
 
         <Button
             android:id="@+id/bZero"
-            android:layout_width="70dp"
+            android:layout_width="70px"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/key"
             android:text="0"
             android:textColor="@android:color/background_light"
-            android:textSize="25dp" />
+            android:textSize="25px" />
 
         <Button
             android:id="@+id/bOn"
-            android:layout_width="70dp"
+            android:layout_width="70px"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/on_button"
             android:text="ON"
             android:textColor="@android:color/background_light"
-            android:textSize="25dp" />
+            android:textSize="25px" />
     </LinearLayout>
 
     <SlidingDrawer
@@ -351,11 +351,11 @@
         <Button
             android:id="@+id/bhandle"
             android:layout_width="fill_parent"
-            android:layout_height="15dp"
+            android:layout_height="15px"
             android:background="@drawable/slider_button"
             android:text="^"
             android:textColor="@android:color/background_light"
-            android:textSize="40dp" />
+            android:textSize="20px" />
 
         <LinearLayout
             android:id="@+id/content"
@@ -370,13 +370,13 @@
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="10px"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_vertical"
                 android:text="::: Functions :::"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@android:color/background_light"
-                android:textSize="25dp" />
+                android:textSize="15px" />
 
             <TextView
                 android:id="@+id/tvBTStatus"
@@ -390,8 +390,8 @@
             <LinearLayout
                 android:id="@+id/seven_to_nine222222"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginTop="50dp"
+                android:layout_height="100px"
+                android:layout_marginTop="50px"
                 android:orientation="horizontal"
                 android:weightSum="4">
 
@@ -401,7 +401,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:inputType="number|none" />
+                    android:inputType="number|none"
+                    android:textSize="25px"/>
 
                 <Button
                     android:id="@+id/bSell"
@@ -409,7 +410,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/key"
-                    android:text="Set as Sold" />
+                    android:text="Set as Sold"
+                    android:textSize="25px"/>
 
                 <Button
                     android:id="@+id/bUnSell"
@@ -417,7 +419,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/key"
-                    android:text="Set as Not Sold" />
+                    android:text="Set as Not Sold"
+                    android:textSize="25px"/>
 
                 <Button
                     android:id="@+id/bOnSale"
@@ -425,13 +428,14 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/key"
-                    android:text="Show on Sales" />
+                    android:text="Show on Sales"
+                    android:textSize="25px"/>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/zeroliness"
                 android:layout_width="match_parent"
-                android:layout_height="90dp"
+                android:layout_height="90px"
                 android:layout_alignParentBottom="true"
                 android:orientation="horizontal"
                 android:weightSum="2">
@@ -445,7 +449,7 @@
                     android:background="@drawable/key"
                     android:text="Block"
                     android:textColor="@android:color/background_light"
-                    android:textSize="25dp" />
+                    android:textSize="25px" />
 
                 <Button
                     android:id="@+id/b3_1"
@@ -455,7 +459,7 @@
                     android:background="@drawable/key"
                     android:text="Block On Sales"
                     android:textColor="@android:color/background_light"
-                    android:textSize="25dp" />
+                    android:textSize="25px" />
             </LinearLayout>
         </LinearLayout>
     </SlidingDrawer>

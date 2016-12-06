@@ -33,6 +33,11 @@ package com.bkocak.ledcontrol;
  * @version 1.2.1
  * 14.08.2013
  * Koltykov A.V. http://cxem.net, http://english.cxem.net
+ * <p>
+ * Class for Bluetooth
+ * @version 1.2.1
+ * 14.08.2013
+ * Koltykov A.V. http://cxem.net, http://english.cxem.net
  */
 /**
  *  Class for Bluetooth
@@ -42,12 +47,6 @@ package com.bkocak.ledcontrol;
  *
  */
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
-import java.util.UUID;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -55,23 +54,16 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Method;
+import java.util.UUID;
 
 public class cBluetooth {
 
     public final static String TAG = "::BLUETOOTH_ADAPTER::";
-
-    private static BluetoothAdapter btAdapter = null;
-    private BluetoothSocket btSocket = null;
-    private OutputStream outStream = null;
-    private ConnectedThread mConnectedThread;
-
-    // SPP UUID service
-    private static final UUID MY_UUID = UUID
-            .fromString("00001101-0000-1000-8000-00805F9B34FB");
-
-    private final Handler mHandler;
-
     // statuses for Handler
     public final static int BL_NOT_AVAILABLE = 1; // Bluetooth is not available
     public final static int BL_INCORRECT_ADDRESS = 2; // incorrect MAC-address
@@ -79,6 +71,14 @@ public class cBluetooth {
     public final static int BL_SOCKET_FAILED = 4; // socket error
     public final static int RECIEVE_MESSAGE = 5; // receive message
     public final static int BL_CONNECTED_OK = 6;
+    // SPP UUID service
+    private static final UUID MY_UUID = UUID
+            .fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private static BluetoothAdapter btAdapter = null;
+    private final Handler mHandler;
+    private BluetoothSocket btSocket = null;
+    private OutputStream outStream = null;
+    private ConnectedThread mConnectedThread;
 
     //********************************************************************************************************
     cBluetooth(Context context, Handler handler) {

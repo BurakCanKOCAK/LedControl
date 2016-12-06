@@ -1,10 +1,6 @@
 package com.bkocak.ledcontrol;
 //**************************************************************************************************
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Set;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -18,12 +14,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
-import android.text.InputFilter.LengthFilter;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.webkit.ConsoleMessage;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -35,7 +29,9 @@ import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.server.converter.StringToIntConverter;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Set;
 
 //**************************************************************************************************
 public class MainActivity extends Activity implements OnClickListener {
@@ -46,7 +42,16 @@ public class MainActivity extends Activity implements OnClickListener {
     //TODO  on/off button pressed
     //----------------------------------------------------------------------------------------------
     private static final String FILENAME = "myFile.txt";
+    private static final int REQUEST_ENABLE_BT = 1;
+    //**********************************************************************************************
+    private final static Runnable sRunnable = new Runnable() {
+        public void run() {
+        }
+    };
     static Intent openMain;
+    static boolean reconnect_flag = false;
+    static boolean isFlatOff = true;
+    static boolean isFlatOn = true;
     // private String address = "00:14:03:18:20:95";
     // 30:14:06:09:09:34 (yeni)W
     // private static String address = "30:14:06:26:03:67"; //(tiflis)
@@ -54,18 +59,13 @@ public class MainActivity extends Activity implements OnClickListener {
     // private static String address = "20:14:04:29:35:28"; // (Nawroz City)
     //private static String address = "98:D3:31:B3:11:8F";
     //private static String address = "00:14:04:01:33:64"; //Benim modul
-    private static String address = "98:D3:32:10:52:F6"; //Karabuk (Patyo) - 2016
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    public SharedPreferences sharedPref;
+    //private static String address = "98:D3:32:10:52:F6"; //Karabuk (Patyo) - 2016
+    private static String address = "20:15:04:29:57:32"; //Huseyin Test(Patyo) - 2016
     ////////////////////////////////////////////////////////////////////////////////////////////////
     private static cBluetooth bl = null;
-    ArrayAdapter<String> adapter;
     private static boolean BT_is_connect;
-    private String cmdSend = "";
     private static boolean flag = false;
-    static boolean reconnect_flag = false;
     private static ImageView Indicator;
-    private static final int REQUEST_ENABLE_BT = 1;
     private static Button b1, b2, b3, b4, b5, b6, b7, b8, b9, b0, bYak,
             bSondur, bTop, bb1_1, bb2_1, bb3_1, bb4_1, bb5_1, bb6_1, bEffect,
             bBTOff, bBTOn, bErase, bMainMenu, bSell, bUnSell, bOnSale, bAllOn, bAllOff;
@@ -74,27 +74,75 @@ public class MainActivity extends Activity implements OnClickListener {
     private static EditText eT_sell;
     private static SlidingDrawer slidingDrawer1;
     private static int daire = 0, daire2 = 0;
-    private BluetoothAdapter myBluetoothAdapter;
-    private Set<BluetoothDevice> pairedDevices;
     private static String block_name = null;
-    private Handler mUiHandler;
-    private Handler mBackgroundHandler;
     private static int[] saved_list = new int[10000];
     private static Boolean[] isFlatOnList;
     private static int adminCount = 0;
-
-    public ArrayList<String> FlatOnList;
-    private ArrayAdapter<String> BTArrayAdapter;
-
-    static boolean isFlatOff = true;
-    static boolean isFlatOn = true;
     private static Button bALLC, bALLB, bALLA;
-    private PowerManager.WakeLock wl;
     private static StringBuilder sb = new StringBuilder();
     private static ListView lvOnFlatNumbers;
     private static String TAG_MSG_HANDLER = "BT_MESSAGE_HANDLER";
     private static String TAG_CONTROL = "CONTROL_LEVEL";
+    //**********************************************************************************************
+    // ***********END OF ON CREATE***************************
+    private final MyHandler mHandler = new MyHandler(this);
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public SharedPreferences sharedPref;
+    public ArrayList<String> FlatOnList;
+    ArrayAdapter<String> adapter;
     Config config = new Config();
+    private String cmdSend = "";
+    private BluetoothAdapter myBluetoothAdapter;
+    private Set<BluetoothDevice> pairedDevices;
+    private Handler mUiHandler;
+    private Handler mBackgroundHandler;
+    private ArrayAdapter<String> BTArrayAdapter;
+    //**********************************************************************************************
+    // ------------------BROADCAST RECEIVER ----------------------
+    final BroadcastReceiver bReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            // When discovery finds a device
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // Get the BluetoothDevice object from the Intent
+                BluetoothDevice device = intent
+                        .getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                // add the name and the MAC address of the object to the
+                // arrayAdapter
+                BTArrayAdapter.add(device.getName() + "\n"
+                        + device.getAddress());
+                BTArrayAdapter.notifyDataSetChanged();
+            }
+        }
+    };
+    private PowerManager.WakeLock wl;
+
+    //----------------------------------------------------------------------------------------------
+    private static void setPrefButtons() {
+
+        bb2_1.setVisibility(View.INVISIBLE);
+        bb3_1.setVisibility(View.INVISIBLE);
+
+        if (block_name.equals("C")) {
+
+            bb2_1.setVisibility(View.VISIBLE);
+            bb3_1.setVisibility(View.VISIBLE);
+
+        }
+        if (block_name.equals("D")) {
+
+            bb2_1.setVisibility(View.VISIBLE);
+            bb3_1.setVisibility(View.VISIBLE);
+
+        }
+        if (block_name.equals("E")) {
+
+            bb2_1.setVisibility(View.VISIBLE);
+            bb3_1.setVisibility(View.VISIBLE);
+
+        }
+
+    }
 
     // --------ON CREATE -------------------------------
     @Override
@@ -249,167 +297,11 @@ public class MainActivity extends Activity implements OnClickListener {
         tvDatatoSend = (TextView) findViewById(R.id.tvDatatoSend);
         tvBlock = (TextView) findViewById(R.id.tvBlock);
 
-        tvBlock.setText(block_name + " Block Selected");
+        tvBlock.setText(block_name + " Selected");
 
         tvBTStatus = (TextView) findViewById(R.id.tvBTStatus);
         RelLay = (RelativeLayout) findViewById(R.id.RelLay_keyboard);
         mHandler.postDelayed(sRunnable, 600000);
-    }
-
-    //**********************************************************************************************
-    // ***********END OF ON CREATE***************************
-    private final MyHandler mHandler = new MyHandler(this);
-    //**********************************************************************************************
-    private final static Runnable sRunnable = new Runnable() {
-        public void run() {
-        }
-    };
-
-    //**********************************************************************************************
-    // ---------------- HANDLER ---------------------------------
-    private static class MyHandler extends Handler {
-        private final WeakReference<MainActivity> mActivity;
-
-        public MyHandler(MainActivity activity) {
-            mActivity = new WeakReference<MainActivity>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            MainActivity activity = mActivity.get();
-            if (activity != null) {
-                switch (msg.what) {
-                    case cBluetooth.BL_NOT_AVAILABLE:
-                        // tvBTStatus.setText("BT Not Available");
-                        Log.e("::Main_Activity::HM::", ":::BLUETOOTH_NOT_AVAILABLE::");
-                        Toast.makeText(activity.getBaseContext(),
-                                "Bluetooth is not available", Toast.LENGTH_SHORT)
-                                .show();
-                        activity.finish();
-                        break;
-                    case cBluetooth.BL_INCORRECT_ADDRESS:
-                        // tvBTStatus.setText("BT Incorrect Address");
-                        Log.e("::Main_Activity::HM::",
-                                ":::INCORRECT_MAC_ADDRESS::");
-                        Toast.makeText(activity.getBaseContext(),
-                                "Incorrect Bluetooth address", Toast.LENGTH_SHORT)
-                                .show();
-                        break;
-                    case cBluetooth.BL_REQUEST_ENABLE:
-                        Log.e("::Main_Activity::HM::",
-                                ":::BLUETOOTH_ENABLE_REQUEST_SENT::");
-                        tvBTStatus.setText("Connecting to " + block_name + "...");
-                        BluetoothAdapter.getDefaultAdapter();
-                        Intent enableBtIntent = new Intent(
-                                BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                        activity.startActivityForResult(enableBtIntent, 1);
-                        break;
-                    case cBluetooth.BL_SOCKET_FAILED:
-                        // tvBTStatus.setText("BT Socket Failed!");
-                        Toast.makeText(activity.getBaseContext(), "Connection Error!",
-                                Toast.LENGTH_SHORT).show();
-                        RelLay.setBackgroundResource(R.drawable.back_red);
-                        bTop.setBackgroundResource(R.drawable.head_red);
-                        tvData.setText("Disconnected");
-                        socket_failed();
-                        Log.e("::Main_Activity::HM::",
-                                ":::BLUETOOTH_SOCKET_FAILED::");
-
-                        reconnect_flag = true;
-
-                        // Indicator.setBackgroundResource(R.drawable.red);
-                        // activity.finish();
-                        break;
-
-                    case cBluetooth.BL_CONNECTED_OK:
-                        tvData.setText("Connected");
-                        RelLay.setBackgroundResource(R.drawable.back_green);
-                        Toast.makeText(activity.getBaseContext(), "System Connected", Toast.LENGTH_SHORT).show();
-                        tvBTStatus.setText("Connected to " + block_name);
-                        //if (block_name.equals("C")) {
-                        //    // block_name="C";
-                        //    tvBTStatus.setText("Connected Block : " + "C");
-                        //} else if (block_name.equals("D")) {
-                        //   // block_name="D";
-                        //    tvBTStatus.setText("Connected Block : " + "D");
-                        //} else if (block_name.equals("E")) {
-                        //    // block_name="E";
-                        //    tvBTStatus.setText("Connected Block : " + "E");
-                        //}
-                        // tvBTStatus.setText("Connected Block : "+block_name);
-                        RelLay.setBackgroundResource(R.drawable.back_green);
-                        tvData.setText("Connected"); // Ba�lant�
-                        Log.e("::Main_Activity::",
-                                "::BLUETOOTH_CONNECTED_OK::");
-
-                        break;
-
-                    case cBluetooth.RECIEVE_MESSAGE: // if message is recieved (����
-                        // ��������� ��������)
-                        byte[] readBuf = (byte[]) msg.obj;
-                        String strIncom = new String(readBuf, 0, msg.arg1);
-                        sb.append(strIncom); // append string (������������ ������)
-
-                        int FDataLineIndex = sb.indexOf("FData:"); // string with
-                        // Flash Data
-                        int FWOKLineIndex = sb.indexOf("FWOK"); // string with the
-                        // message of the
-                        // succesfull record
-                        // in Flash
-                        int endOfLineIndex = sb.indexOf("\r\n");
-
-                        if (FDataLineIndex >= 0 && endOfLineIndex > 0
-                                && endOfLineIndex > FDataLineIndex) {
-                            String sbprint = sb.substring("FData:".length(),
-                                    endOfLineIndex);
-                            // sbprint = sbprint.replace("\r","").replace("\n","");
-
-                            if (sbprint.substring(0, 1).equals("1")) {
-                                // cb_AutoOFF.setChecked(true);
-                            } else {
-                                // cb_AutoOFF.setChecked(false);
-                            }
-                            Float edit_data_AutoOFF = Float.parseFloat(sbprint
-                                    .substring(1, 4)) / 10;
-                            // edit_AutoOFF.setText(String.valueOf(edit_data_AutoOFF));
-
-                            sb.delete(0, sb.length());
-                        } else if (FWOKLineIndex >= 0 && endOfLineIndex > 0
-                                && endOfLineIndex > FWOKLineIndex) {
-                            // Toast.makeText(activity.getBaseContext(),
-                            // flash_success, Toast.LENGTH_SHORT).show();
-                            sb.delete(0, sb.length());
-                        } else if (endOfLineIndex > 0) {
-                            // Toast.makeText(activity.getBaseContext(),
-                            // error_get_data, Toast.LENGTH_SHORT).show();
-                            sb.delete(0, sb.length());
-                        }
-                        break;
-                    // ********************************** END RECEIVE FUNCTION
-                    // *******************************************
-                }
-
-            }
-
-        }
-
-        private void socket_failed() {
-            Thread connection = new Thread() {
-                public void run() {
-                    BT_is_connect = bl.BT_Connect(address, false);
-                    try {
-                        Log.e("::Main_Activity::SF::",
-                                ":::SLEEP TIMER STARTED:2000::");
-                        sleep(2000);
-                        Log.e("::Main_Activity::SF::",
-                                ":::SLEEP TIMER ENDED::");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            connection.start();
-        }
     }
 
     // ****************END OF HANDLER ****************************
@@ -444,25 +336,6 @@ public class MainActivity extends Activity implements OnClickListener {
         }
 
     }
-
-    //**********************************************************************************************
-    // ------------------BROADCAST RECEIVER ----------------------
-    final BroadcastReceiver bReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            // When discovery finds a device
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // Get the BluetoothDevice object from the Intent
-                BluetoothDevice device = intent
-                        .getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                // add the name and the MAC address of the object to the
-                // arrayAdapter
-                BTArrayAdapter.add(device.getName() + "\n"
-                        + device.getAddress());
-                BTArrayAdapter.notifyDataSetChanged();
-            }
-        }
-    };
 
     //**********************************************************************************************
     // ------------------------BT OFF--------------------------
@@ -631,14 +504,20 @@ public class MainActivity extends Activity implements OnClickListener {
                 break;
 
             case R.id.bSell:
-
-                int flatNumberSell=0;
-                try{
-                    flatNumberSell=Integer.parseInt(eT_sell.getText().toString());
-                }catch (Exception e)  //NUMERIK OLMAYAN KARAKTER IRILMESI DURUMU
+                int index = 0;
+                if(block_name=="D-Block")
+                {
+                    index=0;
+                }else{
+                    index=1;
+                }
+                int flatNumberSell = 0;
+                try {
+                    flatNumberSell = Integer.parseInt(eT_sell.getText().toString());
+                } catch (Exception e)  //NUMERIK OLMAYAN KARAKTER IRILMESI DURUMU
                 {
                     Toast.makeText(this.getBaseContext(),
-                            "Please enter a valid flat number to sell.",Toast.LENGTH_SHORT).show();
+                            "Please enter a valid flat number to sell.", Toast.LENGTH_SHORT).show();
                     break;
                 }
                 if (eT_sell.getText().toString().matches("")) { //BOS BIRAKILMASI DURUMU
@@ -648,35 +527,47 @@ public class MainActivity extends Activity implements OnClickListener {
                             Toast.LENGTH_SHORT).show();
 
                     break;
-                }else if(flatNumberSell>Opening.numberOfFlats[0] || flatNumberSell==0)  // 56DAN BUYUK DAIRE NUMARASI GIRILMESI DURUMU
+                } else if (flatNumberSell > Opening.numberOfFlats[index] || flatNumberSell == 0)  // 56DAN BUYUK DAIRE NUMARASI GIRILMESI DURUMU
                 {
                     Log.e("::::::ERROR:::::", eT_sell.getText().toString());
                     Toast.makeText(this.getBaseContext(),
-                            "Please enter a valid flat number to sell.(Max Flat Number is "+Opening.numberOfFlats[0]+")",
+                            "Please enter a valid flat number to sell.(Max Flat Number is " + Opening.numberOfFlats[index] + ")",
                             Toast.LENGTH_SHORT).show();
                     break;
                 }
 
-                switch(block_name)
-                {
-                    case "Main":
-                        flatNumberSell += 3000;
+                switch (block_name) {
+                    case "D-Block":
+                        flatNumberSell += 2000;
                         bl.sendData(Integer.toString(flatNumberSell));
-                        Log.e("[ FLAT SOLD ]::[ "+ block_name+" ]::[ FLAT NUMBER : ",
-                                Integer.toString(flatNumberSell - 3000)+" ]");
+                        Log.e("[ FLAT SOLD ]::[ " + block_name + " ]::[ FLAT NUMBER : ",
+                                Integer.toString(flatNumberSell - 2000) + " ]");
+                        break;
+                    case "E-Block":
+                        flatNumberSell += 2020;
+                        bl.sendData(Integer.toString(flatNumberSell));
+                        Log.e("[ FLAT SOLD ]::[ " + block_name + " ]::[ FLAT NUMBER : ",
+                                Integer.toString(flatNumberSell - 2020) + " ]");
                         break;
                 }
 
                 break;
 
             case R.id.bUnSell:
-                int flatNumberUnSell=0;
-                try{
-                    flatNumberUnSell=Integer.parseInt(eT_sell.getText().toString());
-                }catch (Exception e)  //NUMERIK OLMAYAN KARAKTER IRILMESI DURUMU
+                int index2 = 0;
+                if(block_name=="D-Block")
+                {
+                    index2=0;
+                }else{
+                    index2=1;
+                }
+                int flatNumberUnSell = 0;
+                try {
+                    flatNumberUnSell = Integer.parseInt(eT_sell.getText().toString());
+                } catch (Exception e)  //NUMERIK OLMAYAN KARAKTER IRILMESI DURUMU
                 {
                     Toast.makeText(this.getBaseContext(),
-                            "Please enter a valid flat number to unsell.",Toast.LENGTH_SHORT).show();
+                            "Please enter a valid flat number to unsell.", Toast.LENGTH_SHORT).show();
                     break;
                 }
                 if (eT_sell.getText().toString().matches("")) { //BOS BIRAKILMASI DURUMU
@@ -686,22 +577,27 @@ public class MainActivity extends Activity implements OnClickListener {
                             Toast.LENGTH_SHORT).show();
 
                     break;
-                }else if(flatNumberUnSell>Opening.numberOfFlats[0] || flatNumberUnSell==0)  // 56DAN BUYUK DAIRE NUMARASI GIRILMESI DURUMU
+                } else if (flatNumberUnSell > Opening.numberOfFlats[index2] || flatNumberUnSell == 0)  // 56DAN BUYUK DAIRE NUMARASI GIRILMESI DURUMU
                 {
                     Log.e("::::::ERROR:::::", eT_sell.getText().toString());
                     Toast.makeText(this.getBaseContext(),
-                            "Please enter a valid flat number to unsell.(Max Flat Number is "+Opening.numberOfFlats[0]+")",
+                            "Please enter a valid flat number to unsell.(Max Flat Number is " + Opening.numberOfFlats[index2] + ")",
                             Toast.LENGTH_SHORT).show();
                     break;
                 }
 
-                switch(block_name)
-                {
-                    case "Main":
-                        flatNumberUnSell += 2000;
+                switch (block_name) {
+                    case "D-Block":
+                        flatNumberUnSell += 3000;
                         bl.sendData(Integer.toString(flatNumberUnSell));
-                        Log.e("[ FLAT UN SOLD ]::[ "+ block_name+" ]::[ FLAT NUMBER : ",
-                                Integer.toString(flatNumberUnSell - 2000)+" ]");
+                        Log.e("[ FLAT UN SOLD ]::[ " + block_name + " ]::[ FLAT NUMBER : ",
+                                Integer.toString(flatNumberUnSell - 3000) + " ]");
+                        break;
+                    case "E-Block":
+                        flatNumberUnSell += 3020;
+                        bl.sendData(Integer.toString(flatNumberUnSell));
+                        Log.e("[ FLAT UN SOLD ]::[ " + block_name + " ]::[ FLAT NUMBER : ",
+                                Integer.toString(flatNumberUnSell - 3020) + " ]");
                         break;
                 }
 
@@ -893,33 +789,6 @@ public class MainActivity extends Activity implements OnClickListener {
     }
 
     //----------------------------------------------------------------------------------------------
-    private static void setPrefButtons() {
-
-        bb2_1.setVisibility(View.INVISIBLE);
-        bb3_1.setVisibility(View.INVISIBLE);
-
-        if (block_name.equals("C")) {
-
-            bb2_1.setVisibility(View.VISIBLE);
-            bb3_1.setVisibility(View.VISIBLE);
-
-        }
-        if (block_name.equals("D")) {
-
-            bb2_1.setVisibility(View.VISIBLE);
-            bb3_1.setVisibility(View.VISIBLE);
-
-        }
-        if (block_name.equals("E")) {
-
-            bb2_1.setVisibility(View.VISIBLE);
-            bb3_1.setVisibility(View.VISIBLE);
-
-        }
-
-    }
-
-    //----------------------------------------------------------------------------------------------
     private boolean checkFlatNumber(String block, int numberPressed) {
         if (daire != 0 || numberPressed != 0) {
             int number = daire * 10 + numberPressed;
@@ -1019,5 +888,152 @@ public class MainActivity extends Activity implements OnClickListener {
         FlatOnList.clear();
         adapter.notifyDataSetChanged();
         getFlatStatus();
+    }
+
+    //**********************************************************************************************
+    // ---------------- HANDLER ---------------------------------
+    private static class MyHandler extends Handler {
+        private final WeakReference<MainActivity> mActivity;
+
+        public MyHandler(MainActivity activity) {
+            mActivity = new WeakReference<MainActivity>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            MainActivity activity = mActivity.get();
+            if (activity != null) {
+                switch (msg.what) {
+                    case cBluetooth.BL_NOT_AVAILABLE:
+                        // tvBTStatus.setText("BT Not Available");
+                        Log.e("::Main_Activity::HM::", ":::BLUETOOTH_NOT_AVAILABLE::");
+                        Toast.makeText(activity.getBaseContext(),
+                                "Bluetooth is not available", Toast.LENGTH_SHORT)
+                                .show();
+                        activity.finish();
+                        break;
+                    case cBluetooth.BL_INCORRECT_ADDRESS:
+                        // tvBTStatus.setText("BT Incorrect Address");
+                        Log.e("::Main_Activity::HM::",
+                                ":::INCORRECT_MAC_ADDRESS::");
+                        Toast.makeText(activity.getBaseContext(),
+                                "Incorrect Bluetooth address", Toast.LENGTH_SHORT)
+                                .show();
+                        break;
+                    case cBluetooth.BL_REQUEST_ENABLE:
+                        Log.e("::Main_Activity::HM::",
+                                ":::BLUETOOTH_ENABLE_REQUEST_SENT::");
+                        tvBTStatus.setText("Connecting to " + block_name + "...");
+                        BluetoothAdapter.getDefaultAdapter();
+                        Intent enableBtIntent = new Intent(
+                                BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                        activity.startActivityForResult(enableBtIntent, 1);
+                        break;
+                    case cBluetooth.BL_SOCKET_FAILED:
+                        // tvBTStatus.setText("BT Socket Failed!");
+                        Toast.makeText(activity.getBaseContext(), "Connection Error!",
+                                Toast.LENGTH_SHORT).show();
+                        RelLay.setBackgroundResource(R.drawable.back_red);
+                        bTop.setBackgroundResource(R.drawable.head_red);
+                        tvData.setText("Disconnected");
+                        socket_failed();
+                        Log.e("::Main_Activity::HM::",
+                                ":::BLUETOOTH_SOCKET_FAILED::");
+
+                        reconnect_flag = true;
+
+                        // Indicator.setBackgroundResource(R.drawable.red);
+                        // activity.finish();
+                        break;
+
+                    case cBluetooth.BL_CONNECTED_OK:
+                        tvData.setText("Connected");
+                        RelLay.setBackgroundResource(R.drawable.back_green);
+                        Toast.makeText(activity.getBaseContext(), "System Connected", Toast.LENGTH_SHORT).show();
+                        tvBTStatus.setText("Connected to " + block_name);
+                        //if (block_name.equals("C")) {
+                        //    // block_name="C";
+                        //    tvBTStatus.setText("Connected Block : " + "C");
+                        //} else if (block_name.equals("D")) {
+                        //   // block_name="D";
+                        //    tvBTStatus.setText("Connected Block : " + "D");
+                        //} else if (block_name.equals("E")) {
+                        //    // block_name="E";
+                        //    tvBTStatus.setText("Connected Block : " + "E");
+                        //}
+                        // tvBTStatus.setText("Connected Block : "+block_name);
+                        RelLay.setBackgroundResource(R.drawable.back_green);
+                        tvData.setText("Connected"); // Ba�lant�
+                        Log.e("::Main_Activity::",
+                                "::BLUETOOTH_CONNECTED_OK::");
+
+                        break;
+
+                    case cBluetooth.RECIEVE_MESSAGE: // if message is recieved (����
+                        // ��������� ��������)
+                        byte[] readBuf = (byte[]) msg.obj;
+                        String strIncom = new String(readBuf, 0, msg.arg1);
+                        sb.append(strIncom); // append string (������������ ������)
+
+                        int FDataLineIndex = sb.indexOf("FData:"); // string with
+                        // Flash Data
+                        int FWOKLineIndex = sb.indexOf("FWOK"); // string with the
+                        // message of the
+                        // succesfull record
+                        // in Flash
+                        int endOfLineIndex = sb.indexOf("\r\n");
+
+                        if (FDataLineIndex >= 0 && endOfLineIndex > 0
+                                && endOfLineIndex > FDataLineIndex) {
+                            String sbprint = sb.substring("FData:".length(),
+                                    endOfLineIndex);
+                            // sbprint = sbprint.replace("\r","").replace("\n","");
+
+                            if (sbprint.substring(0, 1).equals("1")) {
+                                // cb_AutoOFF.setChecked(true);
+                            } else {
+                                // cb_AutoOFF.setChecked(false);
+                            }
+                            Float edit_data_AutoOFF = Float.parseFloat(sbprint
+                                    .substring(1, 4)) / 10;
+                            // edit_AutoOFF.setText(String.valueOf(edit_data_AutoOFF));
+
+                            sb.delete(0, sb.length());
+                        } else if (FWOKLineIndex >= 0 && endOfLineIndex > 0
+                                && endOfLineIndex > FWOKLineIndex) {
+                            // Toast.makeText(activity.getBaseContext(),
+                            // flash_success, Toast.LENGTH_SHORT).show();
+                            sb.delete(0, sb.length());
+                        } else if (endOfLineIndex > 0) {
+                            // Toast.makeText(activity.getBaseContext(),
+                            // error_get_data, Toast.LENGTH_SHORT).show();
+                            sb.delete(0, sb.length());
+                        }
+                        break;
+                    // ********************************** END RECEIVE FUNCTION
+                    // *******************************************
+                }
+
+            }
+
+        }
+
+        private void socket_failed() {
+            Thread connection = new Thread() {
+                public void run() {
+                    BT_is_connect = bl.BT_Connect(address, false);
+                    try {
+                        Log.e("::Main_Activity::SF::",
+                                ":::SLEEP TIMER STARTED:2000::");
+                        sleep(2000);
+                        Log.e("::Main_Activity::SF::",
+                                ":::SLEEP TIMER ENDED::");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            connection.start();
+        }
     }
 }
