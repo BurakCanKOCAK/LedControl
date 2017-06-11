@@ -5,7 +5,7 @@ package com.bkocak.ledcontrol;
  */
 
 public class Config {
-    private boolean emulatorMode = false;
+    private boolean emulatorMode=false;
 
     public boolean isEmulatorMode() {
         return emulatorMode;

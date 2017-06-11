@@ -8,22 +8,17 @@ public class User {
     private String pass;
 
 
-    private User() {
+    private User(){
     }
 
 
-    User(String userName, String pass) {
-        this.userName = userName;
-        this.pass = pass;
+    User(String userName,String pass){
+        this.userName=userName;
+        this.pass=pass;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getPass() {
-        return pass;
-    }
+    public String getUserName(){return userName;}
+    public String getPass() {return pass;}
 
 
 }

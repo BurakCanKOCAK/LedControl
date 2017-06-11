@@ -7,6 +7,6 @@
         android:id="@+id/txtItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="32px"
-        android:textColor="@color/common_google_signin_btn_text_light"/>
+        android:textSize="32dp"
+        android:textColor="#AABB40"/>
 </LinearLayout>

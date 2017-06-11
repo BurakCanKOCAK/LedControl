@@ -5,7 +5,6 @@ package com.bkocak.ledcontrol;
  */
 
 //********************************************************************************************************
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
@@ -16,6 +15,44 @@ import android.os.PowerManager;
 //********************************************************************************************************
 public class logoActivity extends Activity {
     private PowerManager.WakeLock wl;
+
+
+    // ********************************************************************************************************
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.dialoglayout);
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Power Lock On");
+        wl.acquire();
+        //Enables Bluetooth If Not Enabled
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        Config config = new Config();
+        if(!config.isEmulatorMode()) {
+            if (!mBluetoothAdapter.isEnabled()) {
+                setBluetooth(true);
+            }
+        }
+        //
+        Thread timer = new Thread(){
+            public void run(){
+                try{
+                    sleep(2000);
+
+                }
+                catch(InterruptedException e){
+                    e.printStackTrace();
+                }
+                finally{
+                    Intent openMain=new Intent ("com.bkocak.ledcontrol.Opening");
+                    startActivity(openMain);
+                }
+
+            }
+        };
+        timer.start();
+    }
 
     // ********************************************************************************************************
     public static boolean setBluetooth(boolean enable) {
@@ -29,41 +66,6 @@ public class logoActivity extends Activity {
         }
         // No need to change bluetooth state
         return true;
-    }
-
-    // ********************************************************************************************************
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.logolayout);
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Power Lock On");
-        wl.acquire();
-        //Enables Bluetooth If Not Enabled
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        Config config = new Config();
-        if (!config.isEmulatorMode()) {
-            if (!mBluetoothAdapter.isEnabled()) {
-                setBluetooth(true);
-            }
-        }
-        //
-        Thread timer = new Thread() {
-            public void run() {
-                try {
-                    sleep(2000);
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    Intent openMain = new Intent("com.bkocak.ledcontrol.Opening");
-                    startActivity(openMain);
-                }
-
-            }
-        };
-        timer.start();
     }
 
     // ********************************************************************************************************
