@@ -21,6 +21,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -28,6 +30,7 @@ import android.widget.AbsoluteLayout;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -53,7 +56,7 @@ public class Opening extends Activity implements OnClickListener {
     //Block list
     public static String[] blocks = {"Villa"};
     //Thresholds
-    public static int[] numberOfFlats = {13};
+    public static int[] numberOfFlats = {27};
     //--------------------------------------------------------------------------------------------//
     //Code list
     public static String codeEffect = "9100";
@@ -81,6 +84,8 @@ public class Opening extends Activity implements OnClickListener {
     //Test Mode Buttons
     private static Button bCommercial, bBlockEOnSale, bBlockDOnSale;
     private static Button block1, block2, block3, block4, block5, block6, block7, block8, block9, block10, block11, block12, block13;
+    private static Button block14,block15,block16,block17,block18,block19,block20,block21,block22;
+    private static Button blockCami, blockSosyalTesis, blockAqua, blockPazar, blockOkul;
     private static Button saleMode;
     private static ListView SoldList;
     private static ImageView salesListBackgroundImage;
@@ -93,7 +98,7 @@ public class Opening extends Activity implements OnClickListener {
     public ArrayList<String> SoldListArray;
     ArrayAdapter<String> adapter;
     private static Boolean[] isVillaSoldList;
-    private static Boolean[] isVillaOn ={false,false,false,false,false,false,false,false,false,false,false,false,false};
+    private static Boolean[] isVillaOn ={false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};
     //********************************************************************************************************
     // ------------------BROADCAST RECEIVER ----------------------
     final BroadcastReceiver bReceiver = new BroadcastReceiver() {
@@ -146,7 +151,7 @@ public class Opening extends Activity implements OnClickListener {
 
         salesListBackgroundImage = (ImageView)findViewById(R.id.salesListBackground);
         SoldList = (ListView) findViewById(R.id.lvSoldList);
-        isVillaSoldList = new Boolean[13];
+        isVillaSoldList = new Boolean[27];
         SoldListArray = new ArrayList<String>();
         adapter = new ArrayAdapter<String>(this, R.layout.list_item, R.id.txtItem, SoldListArray);
         SoldList.setAdapter(adapter);
@@ -217,6 +222,20 @@ public class Opening extends Activity implements OnClickListener {
         block11 = (Button) findViewById(R.id.bBlock11);
         block12 = (Button) findViewById(R.id.bBlock12);
         block13 = (Button) findViewById(R.id.bBlock13);
+        block14 = (Button) findViewById(R.id.bBlock14);
+        block15 = (Button) findViewById(R.id.bBlock15);
+        block16 = (Button) findViewById(R.id.bBlock16);
+        block17 = (Button) findViewById(R.id.bBlock17);
+        block18 = (Button) findViewById(R.id.bBlock18);
+        block19 = (Button) findViewById(R.id.bBlock19);
+        block20 = (Button) findViewById(R.id.bBlock20);
+        block21 = (Button) findViewById(R.id.bBlock21);
+        block22 = (Button) findViewById(R.id.bBlock22);
+        blockCami = (Button) findViewById(R.id.bBlockCami);
+        blockSosyalTesis = (Button) findViewById(R.id.bBlockSosyalTesis);
+        blockAqua = (Button) findViewById(R.id.bBlockAqua);
+        blockPazar = (Button) findViewById(R.id.bBlockPazar);
+        blockOkul = (Button) findViewById(R.id.bBlockOkul);
 
         saleMode = (Button) findViewById(R.id.bSalesMode);
         //--------------------------------------------------------------------------------------------//
@@ -241,8 +260,59 @@ public class Opening extends Activity implements OnClickListener {
         block11.setOnClickListener(this);
         block12.setOnClickListener(this);
         block13.setOnClickListener(this);
+        block14.setOnClickListener(this);
+        block15.setOnClickListener(this);
+        block16.setOnClickListener(this);
+        block17.setOnClickListener(this);
+        block18.setOnClickListener(this);
+        block19.setOnClickListener(this);
+        block20.setOnClickListener(this);
+        block21.setOnClickListener(this);
+        block22.setOnClickListener(this);
+        blockOkul.setOnClickListener(this);
+        blockCami.setOnClickListener(this);
+        blockSosyalTesis.setOnClickListener(this);
+        blockPazar.setOnClickListener(this);
 
-        saleMode.setOnClickListener(this);
+        saleMode.setOnTouchListener(new View.OnTouchListener() {
+            private Handler mHandler;
+
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    if (mHandler != null) return true;
+                    mHandler = new Handler();
+                    mHandler.postDelayed(mAction, 5000);
+                }else if(motionEvent.getAction()==MotionEvent.ACTION_UP)
+                {
+                    if (mHandler == null) return true;
+                    mHandler.removeCallbacks(mAction);
+                    mHandler = null;
+                    saleModeState = !saleModeState;
+                    if (saleModeState) {
+                        SoldList.setVisibility(View.VISIBLE);
+                        salesListBackgroundImage.setVisibility(View.VISIBLE);
+                        saleMode.setBackgroundResource(R.drawable.nawroz_on);
+                        Toast.makeText(getApplicationContext(), "Sale mode active",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        salesListBackgroundImage.setVisibility(View.INVISIBLE);
+                        SoldList.setVisibility(View.INVISIBLE);
+                        saleMode.setBackgroundResource(R.drawable.nawroz_off);
+                        Toast.makeText(getApplicationContext(), "Sale mode turned off",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return false;
+            }
+
+            Runnable mAction = new Runnable() {
+                @Override public void run() {
+                    adminPanelLoginDialog();
+                }
+            };
+        });
 
         bBlockDOnSale.setOnClickListener(this);
         bBlockEOnSale.setOnClickListener(this);
@@ -256,6 +326,67 @@ public class Opening extends Activity implements OnClickListener {
         mHandler.postDelayed(sRunnable, 600000);
         SpecialSettings();
     }
+   public void adminPanelLoginDialog(){
+           LayoutInflater li = LayoutInflater.from(this);
+           View promptsView = li.inflate(R.layout.admin_login, null);
+           final Context ctx = this;
+           final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+           alertDialogBuilder.setView(promptsView);
+
+           final EditText userInput = (EditText) promptsView
+                   .findViewById(R.id.user_input);
+
+
+           // set dialog message
+           alertDialogBuilder
+                   .setCancelable(false)
+                   .setNegativeButton("Go",
+                           new DialogInterface.OnClickListener() {
+                               public void onClick(DialogInterface dialog,int id) {
+                                   /** DO THE METHOD HERE WHEN PROCEED IS CLICKED*/
+                                   String user_text = (userInput.getText()).toString();
+
+                                   /** CHECK FOR USER'S INPUT **/
+                                   if (user_text.equals(Config.getMasterKey()))
+                                   {
+                                       Intent intent = new Intent("com.bkocak.ledcontrol.AdminPanel");
+                                       startActivity(intent);
+
+                                   }
+                                   else{
+                                       String message = "The password you have entered is incorrect." + " \n \n" + "Please try again!";
+                                       AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                                       builder.setTitle("Error");
+                                       builder.setMessage(message);
+                                       builder.setPositiveButton("Cancel", null);
+                                       builder.setNegativeButton("Retry", new DialogInterface.OnClickListener() {
+                                           @Override
+                                           public void onClick(DialogInterface dialog, int id) {
+                                               adminPanelLoginDialog();
+                                           }
+                                       });
+                                       builder.create().show();
+
+                                   }
+                               }
+                           })
+                   .setPositiveButton("Cancel",
+                           new DialogInterface.OnClickListener() {
+                               public void onClick(DialogInterface dialog,int id) {
+                                   dialog.dismiss();
+                               }
+
+                           }
+
+                   );
+
+           // create alert dialog
+           AlertDialog alertDialog = alertDialogBuilder.create();
+
+           // show it
+           alertDialog.show();
+
+       }
 
     //********************************************************************************************************
     private void SpecialSettings() {
@@ -295,12 +426,23 @@ public class Opening extends Activity implements OnClickListener {
     public void BTOn(final View view) {
         //TODO Check bt is connected , if yes then do nothing . If not Then connect.
         Log.i("::OPENING.java::", ":::BTOn():::");
-        BT_is_connect = bl.BT_Connect(address, false);
+        if(Config.getMacAddress()!="")
+        {
+        BT_is_connect = bl.BT_Connect(Config.getMacAddress(), false);
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             Log.e("::EXCEPTION THROWED::", "::(!) BTOn() (!)::");
             e.printStackTrace();
+        }
+        }else
+        {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setMessage("There is not any registered BT device.Please define MAC Address in admin panel");
+                    alertDialogBuilder.setPositiveButton("OK", null);
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
         }
     }
 
@@ -316,20 +458,7 @@ public class Opening extends Activity implements OnClickListener {
 
         switch (v.getId()) {
             case R.id.bSalesMode:
-                saleModeState = !saleModeState;
-                if (saleModeState) {
-                    SoldList.setVisibility(View.VISIBLE);
-                    salesListBackgroundImage.setVisibility(View.VISIBLE);
-                    saleMode.setBackgroundResource(R.drawable.nawroz_on);
-                    Toast.makeText(getApplicationContext(), "Sale mode active",
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    salesListBackgroundImage.setVisibility(View.INVISIBLE);
-                    SoldList.setVisibility(View.INVISIBLE);
-                    saleMode.setBackgroundResource(R.drawable.nawroz_off);
-                    Toast.makeText(getApplicationContext(), "Sale mode turned off",
-                            Toast.LENGTH_SHORT).show();
-                }
+
                 break;
             //--------------------------------------------------------------------------------------------//
             // BLOCKS //////////////////////////////////////////////////////////////////////////////////////
@@ -371,7 +500,7 @@ public class Opening extends Activity implements OnClickListener {
                         isVillaOn[0]=false;
                         bl.sendData("0001");
                         Log.v("::OPENING.java::", "[ VILLLA 1 ][ OFF ]");
-                        Toast.makeText(getApplicationContext(), "Villa 1 OFF",
+                        Toast.makeText(getApplicationContext(), "BLOCK 1 is OFF",
                                 Toast.LENGTH_SHORT).show();
                     }else
                     {
@@ -379,7 +508,7 @@ public class Opening extends Activity implements OnClickListener {
                         isVillaOn[0]=true;
                         bl.sendData("1001");
                         Log.v("::OPENING.java::", "[ VILLLA 1 ][ ON ]");
-                        Toast.makeText(getApplicationContext(), "Villa 1 ON",
+                        Toast.makeText(getApplicationContext(), "BLOCK 1 is ON",
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -395,14 +524,14 @@ public class Opening extends Activity implements OnClickListener {
                         //turn off
                         isVillaOn[1]=false;
                         bl.sendData("0002");
-                        Toast.makeText(getApplicationContext(), "Villa 2 OFF",
+                        Toast.makeText(getApplicationContext(), "BLOCK 2 is OFF",
                                 Toast.LENGTH_SHORT).show();
                     }else
                     {
                         //turn on
                         isVillaOn[1]=true;
                         bl.sendData("1002");
-                        Toast.makeText(getApplicationContext(), "Villa 2 ON",
+                        Toast.makeText(getApplicationContext(), "BLOCK 2 is ON",
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -417,14 +546,14 @@ public class Opening extends Activity implements OnClickListener {
                         //turn off
                         isVillaOn[2]=false;
                         bl.sendData("0003");
-                        Toast.makeText(getApplicationContext(), "Villa 3 OFF",
+                        Toast.makeText(getApplicationContext(), "BLOCK 3 is OFF",
                                 Toast.LENGTH_SHORT).show();
                     }else
                     {
                         //turn on
                         isVillaOn[2]=true;
                         bl.sendData("1003");
-                        Toast.makeText(getApplicationContext(), "Villa 3 ON",
+                        Toast.makeText(getApplicationContext(), "BLOCK 3 is ON",
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -439,14 +568,14 @@ public class Opening extends Activity implements OnClickListener {
                         //turn off
                         isVillaOn[3]=false;
                         bl.sendData("0004");
-                        Toast.makeText(getApplicationContext(), "Villa 4 OFF",
+                        Toast.makeText(getApplicationContext(), "BLOCK 4 is OFF",
                                 Toast.LENGTH_SHORT).show();
                     }else
                     {
                         //turn on
                         isVillaOn[3]=true;
                         bl.sendData("1004");
-                        Toast.makeText(getApplicationContext(), "Villa 4 ON",
+                        Toast.makeText(getApplicationContext(), "BLOCK 4 is ON",
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -461,14 +590,14 @@ public class Opening extends Activity implements OnClickListener {
                         //turn off
                         isVillaOn[4]=false;
                         bl.sendData("0005");
-                        Toast.makeText(getApplicationContext(), "Villa 5 OFF",
+                        Toast.makeText(getApplicationContext(), "BLOCK 5 is OFF",
                                 Toast.LENGTH_SHORT).show();
                     }else
                     {
                         //turn on
                         isVillaOn[4]=true;
                         bl.sendData("1005");
-                        Toast.makeText(getApplicationContext(), "Villa 5 ON",
+                        Toast.makeText(getApplicationContext(), "BLOCK 5 is ON",
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -483,14 +612,14 @@ public class Opening extends Activity implements OnClickListener {
                         //turn off
                         isVillaOn[5]=false;
                         bl.sendData("0006");
-                        Toast.makeText(getApplicationContext(), "Villa 6 OFF",
+                        Toast.makeText(getApplicationContext(), "BLOCK 6 is OFF",
                                 Toast.LENGTH_SHORT).show();
                     }else
                     {
                         //turn on
                         isVillaOn[5]=true;
                         bl.sendData("1006");
-                        Toast.makeText(getApplicationContext(), "Villa 6 ON",
+                        Toast.makeText(getApplicationContext(), "BLOCK 6 is ON",
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -505,14 +634,14 @@ public class Opening extends Activity implements OnClickListener {
                         //turn off
                         isVillaOn[6]=false;
                         bl.sendData("0007");
-                        Toast.makeText(getApplicationContext(), "Villa 7 OFF",
+                        Toast.makeText(getApplicationContext(), "BLOCK 7 is OFF",
                                 Toast.LENGTH_SHORT).show();
                     }else
                     {
                         //turn on
                         isVillaOn[6]=true;
                         bl.sendData("1007");
-                        Toast.makeText(getApplicationContext(), "Villa 7 ON",
+                        Toast.makeText(getApplicationContext(), "BLOCK 7 is ON",
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -527,14 +656,14 @@ public class Opening extends Activity implements OnClickListener {
                         //turn off
                         isVillaOn[7]=false;
                         bl.sendData("0008");
-                        Toast.makeText(getApplicationContext(), "Villa 8 OFF",
+                        Toast.makeText(getApplicationContext(), "BLOCK 8 is OFF",
                                 Toast.LENGTH_SHORT).show();
                     }else
                     {
                         //turn on
                         isVillaOn[7]=true;
                         bl.sendData("1008");
-                        Toast.makeText(getApplicationContext(), "Villa 8 ON",
+                        Toast.makeText(getApplicationContext(), "BLOCK 8 is ON",
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -549,14 +678,14 @@ public class Opening extends Activity implements OnClickListener {
                         //turn off
                         isVillaOn[8]=false;
                         bl.sendData("0009");
-                        Toast.makeText(getApplicationContext(), "Villa 9 OFF",
+                        Toast.makeText(getApplicationContext(), "BLOCK 9 is OFF",
                                 Toast.LENGTH_SHORT).show();
                     }else
                     {
                         //turn on
                         isVillaOn[8]=true;
                         bl.sendData("1009");
-                        Toast.makeText(getApplicationContext(), "Villa 9 ON",
+                        Toast.makeText(getApplicationContext(), "BLOCK 9 is ON",
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -571,14 +700,14 @@ public class Opening extends Activity implements OnClickListener {
                         //turn off
                         isVillaOn[9]=false;
                         bl.sendData("0010");
-                        Toast.makeText(getApplicationContext(), "Villa 10 OFF",
+                        Toast.makeText(getApplicationContext(), "BLOCK 10 is OFF",
                                 Toast.LENGTH_SHORT).show();
                     }else
                     {
                         //turn on
                         isVillaOn[9]=true;
                         bl.sendData("1010");
-                        Toast.makeText(getApplicationContext(), "Villa 10 ON",
+                        Toast.makeText(getApplicationContext(), "BLOCK 10 is ON",
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -593,14 +722,14 @@ public class Opening extends Activity implements OnClickListener {
                         //turn off
                         isVillaOn[10]=false;
                         bl.sendData("0011");
-                        Toast.makeText(getApplicationContext(), "Villa 11 OFF",
+                        Toast.makeText(getApplicationContext(), "BLOCK 11 is OFF",
                                 Toast.LENGTH_SHORT).show();
                     }else
                     {
                         //turn on
                         isVillaOn[10]=true;
                         bl.sendData("1011");
-                        Toast.makeText(getApplicationContext(), "Villa 11 ON",
+                        Toast.makeText(getApplicationContext(), "BLOCK 11 is ON",
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -615,14 +744,14 @@ public class Opening extends Activity implements OnClickListener {
                         //turn off
                         isVillaOn[11]=false;
                         bl.sendData("0012");
-                        Toast.makeText(getApplicationContext(), "Villa 12 OFF",
+                        Toast.makeText(getApplicationContext(), "BLOCK 12 is OFF",
                                 Toast.LENGTH_SHORT).show();
                     }else
                     {
                         //turn on
                         isVillaOn[11]=true;
                         bl.sendData("1012");
-                        Toast.makeText(getApplicationContext(), "Villa 12 ON",
+                        Toast.makeText(getApplicationContext(), "BLOCK 12 is ON",
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -637,18 +766,309 @@ public class Opening extends Activity implements OnClickListener {
                         //turn off
                         isVillaOn[12]=false;
                         bl.sendData("0013");
-                        Toast.makeText(getApplicationContext(), "Villa 13 OFF",
+                        Toast.makeText(getApplicationContext(), "BLOCK 13 is OFF",
                                 Toast.LENGTH_SHORT).show();
                     }else
                     {
                         //turn on
                         isVillaOn[12]=true;
                         bl.sendData("1013");
-                        Toast.makeText(getApplicationContext(), "Villa 13 ON",
+                        Toast.makeText(getApplicationContext(), "BLOCK 13 is ON",
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
+            //********************//
+            case R.id.bBlock14:
+                if (saleModeState) {
+                    createDialog(14);
+                } else {
+                    if(isVillaOn[13])
+                    {
+                        //turn off
+                        isVillaOn[13]=false;
+                        bl.sendData("0014");
+                        Toast.makeText(getApplicationContext(), "BLOCK 14 is OFF",
+                                Toast.LENGTH_SHORT).show();
+                    }else
+                    {
+                        //turn on
+                        isVillaOn[13]=true;
+                        bl.sendData("1014");
+                        Toast.makeText(getApplicationContext(), "BLOCK 14 is ON",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+            //********************//
+            case R.id.bBlock15:
+                if (saleModeState) {
+                    createDialog(15);
+                } else {
+                    if(isVillaOn[14])
+                    {
+                        //turn off
+                        isVillaOn[14]=false;
+                        bl.sendData("0015");
+                        Toast.makeText(getApplicationContext(), "BLOCK 15 is OFF",
+                                Toast.LENGTH_SHORT).show();
+                    }else
+                    {
+                        //turn on
+                        isVillaOn[14]=true;
+                        bl.sendData("1015");
+                        Toast.makeText(getApplicationContext(), "BLOCK 15 is ON",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+            //********************//
+            case R.id.bBlock16:
+                if (saleModeState) {
+                    createDialog(16);
+                } else {
+                    if(isVillaOn[15])
+                    {
+                        //turn off
+                        isVillaOn[15]=false;
+                        bl.sendData("0016");
+                        Toast.makeText(getApplicationContext(), "BLOCK 16 is OFF",
+                                Toast.LENGTH_SHORT).show();
+                    }else
+                    {
+                        //turn on
+                        isVillaOn[15]=true;
+                        bl.sendData("1016");
+                        Toast.makeText(getApplicationContext(), "BLOCK 16 is ON",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+            //********************//
+            case R.id.bBlock17:
+                if (saleModeState) {
+                    createDialog(17);
+                } else {
+                    if(isVillaOn[16])
+                    {
+                        //turn off
+                        isVillaOn[16]=false;
+                        bl.sendData("0017");
+                        Toast.makeText(getApplicationContext(), "BLOCK 17 is OFF",
+                                Toast.LENGTH_SHORT).show();
+                    }else
+                    {
+                        //turn on
+                        isVillaOn[16]=true;
+                        bl.sendData("1017");
+                        Toast.makeText(getApplicationContext(), "BLOCK 17 is ON",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+            //********************//
+            case R.id.bBlock18:
+                if (saleModeState) {
+                    createDialog(18);
+                } else {
+                    if(isVillaOn[17])
+                    {
+                        //turn off
+                        isVillaOn[17]=false;
+                        bl.sendData("0018");
+                        Toast.makeText(getApplicationContext(), "BLOCK 18 is OFF",
+                                Toast.LENGTH_SHORT).show();
+                    }else
+                    {
+                        //turn on
+                        isVillaOn[17]=true;
+                        bl.sendData("1018");
+                        Toast.makeText(getApplicationContext(), "BLOCK 18 is ON",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+            //********************//
+            case R.id.bBlock19:
+                if (saleModeState) {
+                    createDialog(19);
+                } else {
+                    if(isVillaOn[18])
+                    {
+                        //turn off
+                        isVillaOn[18]=false;
+                        bl.sendData("0019");
+                        Toast.makeText(getApplicationContext(), "BLOCK 19 is OFF",
+                                Toast.LENGTH_SHORT).show();
+                    }else
+                    {
+                        //turn on
+                        isVillaOn[18]=true;
+                        bl.sendData("1019");
+                        Toast.makeText(getApplicationContext(), "BLOCK 19 is ON",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+            //********************//
+            case R.id.bBlock20:
+                if (saleModeState) {
+                    createDialog(20);
+                } else {
+                    if(isVillaOn[19])
+                    {
+                        //turn off
+                        isVillaOn[19]=false;
+                        bl.sendData("0020");
+                        Toast.makeText(getApplicationContext(), "BLOCK 20 is OFF",
+                                Toast.LENGTH_SHORT).show();
+                    }else
+                    {
+                        //turn on
+                        isVillaOn[19]=true;
+                        bl.sendData("1020");
+                        Toast.makeText(getApplicationContext(), "BLOCK 20 is ON",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+            //********************//
+            case R.id.bBlock21:
+                if (saleModeState) {
+                    createDialog(21);
+                } else {
+                    if(isVillaOn[20])
+                    {
+                        //turn off
+                        isVillaOn[20]=false;
+                        bl.sendData("0021");
+                        Toast.makeText(getApplicationContext(), "BLOCK 21 is OFF",
+                                Toast.LENGTH_SHORT).show();
+                    }else
+                    {
+                        //turn on
+                        isVillaOn[20]=true;
+                        bl.sendData("1021");
+                        Toast.makeText(getApplicationContext(), "BLOCK 21 is ON",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+            //********************//
+            case R.id.bBlock22:
+                if (saleModeState) {
+                    createDialog(22);
+                } else {
+                    if(isVillaOn[21])
+                    {
+                        //turn off
+                        isVillaOn[21]=false;
+                        bl.sendData("0022");
+                        Toast.makeText(getApplicationContext(), "BLOCK 22 is OFF",
+                                Toast.LENGTH_SHORT).show();
+                    }else
+                    {
+                        //turn on
+                        isVillaOn[21]=true;
+                        bl.sendData("1022");
+                        Toast.makeText(getApplicationContext(), "BLOCK 22 is ON",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+            //********************//
+            case R.id.bBlockSosyalTesis:
+                if (saleModeState) {
+                    Toast.makeText(getApplicationContext(), "This unit is not for sale !",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    if(isVillaOn[22])
+                    {
+                        //turn off
+                        isVillaOn[22]=false;
+                        bl.sendData("0023");
+                        Toast.makeText(getApplicationContext(), "Sosyal Tesis is OFF",
+                                Toast.LENGTH_SHORT).show();
+                    }else
+                    {
+                        //turn on
+                        isVillaOn[22]=true;
+                        bl.sendData("1023");
+                        Toast.makeText(getApplicationContext(), "Sosyal Tesis is ON",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+            //********************//
+            case R.id.bBlockPazar:
+                if (saleModeState) {
+                    Toast.makeText(getApplicationContext(), "This unit is not for sale !",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    if(isVillaOn[23])
+                    {
+                        //turn off
+                        isVillaOn[23]=false;
+                        bl.sendData("0024");
+                        Toast.makeText(getApplicationContext(), "Pazar Alani is OFF",
+                                Toast.LENGTH_SHORT).show();
+                    }else
+                    {
+                        //turn on
+                        isVillaOn[23]=true;
+                        bl.sendData("1024");
+                        Toast.makeText(getApplicationContext(), "Pazar Alani is ON",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+            //********************//
+            case R.id.bBlockCami:
+                if (saleModeState) {
+                    Toast.makeText(getApplicationContext(), "This unit is not for sale !",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    if(isVillaOn[24])
+                    {
+                        //turn off
+                        isVillaOn[24]=false;
+                        bl.sendData("0025");
+                        Toast.makeText(getApplicationContext(), "Cami is OFF",
+                                Toast.LENGTH_SHORT).show();
+                    }else
+                    {
+                        //turn on
+                        isVillaOn[24]=true;
+                        bl.sendData("1025");
+                        Toast.makeText(getApplicationContext(), "Cami is ON",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+            //********************//
+            case R.id.bBlockOkul:
+                if (saleModeState) {
+                    Toast.makeText(getApplicationContext(), "This unit is not for sale !",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    if(isVillaOn[25])
+                    {
+                        //turn off
+                        isVillaOn[25]=false;
+                        bl.sendData("0026");
+                        Toast.makeText(getApplicationContext(), "Okul is OFF",
+                                Toast.LENGTH_SHORT).show();
+                    }else
+                    {
+                        //turn on
+                        isVillaOn[25]=true;
+                        bl.sendData("1026");
+                        Toast.makeText(getApplicationContext(), "Okul is ON",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+
 
             //--------------------------------------------------------------------------------------------//
             // ALL ON
@@ -749,7 +1169,7 @@ public class Opening extends Activity implements OnClickListener {
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        mainL.setBackgroundResource(R.drawable.villa_background_4);
+        mainL.setBackgroundResource(R.drawable.background_adatepe);
         final Dialog emailDialog = new Dialog(Opening.this,
                 android.R.style.Theme_DeviceDefault);
         emailDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -757,49 +1177,65 @@ public class Opening extends Activity implements OnClickListener {
         emailDialog.setCancelable(false);
         emailDialog.setContentView(R.layout.dialoglayout);
         emailDialog.show();
-        if (!config.isEmulatorMode()) {
-            Thread connection = new Thread() {
+        if(Config.getMacAddress()!="") {
+            if (!config.isEmulatorMode()) {
+                Thread connection = new Thread() {
 
+                    public void run() {
+                        BT_is_connect = bl.BT_Connect(Config.getMacAddress(), false);
+                        bl.sendData("9999");
+
+                    }
+                };
+                connection.start();
+            }
+
+            Thread timer = new Thread() {
                 public void run() {
-                    BT_is_connect = bl.BT_Connect(address, false);
-                    bl.sendData("9999");
+                    try {
+                        sleep(1000);
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+                        emailDialog.dismiss();
+                        //bl.sendData("9999");  //UNCOMMENT
+
+                        Thread timer2 = new Thread() {
+                            public void run() {
+                                try {
+                                    sleep(1000);
+
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    emailDialog.dismiss();
+
+                                }
+
+                            }
+                        };
+                        timer2.start();
+                    }
 
                 }
             };
-            connection.start();
-        }
-
-        Thread timer = new Thread() {
-            public void run() {
-                try {
-                    sleep(1000);
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
+            timer.start();
+        }else
+        {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setMessage("There is not any registered BT device.Please define MAC Address in admin panel");
+            alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface arg0, int arg1) {
                     emailDialog.dismiss();
-                    //bl.sendData("9999");  //UNCOMMENT
-
-                    Thread timer2 = new Thread() {
-                        public void run() {
-                            try {
-                                sleep(4000);
-
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } finally {
-                                emailDialog.dismiss();
-
-                            }
-
-                        }
-                    };
-                    timer2.start();
+                    mainL.setBackgroundResource(R.drawable.background_adatepe);
                 }
+            });
 
-            }
-        };
-        timer.start();
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
 
         Log.e("::OPENING::ON_RESUME::", ":::ON RESUME ANOUNCED::");
 
@@ -821,7 +1257,7 @@ public class Opening extends Activity implements OnClickListener {
     }
 
     public void setAllFlatStatusOff() {
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < 27; i++) {
             isVillaOn[i]=false;
         }
         Log.e("Opening.java", "...All flat status cleared !...");
@@ -890,17 +1326,19 @@ public class Opening extends Activity implements OnClickListener {
         //********************************************************
         private void socket() {
             // TODO Auto-generated method stub
-            Thread connection = new Thread() {
-                public void run() {
-                    BT_is_connect = bl.BT_Connect(address, false);
-                }
-            };
-            connection.start();
+            if(Config.getMacAddress()!="") {
+                Thread connection = new Thread() {
+                    public void run() {
+                        BT_is_connect = bl.BT_Connect(Config.getMacAddress(), false);
+                    }
+                };
+                connection.start();
+            }
         }
     }   //********************************************************
 
     public void getVillaStatus() {
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < 27; i++) {
             try {
                 isVillaSoldList[i] = sharedPref.getBoolean(blocks[0] + "_" + i, false);
                 if (isVillaSoldList[i] == true) {
@@ -935,12 +1373,12 @@ public class Opening extends Activity implements OnClickListener {
                     builderSell.setTitle("Confirm");
                     if(isVillaSoldList[villaNumber-1])
                     {
-                        builderSell.setMessage("Un-Sell Villa "+villaNumber+" ?");
+                        builderSell.setMessage("Set Block "+villaNumber+" as On-Sale ?");
 
                     }else
 
                     {
-                        builderSell.setMessage("Sell Villa "+villaNumber+" ?");
+                        builderSell.setMessage("Sell Block "+villaNumber+" ?");
                     }
                         builderSell.setPositiveButton("YES",new DialogInterface.OnClickListener()
                         {
@@ -952,13 +1390,13 @@ public class Opening extends Activity implements OnClickListener {
                                     setVillaStatus(villaNumber, false);
                                     int data2Send = 2000+villaNumber;
                                     bl.sendData(String.valueOf(data2Send));
-                                    Toast.makeText(getApplicationContext(), "Villa "+villaNumber+" Un-Sold",
+                                    Toast.makeText(getApplicationContext(), "Block "+villaNumber+" On-Sale",
                                             Toast.LENGTH_SHORT).show();
                                 } else {
                                     setVillaStatus(villaNumber, true);
                                     int data2Send = 3000+villaNumber;
                                     bl.sendData(String.valueOf(data2Send));
-                                    Toast.makeText(getApplicationContext(), "Villa "+villaNumber+" Sold",
+                                    Toast.makeText(getApplicationContext(), "Block "+villaNumber+" Sold",
                                             Toast.LENGTH_SHORT).show();
                                 }
                                 dialog.dismiss();
