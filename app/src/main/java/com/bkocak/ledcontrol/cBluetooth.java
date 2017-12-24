@@ -42,26 +42,34 @@ package com.bkocak.ledcontrol;
  *
  */
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Set;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
+
+import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 public class cBluetooth {
 
     public final static String TAG = "::BLUETOOTH_ADAPTER::";
 
     private static BluetoothAdapter btAdapter = null;
+
     private BluetoothSocket btSocket = null;
     private OutputStream outStream = null;
     private ConnectedThread mConnectedThread;
@@ -180,9 +188,7 @@ public class cBluetooth {
                 mHandler.sendEmptyMessage(BL_SOCKET_FAILED);
                 return false;
             }
-            if (listen_InStream) { // whether to create a thread for the
-                // incoming data (����� �� ��������� �����
-                // ��� �������� ������)
+            if (listen_InStream) {
                 mConnectedThread = new ConnectedThread();
                 mConnectedThread.start();
             }
@@ -291,5 +297,7 @@ public class cBluetooth {
                 return false;
             }
         }
+
+
     }
 }
