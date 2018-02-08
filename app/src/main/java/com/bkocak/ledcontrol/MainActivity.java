@@ -1,10 +1,6 @@
 package com.bkocak.ledcontrol;
 //**************************************************************************************************
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Set;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -18,12 +14,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
-import android.text.InputFilter.LengthFilter;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.webkit.ConsoleMessage;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -35,7 +29,12 @@ import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.server.converter.StringToIntConverter;
+import com.bkocak.ledcontrol.wifi.RESTService;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 //**************************************************************************************************
 public class MainActivity extends Activity implements OnClickListener {
@@ -110,10 +109,10 @@ public class MainActivity extends Activity implements OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 Object o = lvOnFlatNumbers.getItemAtPosition(position);
-                String str=(String)o;//As you are using Default String Adapter
+                String str = (String) o;//As you are using Default String Adapter
                 tvDatatoSend.setText(str);
                 tvDatatoSend.setTextColor(Color.BLACK);
-                daire=Integer.valueOf(str);
+                daire = Integer.valueOf(str);
             }
         });
         //
@@ -155,7 +154,7 @@ public class MainActivity extends Activity implements OnClickListener {
         //--------------------------------------------------------------------------------------------//
         //Block general operations . To enable Sliding drawer , comment out setVisibility code line
         slidingDrawer1 = (SlidingDrawer) findViewById(R.id.slidingDrawer1);
-        slidingDrawer1.setVisibility(View.INVISIBLE);
+        slidingDrawer1.setVisibility(View.VISIBLE);
         //--------------------------------------------------------------------------------------------//
         //Buttons
         bAllOff = (Button) findViewById(R.id.bAllOff);
@@ -222,7 +221,7 @@ public class MainActivity extends Activity implements OnClickListener {
             @Override
             public void onClick(View v) {
                 tvData.setText("Connecting...");
-                BT_is_connect = bl.BT_Connect(address, false);
+                //BT_is_connect = bl.BT_Connect(address, false);
             }
         });
         // ------------------BT OFF-----------
@@ -232,7 +231,7 @@ public class MainActivity extends Activity implements OnClickListener {
             public void onClick(View v) {
                 tvBTStatus.setText("BT Connection OFF");
                 tvData.setText("Disconnected");
-                bl.BT_onPause();
+                //bl.BT_onPause();
                 // myBluetoothAdapter.disable();
                 // RelLay.setBackgroundResource(R.drawable.back_red);
 
@@ -465,7 +464,7 @@ public class MainActivity extends Activity implements OnClickListener {
     public void off(View view) {
         // Indicator.setBackgroundResource(R.drawable.red);
         // myBluetoothAdapter.disable();
-        bl.BT_onPause();
+        //bl.BT_onPause();
         // text.setText("Status: Disconnected");
         // Send.setEnabled(false);
         // Komut.setEnabled(false);
@@ -485,6 +484,10 @@ public class MainActivity extends Activity implements OnClickListener {
                 ":::Creating Connecting Dialog::");
         final Dialog connectDialog = new Dialog(MainActivity.this,
                 android.R.style.Theme_DeviceDefault);
+        if(daire!=0)
+        {
+            tvDatatoSend.setText(String.valueOf(daire));
+        }
         connectDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         connectDialog.setCancelable(false);
         connectDialog.setContentView(R.layout.dialoglayout);
@@ -495,8 +498,8 @@ public class MainActivity extends Activity implements OnClickListener {
                 public void run() {
                     Log.e("::Main_Activity::CT::",
                             ":::Thread:Started::");
-                    BT_is_connect = bl.BT_Connect(address, false);
-                    bl.sendData("9999");
+                    //BT_is_connect = bl.BT_Connect(address, false);
+                    //bl.sendData("9999");
 
                 }
             };
@@ -505,7 +508,7 @@ public class MainActivity extends Activity implements OnClickListener {
         Thread timer = new Thread() {
             public void run() {
                 try {
-                    sleep(2200);
+                    sleep(500);
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -548,18 +551,11 @@ public class MainActivity extends Activity implements OnClickListener {
     protected void onPause() {
         super.onPause();
         // BT_is_connect = bl.BT_Connect(address, false);
-        bl.BT_onPause();
+        //bl.BT_onPause();
     }
 
     @Override
     public void onClick(View v) {
-        /*
-         * if (reconnect_flag == true) { myBluetoothAdapter.enable();
-		 * bl.BT_Connect(address, false); reconnect_flag = false;
-		 *
-		 * }
-		 */
-
         switch (v.getId()) {
 
 		/*
@@ -577,23 +573,37 @@ public class MainActivity extends Activity implements OnClickListener {
                 break;
             case R.id.bAllOn:
                 Log.e("::MAIN ACTIVITY::", ":::ALL ON:::");
-                bl.sendData(Opening.codeAllOn);
+                //bl.sendData(Opening.codeAllOn);
+                try {
+                    RESTService.allOn();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 tvDatatoSend.setText("-");
                 tvDatatoSend.setTextColor(Color.GREEN);
-                daire=0;
+                daire = 0;
                 setAllFlatStatusOff();
                 break;
             case R.id.bAllOff:
                 Log.e("::MAIN ACTIVITY::", ":::ALL OFF:::");
-                bl.sendData(Opening.codeAllOff);
+                //bl.sendData(Opening.codeAllOff);
+                try {
+                    RESTService.allOff();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 tvDatatoSend.setText("-");
                 tvDatatoSend.setTextColor(Color.RED);
-                daire=0;
+                daire = 0;
                 setAllFlatStatusOff();
                 break;
 //--------------------------------------------------------------------------------------------//
-/*          TODO OnSale & Sale methods will be implemented if necessary.
-             case R.id.bSell:
+            //TODO OnSale & Sale methods will be implemented if necessary.
+            case R.id.bSell:
 
                 if (eT_sell.getText().toString().matches("")) {
                     Log.e("::::::ERROR:::::", eT_sell.getText().toString());
@@ -606,102 +616,96 @@ public class MainActivity extends Activity implements OnClickListener {
 
                 int aa = Integer.parseInt(eT_sell.getText().toString());
 
-                if (block_name.equals("C")) {
-                    if (aa > 435) {
+                if (block_name.equals("Main Block")) {
+                    if (aa > 64) {
                         Toast.makeText(this.getBaseContext(),
-                                "There are 435 flats on the Block C",
+                                "There are 64 flats on the main block!",
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        aa += 3000;
-                        bl.sendData(Integer.toString(aa));
-                        Log.v(block_name + " den SATILDI : ",
-                                Integer.toString(aa - 3000));
+                        //aa += 3000;
+                        //bl.sendData(Integer.toString(aa));
+                        try {
+                            RESTService.changeFlatStatus(aa, "sell");
+                            Log.v(block_name + " den SATILDI : ",
+                                    Integer.toString(aa));
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
 
-                } else if (block_name.equals("D")) {
-                    if (aa > 44) {
+                } else if (block_name.equals("Commercials")) {
+                    if (aa > 14) {
                         Toast.makeText(this.getBaseContext(),
-                                "There are 44 flats on the Block D",
+                                "There are only 14 commercials!",
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        aa += 3000;
-                        aa += 435;
-                        bl.sendData(Integer.toString(aa));
-                        Log.v(block_name + " den SATILDI : ",
-                                Integer.toString(aa - 3435));
+                        try {
+                            RESTService.changeCommercialStatus(aa, "sell");
+                            Log.v(block_name + " den SATILDI : ",
+                                    Integer.toString(aa));
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
-
-                } else if (block_name.equals("E")) {
-                    if (aa > 325) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 325 flats on the Block E",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        aa += 3000;
-                        aa += 479;
-                        bl.sendData(Integer.toString(aa));
-                        Log.v(block_name + " den SATILDI : ",
-                                Integer.toString(aa - 3479));
-                    }
-
                 }
 
                 break;
 
             case R.id.bUnSell:
                 if (eT_sell.getText().toString().matches("")) {
-                    System.out.println(eT_sell.getText());
+                    Log.e("::::::ERROR:::::", eT_sell.getText().toString());
                     Toast.makeText(this.getBaseContext(),
-                            "Please enter a valid flat number to unsell.",
+                            "Please enter a valid flat number to sell.",
                             Toast.LENGTH_SHORT).show();
+
                     break;
                 }
                 int aa2 = Integer.parseInt(eT_sell.getText().toString());
-
-                if (block_name.equals("C")) {
-                    if (aa2 > 435) {
+                if (block_name.equals("Main Block")) {
+                    if (aa2 > 64) {
                         Toast.makeText(this.getBaseContext(),
-                                "There are 435 flats on the Block C !",
+                                "There are 64 flats on the main block!",
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        aa2 += 2000;
-                        bl.sendData(Integer.toString(aa2));
-                        Log.v(block_name + "C den Geri Al�nd� : ",
-                                Integer.toString(aa2 - 2000));
+                        //aa += 3000;
+                        //bl.sendData(Integer.toString(aa));
+                        try {
+                            RESTService.changeFlatStatus(aa2, "onsale");
+                            Log.v(block_name + " den Satista.",
+                                    Integer.toString(aa2));
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
 
-                } else if (block_name.equals("D")) {
-                    if (aa2 > 44) {
+                } else if (block_name.equals("Commercials")) {
+                    if (aa2 > 14) {
                         Toast.makeText(this.getBaseContext(),
-                                "There are 44 flats on the Block D !",
+                                "There are only 14 commercials!",
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        aa2 += 2000;
-                        aa2 += 435;
-                        bl.sendData(Integer.toString(aa2));
-                        Log.v(block_name + "D den Geri Al�nd� : ",
-                                Integer.toString(aa2 - 2435));
+                        try {
+                            RESTService.changeCommercialStatus(aa2, "onsale");
+                            Log.v(block_name + " den Satista.",
+                                    Integer.toString(aa2));
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
-
-                } else if (block_name.equals("E")) {
-                    if (aa2 > 325) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 325 flats on the Block E !",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        aa2 += 2000;
-                        aa2 += 479;
-                        bl.sendData(Integer.toString(aa2));
-                        Log.v(block_name + "E den Geri Al�nd� : ",
-                                Integer.toString(aa2 - 2479));
-                    }
-
                 }
-                break;*/
+                break;
             //--------------------------------------------------------------------------------------------//
             case R.id.bOn:
                 //Edit currently on leds list
-                if (saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] == 1) {
+                /*if (saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] == 1) {
                     //Daire yanik konumdaysa tekrar data gondermeyi engelle
                     isFlatOff = false;
                 } else if (tvDatatoSend.getText().equals("-") || daire == 0) {
@@ -730,13 +734,32 @@ public class MainActivity extends Activity implements OnClickListener {
                 } else {
                     Log.e("bON - Invalid Message:", Integer.toString(daire));
                 }
+                */
+                if (block_name.equals("Main Block")) {
+                    try {
+                        RESTService.changeFlatStatus(daire, "on");
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    try {
+                        RESTService.changeCommercialStatus(daire, "on");
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                tvDatatoSend.setTextColor(Color.GREEN);
 
                 daire = 0;
                 daire2 = 0;
                 break;
             //--------------------------------------------------------------------------------------------//
             case R.id.bOff:
-
+                /*
                 if (saved_list[daire + Opening.calculateBlockThresholdValue(block_name)] == 0) {
                     //Daire sonukse tekrar sondurme komutunu gondermeyi engellemek icin isFlatOn=false
                     isFlatOn = false;
@@ -769,6 +792,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     setFlatStatus(daire, false);
                     daire = 0;
                 }
+                */
                 /*else if (daire == 0) {
                     tvDatatoSend.setTextColor(Color.GREEN);
                     Log.v("MODE :", "OFF");
@@ -783,11 +807,25 @@ public class MainActivity extends Activity implements OnClickListener {
                     setFlatStatus(daire,false);
                     daire = 0;
                 } */
-                else {
-
-                    Log.e(" bOff - Invalid Message", Integer.toString(daire));
-                    tvDatatoSend.setTextColor(Color.RED);
+                if (block_name.equals("Main Block")) {
+                    try {
+                        RESTService.changeFlatStatus(daire, "off");
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    try {
+                        RESTService.changeCommercialStatus(daire, "off");
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+                tvDatatoSend.setTextColor(Color.RED);
+
                 daire = 0;
                 daire2 = 0;
                 break;
@@ -889,12 +927,12 @@ public class MainActivity extends Activity implements OnClickListener {
                 // tvDatatoSend.setText("3+1");
                 break;
             case R.id.onSale:
-                if (block_name.equals("C")) {
-                    bl.sendData("9410");
-                } else if (block_name.equals("D")) {
-                    bl.sendData("9420");
-                } else if (block_name.equals("E")) {
-                    bl.sendData("9430");
+                try {
+                    RESTService.showOnSale();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 break;
             case R.id.bErase:

@@ -38,7 +38,7 @@ public class logoActivity extends Activity {
         Thread timer = new Thread(){
             public void run(){
                 try{
-                    sleep(2000);
+                    sleep(500);
 
                 }
                 catch(InterruptedException e){

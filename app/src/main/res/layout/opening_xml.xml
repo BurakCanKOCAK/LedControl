@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/villa_background_4"
+    android:background="@drawable/project_2"
     tools:context="com.bkocak.ledcontrol.Opening"
     android:id="@+id/MainLayout">
 
@@ -84,12 +84,13 @@
         android:id="@+id/bSalesMode"
         android:layout_width="127dp"
         android:layout_height="40dp"
-        android:layout_x="8dp"
-        android:layout_y="477dp"
+        android:layout_x="140dp"
+        android:layout_y="9dp"
         android:background="@drawable/nawroz_off"
         android:text="Sales Mode"
         android:textColor="@android:color/background_light"
-        android:textSize="15dp" />
+        android:textSize="15dp"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/bOnSale"
@@ -103,8 +104,8 @@
         android:id="@+id/bEffect"
         android:layout_width="127dp"
         android:layout_height="40dp"
-        android:layout_x="8dp"
-        android:layout_y="527dp"
+        android:layout_x="885dp"
+        android:layout_y="431dp"
         android:background="@drawable/nawroz_button"
         android:text="Effect"
         android:textColor="@android:color/background_light"
@@ -118,6 +119,50 @@
         android:layout_y="479dp"
         android:background="@drawable/nawroz_button"
         android:text="All Off"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp" />
+
+    <Button
+        android:id="@+id/bCommercialOn"
+        android:layout_width="127dp"
+        android:layout_height="40dp"
+        android:layout_x="18dp"
+        android:layout_y="479dp"
+        android:background="@drawable/nawroz_button"
+        android:text="Commercials On"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp" />
+
+    <Button
+        android:id="@+id/bCommercialOff"
+        android:layout_width="127dp"
+        android:layout_height="40dp"
+        android:layout_x="18dp"
+        android:layout_y="527dp"
+        android:background="@drawable/nawroz_button"
+        android:text="Commercials Off"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp" />
+
+    <Button
+        android:id="@+id/bFlatsOn"
+        android:layout_width="127dp"
+        android:layout_height="40dp"
+        android:layout_x="18dp"
+        android:layout_y="383dp"
+        android:background="@drawable/nawroz_button"
+        android:text="Flats On"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp" />
+
+    <Button
+        android:id="@+id/bFlatsOff"
+        android:layout_width="127dp"
+        android:layout_height="40dp"
+        android:layout_x="18dp"
+        android:layout_y="431dp"
+        android:background="@drawable/nawroz_button"
+        android:text="Flats Off"
         android:textColor="@android:color/background_light"
         android:textSize="15dp" />
 
@@ -167,145 +212,47 @@
         android:visibility="invisible" />
 
     <Button
-        android:id="@+id/bBlock12"
-        android:layout_width="97dp"
-        android:layout_height="115dp"
+        android:id="@+id/bMainBlock"
+        android:layout_width="220dp"
+        android:layout_height="273dp"
         android:layout_marginLeft="64dp"
         android:layout_marginTop="28dp"
-        android:layout_x="624dp"
-        android:layout_y="99dp"
+        android:layout_x="410dp"
+        android:layout_y="24dp"
         android:background="@drawable/selectblock"
         android:textColor="@android:color/background_light" />
 
     <Button
-        android:id="@+id/bBlock13"
-        android:layout_width="121dp"
-        android:layout_height="84dp"
+        android:id="@+id/bCommercials"
+        android:layout_width="162dp"
+        android:layout_height="91dp"
         android:layout_marginLeft="64dp"
         android:layout_marginTop="28dp"
-        android:layout_x="724dp"
-        android:layout_y="171dp"
+        android:layout_x="635dp"
+        android:layout_y="209dp"
         android:background="@drawable/selectblock"
         android:textColor="@android:color/background_light" />
 
     <Button
-        android:id="@+id/bBlock2"
-        android:layout_width="113dp"
-        android:layout_height="146dp"
-        android:layout_marginLeft="64dp"
-        android:layout_marginTop="28dp"
-        android:layout_x="712dp"
-        android:layout_y="304dp"
-        android:background="@drawable/selectblock"
-        android:textColor="@android:color/background_light" />
-
-    <Button
-        android:id="@+id/bBlock4"
-        android:layout_width="93dp"
-        android:layout_height="109dp"
-        android:layout_marginLeft="64dp"
-        android:layout_marginTop="28dp"
-        android:layout_x="495dp"
-        android:layout_y="333dp"
-        android:background="@drawable/selectblock"
-        android:textColor="@android:color/background_light" />
-
-    <Button
-        android:id="@+id/bBlock7"
-        android:layout_width="108dp"
-        android:layout_height="101dp"
-        android:layout_marginBottom="122dp"
-        android:layout_marginRight="16dp"
-        android:layout_x="135dp"
-        android:layout_y="278dp"
-        android:background="@drawable/selectblock"
-        android:textColor="@android:color/background_light" />
-
-    <Button
-        android:id="@+id/bBlock6"
-        android:layout_width="99dp"
-        android:layout_height="101dp"
-        android:layout_marginBottom="122dp"
-        android:layout_marginRight="16dp"
-        android:layout_x="253dp"
-        android:layout_y="308dp"
-        android:background="@drawable/selectblock"
-        android:textColor="@android:color/background_light" />
-
-    <Button
-        android:id="@+id/bBlock5"
-        android:layout_width="106dp"
-        android:layout_height="102dp"
-        android:layout_marginBottom="122dp"
-        android:layout_marginRight="16dp"
-        android:layout_x="365dp"
-        android:layout_y="331dp"
-        android:background="@drawable/selectblock"
-        android:textColor="@android:color/background_light" />
-
-    <Button
-        android:id="@+id/bBlock8"
+        android:id="@+id/bCommercials2"
         android:layout_width="132dp"
-        android:layout_height="84dp"
+        android:layout_height="103dp"
         android:layout_marginLeft="64dp"
         android:layout_marginTop="28dp"
-        android:layout_x="223dp"
-        android:layout_y="192dp"
+        android:layout_x="517dp"
+        android:layout_y="306dp"
         android:background="@drawable/selectblock"
         android:textColor="@android:color/background_light" />
 
     <Button
-        android:id="@+id/bBlock9"
-        android:layout_width="129dp"
-        android:layout_height="87dp"
+        android:id="@+id/bCommercials3"
+        android:layout_width="160dp"
+        android:layout_height="155dp"
         android:layout_marginLeft="64dp"
         android:layout_marginTop="28dp"
-        android:layout_x="241dp"
-        android:layout_y="102dp"
+        android:layout_x="353dp"
+        android:layout_y="306dp"
         android:background="@drawable/selectblock"
         android:textColor="@android:color/background_light" />
 
-    <Button
-        android:id="@+id/bBlock10"
-        android:layout_width="111dp"
-        android:layout_height="115dp"
-        android:layout_marginLeft="64dp"
-        android:layout_marginTop="28dp"
-        android:layout_x="383dp"
-        android:layout_y="80dp"
-        android:background="@drawable/selectblock"
-        android:textColor="@android:color/background_light" />
-
-    <Button
-        android:id="@+id/bBlock11"
-        android:layout_width="102dp"
-        android:layout_height="112dp"
-        android:layout_marginLeft="64dp"
-        android:layout_marginTop="28dp"
-        android:layout_x="504dp"
-        android:layout_y="84dp"
-        android:background="@drawable/selectblock"
-        android:textColor="@android:color/background_light" />
-
-    <Button
-        android:id="@+id/bBlock3"
-        android:layout_width="113dp"
-        android:layout_height="109dp"
-        android:layout_marginLeft="64dp"
-        android:layout_marginTop="28dp"
-        android:layout_x="596dp"
-        android:layout_y="331dp"
-        android:background="@drawable/selectblock"
-        android:textColor="@android:color/background_light" />
-
-    <Button
-        android:id="@+id/bBlock1"
-        android:layout_width="144dp"
-        android:layout_height="111dp"
-        android:layout_marginLeft="64dp"
-        android:layout_marginTop="28dp"
-        android:layout_x="827dp"
-        android:layout_y="268dp"
-        android:background="@drawable/selectblock"
-        android:textColor="@android:color/background_light" />
 </AbsoluteLayout>
