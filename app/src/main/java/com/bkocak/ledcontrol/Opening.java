@@ -309,7 +309,7 @@ public class Opening extends Activity implements OnClickListener {
             @Override
             public boolean onLongClick(View view) {
                 final Dialog d = new Dialog(Opening.this);
-                d.setTitle("NumberPicker");
+                d.setTitle("Timer (Minutes)");
                 d.setContentView(R.layout.dialog);
                 Button b1 = (Button) d.findViewById(R.id.button1);
                 Button b2 = (Button) d.findViewById(R.id.button2);
