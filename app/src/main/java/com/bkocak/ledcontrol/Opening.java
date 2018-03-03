@@ -26,8 +26,12 @@ import android.view.Window;
 import android.widget.AbsoluteLayout;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bkocak.ledcontrol.wifi.RESTService;
@@ -35,6 +39,8 @@ import com.bkocak.ledcontrol.wifi.RESTService;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 //********************************************************************************************************
@@ -48,9 +54,9 @@ public class Opening extends Activity implements OnClickListener {
     };
     //--------------------------------------------------------------------------------------------//
     //Block list
-    public static String[] blocks = {"Main Block","Commercials"};
+    public static String[] blocks = {"A-1", "A-2"};
     //Thresholds
-    public static int[] numberOfFlats = {88,14};
+    public static int[] numberOfFlats = {78, 78};
     //--------------------------------------------------------------------------------------------//
     //Code list
     public static String codeEffect = "9100";
@@ -76,16 +82,18 @@ public class Opening extends Activity implements OnClickListener {
     //--------------------------------------------------------------------------------------------//
     private static Button bOnSaleType1, bOnSaleType2, bEffect, bOnSale;
     //Test Mode Buttons
-    private static Button bCommercialOn,bCommercialOff,bFlatsOn,bFlatsOff;
-    private static Button bMainBlock, bCommercialBlock,bCommercialBlock2,bCommercialBlock3;
+    private static Button bCommercialOn, bCommercialOff, bFlatsOn, bFlatsOff;
+    private static Button bA1BlOCK, bA2BlOCK;
     private static Button saleMode;
+    private static Switch autoEffect;
     private static ListView SoldList;
     private static ImageView salesListBackgroundImage;
     private static cBluetooth bl = null;
     private static boolean BT_is_connect;
     private static AbsoluteLayout mainL;
     private static boolean saleModeState = false;
-
+    public static Handler handler;
+    static Dialog dialog ;
 
     public ArrayList<String> SoldListArray;
     ArrayAdapter<String> adapter;
@@ -115,6 +123,12 @@ public class Opening extends Activity implements OnClickListener {
     private BluetoothAdapter myBluetoothAdapter;
     private Set<BluetoothDevice> pairedDevices;
     private PowerManager.WakeLock wl;
+    public final static int TIMER_START = 0;
+    public final static int TIMER_RESET = 1;
+    public final static int TIMER_STOP = 2;
+    public static Timer timerObj = null;
+    public static int time2Effect;
+    public static boolean isAutoEffect = false;
 
     //--------------------------------------------------------------------------------------------//
     public static int calculateBlockThresholdValue(String blockName) {
@@ -137,6 +151,78 @@ public class Opening extends Activity implements OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("::OPENING.java::", "::: onCreate() :::");
+        this.sharedPref = getSharedPreferences("data",
+                MODE_PRIVATE);
+        time2Effect = sharedPref.getInt("effectTime", 1800000);
+        //-------------------------//
+        handler = new Handler() {
+            @Override
+            public void handleMessage(final Message msg) {
+                //String content = msg.obj.toString();
+                switch (msg.arg1) {
+                    case TIMER_START:
+                        //START TIMER WHEN ACTIVITY INITIALIZED
+                        if (timerObj == null) {
+                            timerObj = new Timer();
+                            TimerTask timerTaskObj = new TimerTask() {
+                                public void run() {
+                                    try {
+                                        RESTService.effect();
+                                        Message msg = new Message();
+                                        msg.arg1 = TIMER_STOP;
+                                        handler.sendMessage(msg);
+                                    } catch (ExecutionException e) {
+                                        e.printStackTrace();
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            };
+                            timerObj.schedule(timerTaskObj, time2Effect, time2Effect);
+                            //Toast.makeText(getApplicationContext(), "TIMER STARTED", Toast.LENGTH_LONG).show();
+                        } else {
+                            //Toast.makeText(getApplicationContext(), "TIMER ALREADY STARTED!", Toast.LENGTH_LONG).show();
+                        }
+
+
+                        break;
+
+                    case TIMER_RESET:
+                        //RESET TIMER (IN CASE OF NEW COMMAND RECEPTION)
+                        if (isAutoEffect) {
+                            if (timerObj != null) {
+                                timerObj.cancel();
+                            }
+                            timerObj = new Timer();
+                            final TimerTask timerTaskObj = new TimerTask() {
+                                public void run() {
+                                    try {
+                                        RESTService.effectAsync();
+                                        timerObj.cancel();
+                                        timerObj=new Timer();
+                                        Message msg = new Message();
+                                        msg.arg1 = TIMER_RESET;
+                                        handler.sendMessage(msg);
+                                    } catch (ExecutionException e) {
+                                        e.printStackTrace();
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            };
+                            timerObj.schedule(timerTaskObj, time2Effect, time2Effect);
+                            //Toast.makeText(getApplicationContext(), "TIMER RESET", Toast.LENGTH_LONG).show();
+                        }
+                        break;
+                    case TIMER_STOP:
+                        //STOP TIMER
+                        //Toast.makeText(getApplicationContext(), "TIMER STOPPED", Toast.LENGTH_LONG).show();
+                        break;
+                }
+            }
+
+        };
+        //-------------------------//
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.opening_xml);
@@ -194,33 +280,86 @@ public class Opening extends Activity implements OnClickListener {
         ButtonLEDON = (Button) findViewById(R.id.ButtonLEDON);
         ButtonLEDOFF = (Button) findViewById(R.id.ButtonLEDOFF);
         bEffect = (Button) findViewById(R.id.bEffect);
+        autoEffect = (Switch) findViewById(R.id.autoEffect);
 
         bDisconnect.setOnClickListener(this);
         bConnect.setOnClickListener(this);
         ButtonLEDOFF.setOnClickListener(this);
         ButtonLEDON.setOnClickListener(this);
         bEffect.setOnClickListener(this);
-        //--------------------------------------------------------------------------------------------//
-        bMainBlock = (Button) findViewById(R.id.bMainBlock);
-        bCommercialBlock = (Button) findViewById(R.id.bCommercials);
-        bCommercialBlock2 = (Button) findViewById(R.id.bCommercials2);
-        bCommercialBlock3 = (Button) findViewById(R.id.bCommercials3);
 
+        autoEffect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                isAutoEffect = b;
+                if (!isAutoEffect) {
+                    Toast.makeText(getApplicationContext(), "Auto Effect Disabled", Toast.LENGTH_LONG).show();
+                    timerObj.cancel();
+                } else {
+                    //---//
+                    Toast.makeText(getApplicationContext(), "Auto Effect Enabled ("+String.valueOf(time2Effect/60000)+"mins)", Toast.LENGTH_LONG).show();
+                    Message msg = new Message();
+                    msg.arg1 = TIMER_RESET;
+                    handler.sendMessage(msg);
+                    //---//
+                }
+            }
+        });
+        autoEffect.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                final Dialog d = new Dialog(Opening.this);
+                d.setTitle("NumberPicker");
+                d.setContentView(R.layout.dialog);
+                Button b1 = (Button) d.findViewById(R.id.button1);
+                Button b2 = (Button) d.findViewById(R.id.button2);
+                final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
+                np.setMaxValue(300);
+                np.setMinValue(1);
+                np.setWrapSelectorWheel(false);
+                b1.setOnClickListener(new OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v) {
+                        SharedPreferences sharedPref = getSharedPreferences("data",
+                                MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        String key = "effectTime";
+                        editor.putInt(key,np.getValue()*60*1000);
+                        time2Effect=np.getValue()*60*1000;
+                        editor.commit();
+                        Toast.makeText(getApplicationContext(), "Effect timer set for "+String.valueOf(np.getValue())+"mins.", Toast.LENGTH_LONG).show();
+                        d.dismiss();
+                    }
+                });
+                b2.setOnClickListener(new OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v) {
+                        d.dismiss();
+                    }
+                });
+                d.show();
+                return false;
+            }
+        });
+
+        //--------------------------------------------------------------------------------------------//
+        bA1BlOCK = (Button) findViewById(R.id.bA1BlOCK);
+        bA2BlOCK = (Button) findViewById(R.id.bA2BlOCK);
         saleMode = (Button) findViewById(R.id.bSalesMode);
         //--------------------------------------------------------------------------------------------//
         bCommercialOn = (Button) findViewById(R.id.bCommercialOn);
         bCommercialOff = (Button) findViewById(R.id.bCommercialOff);
         bFlatsOn = (Button) findViewById(R.id.bFlatsOn);
-        bFlatsOff= (Button) findViewById(R.id.bFlatsOff);
+        bFlatsOff = (Button) findViewById(R.id.bFlatsOff);
         bOnSaleType1 = (Button) findViewById(R.id.bOnSaleType1);
         bOnSaleType2 = (Button) findViewById(R.id.bOnSaleType2);
         bOnSale = (Button) findViewById(R.id.bOnSale);
         //bMainBlock = (Button) findViewById(R.id.bMainBlock);
 
-        bMainBlock.setOnClickListener(this);
-        bCommercialBlock.setOnClickListener(this);
-        bCommercialBlock2.setOnClickListener(this);
-        bCommercialBlock3.setOnClickListener(this);
+        bA1BlOCK.setOnClickListener(this);
+        bA2BlOCK.setOnClickListener(this);
 
         saleMode.setOnClickListener(this);
 
@@ -257,6 +396,13 @@ public class Opening extends Activity implements OnClickListener {
     }
 
     //********************************************************************************************************
+    public static void resetTimer() {
+        Message msg = new Message();
+        msg.arg1 = TIMER_RESET;
+        handler.sendMessage(msg);
+    }
+
+    //********************************************************************************************************
     public void BTOff(View view) {
         //TODO Check bt is connected , if yes then cut connection .If no then do nothing
         Log.i("::OPENING.java::", "::: BTOff() :::");
@@ -270,7 +416,9 @@ public class Opening extends Activity implements OnClickListener {
             Log.e("::EXCEPTION THROWED::", "::(!) BTOff() (!)::");
             e.printStackTrace();
         }
+        resetTimer();
     }
+
 
     //********************************************************************************************************
     public void BTOn(final View view) {
@@ -283,6 +431,7 @@ public class Opening extends Activity implements OnClickListener {
             Log.e("::EXCEPTION THROWED::", "::(!) BTOn() (!)::");
             e.printStackTrace();
         }
+        resetTimer();
     }
 
     //********************************************************************************************************
@@ -343,6 +492,7 @@ public class Opening extends Activity implements OnClickListener {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                resetTimer();
                 break;
             case R.id.bCommercialOn:
                 //mainL.setBackgroundResource(R.drawable.block_e);
@@ -353,9 +503,10 @@ public class Opening extends Activity implements OnClickListener {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                resetTimer();
                 break;
             case R.id.bFlatsOff:
-                //mainL.setBackgroundResource(R.drawable.block_e);
+                mainL.setBackgroundResource(R.drawable.kazak);
                 try {
                     RESTService.flatsOff();
                 } catch (ExecutionException e) {
@@ -363,9 +514,10 @@ public class Opening extends Activity implements OnClickListener {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                resetTimer();
                 break;
             case R.id.bFlatsOn:
-                //mainL.setBackgroundResource(R.drawable.block_e);
+                mainL.setBackgroundResource(R.drawable.kazak_allon);
                 try {
                     RESTService.flatsOn();
                 } catch (ExecutionException e) {
@@ -373,41 +525,40 @@ public class Opening extends Activity implements OnClickListener {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                resetTimer();
                 break;
-            case R.id.bCommercials:
-                //mainL.setBackgroundResource(R.drawable.block_e);
-                name = "Commercials";
+
+            case R.id.bA1BlOCK:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainL.setBackgroundResource(R.drawable.kazak_a1);
+                    }
+                });
+                name = "A-1";
                 editor.putString(key, name);
                 editor.commit();
                 openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
-                startActivity(openMain);
-                break;
-            case R.id.bCommercials2:
-                //mainL.setBackgroundResource(R.drawable.block_e);
-                name = "Commercials";
-                editor.putString(key, name);
-                editor.commit();
-                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
-                startActivity(openMain);
-                break;
-            case R.id.bCommercials3:
-                //mainL.setBackgroundResource(R.drawable.block_e);
-                name = "Commercials";
-                editor.putString(key, name);
-                editor.commit();
-                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                resetTimer();
                 startActivity(openMain);
                 break;
 
-            case R.id.bMainBlock:
-                //mainL.setBackgroundResource(R.drawable.block_d);
-                name = "Main Block";
+            case R.id.bA2BlOCK:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainL.setBackgroundResource(R.drawable.kazak_a2);
+                    }
+                });
+
+                name = "A-2";
                 editor.putString(key, name);
                 editor.commit();
                 openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                resetTimer();
                 startActivity(openMain);
                 break;
-          //-------------------------------------------------------------------
+            //-------------------------------------------------------------------
             /*
             case R.id.bBlock1:
                 if (saleModeState) {
@@ -460,6 +611,7 @@ public class Opening extends Activity implements OnClickListener {
             // ALL ON
             case R.id.ButtonLEDON:
                 Log.v("::OPENING.java::", "[ ALL ON ][ 8888 ]");
+                mainL.setBackgroundResource(R.drawable.kazak_allon);
                 //bl.sendData(codeAllOn);
                 //setAllFlatStatusOff();
                 try {
@@ -471,10 +623,12 @@ public class Opening extends Activity implements OnClickListener {
                 }
                 Toast.makeText(getApplicationContext(), "All ON",
                         Toast.LENGTH_SHORT).show();
+                resetTimer();
                 break;
             //ALL OFF
             case R.id.ButtonLEDOFF:
                 Log.v("::OPENING.java::", "[ ALL OFF ][ 0000 ]");
+                mainL.setBackgroundResource(R.drawable.kazak);
                 Toast.makeText(getApplicationContext(), "All OFF",
                         Toast.LENGTH_SHORT).show();
                 //bl.sendData(codeAllOff);
@@ -486,9 +640,11 @@ public class Opening extends Activity implements OnClickListener {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                resetTimer();
                 break;
             //EFFECT MODE
             case R.id.bEffect:
+                mainL.setBackgroundResource(R.drawable.kazak_allon);
                 Log.v(":::OPENING.java::", "[ Effect ][ 9100 ]");
                 //bl.sendData(codeEffect);
                 try {
@@ -498,9 +654,11 @@ public class Opening extends Activity implements OnClickListener {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                resetTimer();
                 break;
             //ON SALE
             case R.id.bOnSale:
+                mainL.setBackgroundResource(R.drawable.kazak_allon);
                 Log.v("::OPENING.java::", "[ ON SALE ALL ][ 9400 ]:::");
                 //bl.sendData(codeOnSale);
                 try {
@@ -510,11 +668,11 @@ public class Opening extends Activity implements OnClickListener {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                resetTimer();
                 break;
-
-
         }
     }
+
     // ****************END OF HANDLER ****************************
     // ----------------ON--------------------------------------------
     public void on(View view) {
@@ -581,7 +739,11 @@ public class Opening extends Activity implements OnClickListener {
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        //mainL.setBackgroundResource(R.drawable.villa_background_4);
+        mainL.setBackgroundResource(R.drawable.kazak);
+        if(isAutoEffect)
+        {
+            autoEffect.setChecked(true);
+        }
         final Dialog emailDialog = new Dialog(Opening.this,
                 android.R.style.Theme_DeviceDefault);
         emailDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -659,7 +821,6 @@ public class Opening extends Activity implements OnClickListener {
         Log.e("Opening.java", "...All flat status cleared !...");
     }
 
-    //********************************************************************************************************
     // ---------------- HANDLER ---------------------------------
     private static class MyHandler extends Handler {
         private final WeakReference<Opening> mActivity;

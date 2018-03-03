@@ -10,4 +10,7 @@
     <style name="horizontalList">
         <item name="android:orientation">horizontal</item>
     </style>
+
+
+
 </resources>

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/project_2"
+    android:background="@drawable/kazak"
     tools:context="com.bkocak.ledcontrol.Opening"
     android:id="@+id/MainLayout">
 
@@ -84,8 +84,8 @@
         android:id="@+id/bSalesMode"
         android:layout_width="127dp"
         android:layout_height="40dp"
-        android:layout_x="140dp"
-        android:layout_y="9dp"
+        android:layout_x="101dp"
+        android:layout_y="685dp"
         android:background="@drawable/nawroz_off"
         android:text="Sales Mode"
         android:textColor="@android:color/background_light"
@@ -126,8 +126,8 @@
         android:id="@+id/bCommercialOn"
         android:layout_width="127dp"
         android:layout_height="40dp"
-        android:layout_x="18dp"
-        android:layout_y="479dp"
+        android:layout_x="4dp"
+        android:layout_y="803dp"
         android:background="@drawable/nawroz_button"
         android:text="Commercials On"
         android:textColor="@android:color/background_light"
@@ -137,8 +137,8 @@
         android:id="@+id/bCommercialOff"
         android:layout_width="127dp"
         android:layout_height="40dp"
-        android:layout_x="18dp"
-        android:layout_y="527dp"
+        android:layout_x="0dp"
+        android:layout_y="636dp"
         android:background="@drawable/nawroz_button"
         android:text="Commercials Off"
         android:textColor="@android:color/background_light"
@@ -149,7 +149,7 @@
         android:layout_width="127dp"
         android:layout_height="40dp"
         android:layout_x="18dp"
-        android:layout_y="383dp"
+        android:layout_y="479dp"
         android:background="@drawable/nawroz_button"
         android:text="Flats On"
         android:textColor="@android:color/background_light"
@@ -160,7 +160,7 @@
         android:layout_width="127dp"
         android:layout_height="40dp"
         android:layout_x="18dp"
-        android:layout_y="431dp"
+        android:layout_y="527dp"
         android:background="@drawable/nawroz_button"
         android:text="Flats Off"
         android:textColor="@android:color/background_light"
@@ -212,47 +212,38 @@
         android:visibility="invisible" />
 
     <Button
-        android:id="@+id/bMainBlock"
-        android:layout_width="220dp"
-        android:layout_height="273dp"
+        android:id="@+id/bA2BlOCK"
+        android:layout_width="286dp"
+        android:layout_height="121dp"
         android:layout_marginLeft="64dp"
         android:layout_marginTop="28dp"
-        android:layout_x="410dp"
-        android:layout_y="24dp"
+        android:layout_x="373dp"
+        android:layout_y="52dp"
         android:background="@drawable/selectblock"
         android:textColor="@android:color/background_light" />
 
     <Button
-        android:id="@+id/bCommercials"
-        android:layout_width="162dp"
-        android:layout_height="91dp"
+        android:id="@+id/bA1BlOCK"
+        android:layout_width="147dp"
+        android:layout_height="241dp"
         android:layout_marginLeft="64dp"
         android:layout_marginTop="28dp"
-        android:layout_x="635dp"
-        android:layout_y="209dp"
+        android:layout_x="710dp"
+        android:layout_y="208dp"
         android:background="@drawable/selectblock"
         android:textColor="@android:color/background_light" />
 
-    <Button
-        android:id="@+id/bCommercials2"
-        android:layout_width="132dp"
-        android:layout_height="103dp"
-        android:layout_marginLeft="64dp"
-        android:layout_marginTop="28dp"
-        android:layout_x="517dp"
-        android:layout_y="306dp"
-        android:background="@drawable/selectblock"
-        android:textColor="@android:color/background_light" />
-
-    <Button
-        android:id="@+id/bCommercials3"
-        android:layout_width="160dp"
-        android:layout_height="155dp"
-        android:layout_marginLeft="64dp"
-        android:layout_marginTop="28dp"
-        android:layout_x="353dp"
-        android:layout_y="306dp"
-        android:background="@drawable/selectblock"
-        android:textColor="@android:color/background_light" />
+    <Switch
+        android:id="@+id/autoEffect"
+        android:layout_width="127dp"
+        android:layout_height="37dp"
+        android:layout_x="887dp"
+        android:layout_y="383dp"
+        android:switchTextAppearance="@style/TextAppearance.AppCompat.Widget.Button.Colored"
+        android:text="Auto Effect "
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textColor="#ffffff"
+        tools:layout_editor_absoluteX="906dp"
+        tools:layout_editor_absoluteY="27dp" />
 
 </AbsoluteLayout>

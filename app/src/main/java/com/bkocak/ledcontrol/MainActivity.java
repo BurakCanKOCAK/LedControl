@@ -484,8 +484,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 ":::Creating Connecting Dialog::");
         final Dialog connectDialog = new Dialog(MainActivity.this,
                 android.R.style.Theme_DeviceDefault);
-        if(daire!=0)
-        {
+        if (daire != 0) {
             tvDatatoSend.setText(String.valueOf(daire));
         }
         connectDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -576,6 +575,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 //bl.sendData(Opening.codeAllOn);
                 try {
                     RESTService.allOn();
+                    Opening.resetTimer();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -585,12 +585,14 @@ public class MainActivity extends Activity implements OnClickListener {
                 tvDatatoSend.setTextColor(Color.GREEN);
                 daire = 0;
                 setAllFlatStatusOff();
+
                 break;
             case R.id.bAllOff:
                 Log.e("::MAIN ACTIVITY::", ":::ALL OFF:::");
                 //bl.sendData(Opening.codeAllOff);
                 try {
                     RESTService.allOff();
+                    Opening.resetTimer();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -600,6 +602,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 tvDatatoSend.setTextColor(Color.RED);
                 daire = 0;
                 setAllFlatStatusOff();
+
                 break;
 //--------------------------------------------------------------------------------------------//
             //TODO OnSale & Sale methods will be implemented if necessary.
@@ -616,16 +619,17 @@ public class MainActivity extends Activity implements OnClickListener {
 
                 int aa = Integer.parseInt(eT_sell.getText().toString());
 
-                if (block_name.equals("Main Block")) {
-                    if (aa > 64) {
+                if (block_name.equals("A-1")) {
+                    if (aa > 78) {
                         Toast.makeText(this.getBaseContext(),
-                                "There are 64 flats on the main block!",
+                                "There are 78 flats on the A-1 block!",
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         //aa += 3000;
                         //bl.sendData(Integer.toString(aa));
                         try {
-                            RESTService.changeFlatStatus(aa, "sell");
+                            RESTService.changeFlatStatus(Opening.calculateBlockThresholdValue("A-1")+aa, "sell");
+                            Opening.resetTimer();
                             Log.v(block_name + " den SATILDI : ",
                                     Integer.toString(aa));
                         } catch (ExecutionException e) {
@@ -635,14 +639,15 @@ public class MainActivity extends Activity implements OnClickListener {
                         }
                     }
 
-                } else if (block_name.equals("Commercials")) {
-                    if (aa > 14) {
+                } else if (block_name.equals("A-2")) {
+                    if (aa > 78) {
                         Toast.makeText(this.getBaseContext(),
-                                "There are only 14 commercials!",
+                                "There are only 78 flats on A-2 block!",
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         try {
-                            RESTService.changeCommercialStatus(aa, "sell");
+                            RESTService.changeFlatStatus(Opening.calculateBlockThresholdValue("A-2")+aa, "sell");
+                            Opening.resetTimer();
                             Log.v(block_name + " den SATILDI : ",
                                     Integer.toString(aa));
                         } catch (ExecutionException e) {
@@ -665,16 +670,17 @@ public class MainActivity extends Activity implements OnClickListener {
                     break;
                 }
                 int aa2 = Integer.parseInt(eT_sell.getText().toString());
-                if (block_name.equals("Main Block")) {
-                    if (aa2 > 64) {
+                if (block_name.equals("A-1")) {
+                    if (aa2 > 78) {
                         Toast.makeText(this.getBaseContext(),
-                                "There are 64 flats on the main block!",
+                                "There are only 78 flats on A-1 block!",
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         //aa += 3000;
                         //bl.sendData(Integer.toString(aa));
                         try {
-                            RESTService.changeFlatStatus(aa2, "onsale");
+                            RESTService.changeFlatStatus(Opening.calculateBlockThresholdValue("A-1")+aa2, "onsale");
+                            Opening.resetTimer();
                             Log.v(block_name + " den Satista.",
                                     Integer.toString(aa2));
                         } catch (ExecutionException e) {
@@ -684,14 +690,15 @@ public class MainActivity extends Activity implements OnClickListener {
                         }
                     }
 
-                } else if (block_name.equals("Commercials")) {
-                    if (aa2 > 14) {
+                } else if (block_name.equals("A-2")) {
+                    if (aa2 > 78) {
                         Toast.makeText(this.getBaseContext(),
-                                "There are only 14 commercials!",
+                                "There are only 78 flats on A-2 block!",
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         try {
-                            RESTService.changeCommercialStatus(aa2, "onsale");
+                            RESTService.changeFlatStatus(Opening.calculateBlockThresholdValue("A-2")+aa2, "onsale");
+                            Opening.resetTimer();
                             Log.v(block_name + " den Satista.",
                                     Integer.toString(aa2));
                         } catch (ExecutionException e) {
@@ -735,22 +742,13 @@ public class MainActivity extends Activity implements OnClickListener {
                     Log.e("bON - Invalid Message:", Integer.toString(daire));
                 }
                 */
-                if (block_name.equals("Main Block")) {
-                    try {
-                        RESTService.changeFlatStatus(daire, "on");
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }else{
-                    try {
-                        RESTService.changeCommercialStatus(daire, "on");
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    RESTService.changeFlatStatus(Opening.calculateBlockThresholdValue(block_name)+daire, "on");
+                    Opening.resetTimer();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 tvDatatoSend.setTextColor(Color.GREEN);
 
@@ -807,22 +805,13 @@ public class MainActivity extends Activity implements OnClickListener {
                     setFlatStatus(daire,false);
                     daire = 0;
                 } */
-                if (block_name.equals("Main Block")) {
-                    try {
-                        RESTService.changeFlatStatus(daire, "off");
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }else{
-                    try {
-                        RESTService.changeCommercialStatus(daire, "off");
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    RESTService.changeFlatStatus(Opening.calculateBlockThresholdValue(block_name)+daire, "off");
+                    Opening.resetTimer();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 tvDatatoSend.setTextColor(Color.RED);
 
@@ -929,6 +918,7 @@ public class MainActivity extends Activity implements OnClickListener {
             case R.id.onSale:
                 try {
                     RESTService.showOnSale();
+                    Opening.resetTimer();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
