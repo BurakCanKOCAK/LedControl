@@ -2,6 +2,7 @@ package com.bkocak.ledcontrol.wifi;
 
 import android.util.Log;
 
+import com.bkocak.ledcontrol.config.Config;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -30,9 +31,9 @@ public class RESTService {
     private static String endpoint = "";
     private static AsyncHttpClient client = new AsyncHttpClient();
 
-    public static String changeFlatStatus(int flatID, String status) throws ExecutionException, InterruptedException {
+    public static String changeFlatStatus(String flatID, String status) throws ExecutionException, InterruptedException {
         try {
-            endpoint = deviceIP + "/api/flat/" + String.valueOf(flatID) + "/" + status;
+            endpoint = deviceIP + "/api/flat/" + flatID + "/" + status;
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -41,9 +42,33 @@ public class RESTService {
         }
     }
 
-    public static String changeCommercialStatus(int commercialID, String status) throws ExecutionException, InterruptedException {
+    public static String changeCommercialStatus(String commercialID, String status) throws ExecutionException, InterruptedException {
         try {
-            endpoint = deviceIP + "/api/commercial/" + String.valueOf(commercialID) + "/" + status;
+            endpoint = deviceIP + "/api/commercial/" + commercialID + "/" + status;
+            Log.e("Log : ", endpoint);
+            sendGETCommand(endpoint);
+            return "ok";
+        } catch (Exception e) {
+            return "error";
+        }
+
+    }
+
+    public static String flatBuildingStatus(String buildingId, String status) throws ExecutionException, InterruptedException {
+        try {
+            endpoint = deviceIP + "/api/building/flat/" + buildingId + "/" + status;
+            Log.e("Log : ", endpoint);
+            sendGETCommand(endpoint);
+            return "ok";
+        } catch (Exception e) {
+            return "error";
+        }
+
+    }
+
+    public static String commercialBuildingStatus(String buildingId, String status) throws ExecutionException, InterruptedException {
+        try {
+            endpoint = deviceIP + "/api/building/commercial/" + buildingId + "/" + status;
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -127,107 +152,110 @@ public class RESTService {
             endpoint = deviceIP + "/api/show/effect";
             Log.e("Log : ", endpoint);
             SyncHttpClient client = new SyncHttpClient();
-            client.get(endpoint, new ResponseHandlerInterface() {
-                @Override
-                public void sendResponseMessage(HttpResponse response) throws IOException {
+            if(!Config.dataSendingInProgressAsyncEffect) {
+                Config.dataSendingInProgressAsyncEffect=true;
+                client.get(endpoint, new ResponseHandlerInterface() {
+                    @Override
+                    public void sendResponseMessage(HttpResponse response) throws IOException {
+                        Config.dataSendingInProgressAsyncEffect=false;
+                    }
 
-                }
+                    @Override
+                    public void sendStartMessage() {
 
-                @Override
-                public void sendStartMessage() {
+                    }
 
-                }
+                    @Override
+                    public void sendFinishMessage() {
 
-                @Override
-                public void sendFinishMessage() {
+                    }
 
-                }
+                    @Override
+                    public void sendProgressMessage(long bytesWritten, long bytesTotal) {
 
-                @Override
-                public void sendProgressMessage(long bytesWritten, long bytesTotal) {
+                    }
 
-                }
+                    @Override
+                    public void sendCancelMessage() {
 
-                @Override
-                public void sendCancelMessage() {
+                    }
 
-                }
+                    @Override
+                    public void sendSuccessMessage(int statusCode, Header[] headers, byte[] responseBody) {
+                        Config.dataSendingInProgressAsyncEffect=false;
+                    }
 
-                @Override
-                public void sendSuccessMessage(int statusCode, Header[] headers, byte[] responseBody) {
+                    @Override
+                    public void sendFailureMessage(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                        Config.dataSendingInProgressAsyncEffect=false;
+                    }
 
-                }
+                    @Override
+                    public void sendRetryMessage(int retryNo) {
 
-                @Override
-                public void sendFailureMessage(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    }
 
-                }
+                    @Override
+                    public URI getRequestURI() {
+                        return null;
+                    }
 
-                @Override
-                public void sendRetryMessage(int retryNo) {
+                    @Override
+                    public void setRequestURI(URI requestURI) {
 
-                }
+                    }
 
-                @Override
-                public URI getRequestURI() {
-                    return null;
-                }
+                    @Override
+                    public Header[] getRequestHeaders() {
+                        return new Header[0];
+                    }
 
-                @Override
-                public void setRequestURI(URI requestURI) {
+                    @Override
+                    public void setRequestHeaders(Header[] requestHeaders) {
 
-                }
+                    }
 
-                @Override
-                public Header[] getRequestHeaders() {
-                    return new Header[0];
-                }
+                    @Override
+                    public boolean getUseSynchronousMode() {
+                        return false;
+                    }
 
-                @Override
-                public void setRequestHeaders(Header[] requestHeaders) {
+                    @Override
+                    public void setUseSynchronousMode(boolean useSynchronousMode) {
 
-                }
+                    }
 
-                @Override
-                public boolean getUseSynchronousMode() {
-                    return false;
-                }
+                    @Override
+                    public boolean getUsePoolThread() {
+                        return false;
+                    }
 
-                @Override
-                public void setUseSynchronousMode(boolean useSynchronousMode) {
+                    @Override
+                    public void setUsePoolThread(boolean usePoolThread) {
 
-                }
+                    }
 
-                @Override
-                public boolean getUsePoolThread() {
-                    return false;
-                }
+                    @Override
+                    public void onPreProcessResponse(ResponseHandlerInterface instance, HttpResponse response) {
 
-                @Override
-                public void setUsePoolThread(boolean usePoolThread) {
+                    }
 
-                }
+                    @Override
+                    public void onPostProcessResponse(ResponseHandlerInterface instance, HttpResponse response) {
+                        Config.dataSendingInProgressAsyncEffect=false;
+                    }
 
-                @Override
-                public void onPreProcessResponse(ResponseHandlerInterface instance, HttpResponse response) {
+                    @Override
+                    public Object getTag() {
+                        return null;
+                    }
 
-                }
+                    @Override
+                    public void setTag(Object TAG) {
 
-                @Override
-                public void onPostProcessResponse(ResponseHandlerInterface instance, HttpResponse response) {
-
-                }
-
-                @Override
-                public Object getTag() {
-                    return null;
-                }
-
-                @Override
-                public void setTag(Object TAG) {
-
-                }
-            });
+                    }
+                });
+            }
             return "ok";
         } catch (Exception e) {
             return "error";
@@ -290,18 +318,26 @@ public class RESTService {
         //Perform the doInBackground method, passing in our url
         result = getRequest.execute(url).get();
         return result;*/
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get(url, null, new TextHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, String res) {
-                        // called when response HTTP status is "200 OK"
-                    }
+        if (!Config.dataSendingInProgress) {
+            Log.e("Data Status :","SENT");
+            Config.dataSendingInProgress=true;
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.get(url, null, new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, String res) {
+                            // called when response HTTP status is "200 OK"
+                            Config.dataSendingInProgress=false;
+                        }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
-                        // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                            // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                            Config.dataSendingInProgress=false;
+                        }
                     }
-                }
-        );
+            );
+        }else{
+            Log.e("Data Status :","NOT SEND");
+        }
     }
 }

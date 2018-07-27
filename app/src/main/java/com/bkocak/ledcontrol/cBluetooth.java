@@ -7,38 +7,38 @@ package com.bkocak.ledcontrol;
  *
  * @version 1.2.1
  * 14.08.2013
- * Koltykov A.V. http://cxem.net, http://english.cxem.net
+ * Koltykov a.V. http://cxem.net, http://english.cxem.net
  * <p>
  * Class for Bluetooth
  * @version 1.2.1
  * 14.08.2013
- * Koltykov A.V. http://cxem.net, http://english.cxem.net
+ * Koltykov a.V. http://cxem.net, http://english.cxem.net
  * <p>
  * Class for Bluetooth
  * @version 1.2.1
  * 14.08.2013
- * Koltykov A.V. http://cxem.net, http://english.cxem.net
+ * Koltykov a.V. http://cxem.net, http://english.cxem.net
  * <p>
  * Class for Bluetooth
  * @version 1.2.1
  * 14.08.2013
- * Koltykov A.V. http://cxem.net, http://english.cxem.net
+ * Koltykov a.V. http://cxem.net, http://english.cxem.net
  * <p>
  * Class for Bluetooth
  * @version 1.2.1
  * 14.08.2013
- * Koltykov A.V. http://cxem.net, http://english.cxem.net
+ * Koltykov a.V. http://cxem.net, http://english.cxem.net
  * <p>
  * Class for Bluetooth
  * @version 1.2.1
  * 14.08.2013
- * Koltykov A.V. http://cxem.net, http://english.cxem.net
+ * Koltykov a.V. http://cxem.net, http://english.cxem.net
  */
 /**
  *  Class for Bluetooth
  *  @version 1.2.1
  *  14.08.2013
- *  Koltykov A.V. http://cxem.net, http://english.cxem.net
+ *  Koltykov a.V. http://cxem.net, http://english.cxem.net
  *
  */
 

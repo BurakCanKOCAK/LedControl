@@ -54,9 +54,9 @@ public class Opening extends Activity implements OnClickListener {
     };
     //--------------------------------------------------------------------------------------------//
     //Block list
-    public static String[] blocks = {"A-1", "A-2"};
+    public static String[] blocks = {"A", "A Commercial", "B1", "B2", "B Commercial", "C1", "C2", "C Commercial", "D1", "D2", "E1", "E2", "G Commercial"};
     //Thresholds
-    public static int[] numberOfFlats = {78, 78};
+    public static int[] numberOfFlats = {188, 5, 60, 49, 8, 53, 43, 10, 56, 43, 27, 31, 1};
     //--------------------------------------------------------------------------------------------//
     //Code list
     public static String codeEffect = "9100";
@@ -82,8 +82,12 @@ public class Opening extends Activity implements OnClickListener {
     //--------------------------------------------------------------------------------------------//
     private static Button bOnSaleType1, bOnSaleType2, bEffect, bOnSale;
     //Test Mode Buttons
-    private static Button bCommercialOn, bCommercialOff, bFlatsOn, bFlatsOff;
-    private static Button bA1BlOCK, bA2BlOCK;
+    private static Button bCommercialOn, bCommercialOff;
+    private static Button bA1BlOCK, bA2BlOCK, bCommercials;
+
+    private static Button Ablock, Acommercial, B1block, B2block, Bcommercial, C1block, C2block, Ccommercial, D1block, D2block, E1block, E2block, Gcommercial, bFlatsOn, bFlatsOff;
+    private static Button AOn, B1On, B2On, C1On, C2On, D1On, D2On, E1On, E2On, AComOn, BComOn, CComOn, GComOn;
+    private static Button AOff, B1Off, B2Off, C1Off, C2Off, D1Off, D2Off, E1Off, E2Off, AComOff, BComOff, CComOff, GComOff;
     private static Button saleMode;
     private static Switch autoEffect;
     private static ListView SoldList;
@@ -93,7 +97,7 @@ public class Opening extends Activity implements OnClickListener {
     private static AbsoluteLayout mainL;
     private static boolean saleModeState = false;
     public static Handler handler;
-    static Dialog dialog ;
+    static Dialog dialog;
 
     public ArrayList<String> SoldListArray;
     ArrayAdapter<String> adapter;
@@ -199,7 +203,7 @@ public class Opening extends Activity implements OnClickListener {
                                     try {
                                         RESTService.effectAsync();
                                         timerObj.cancel();
-                                        timerObj=new Timer();
+                                        timerObj = new Timer();
                                         Message msg = new Message();
                                         msg.arg1 = TIMER_RESET;
                                         handler.sendMessage(msg);
@@ -282,6 +286,99 @@ public class Opening extends Activity implements OnClickListener {
         bEffect = (Button) findViewById(R.id.bEffect);
         autoEffect = (Switch) findViewById(R.id.autoEffect);
 
+        Ablock = (Button) findViewById(R.id.bABlOCK);
+        Acommercial = (Button) findViewById(R.id.bACommercial);
+        B1block = (Button) findViewById(R.id.bB1BlOCK);
+        B2block = (Button) findViewById(R.id.bB2BlOCK);
+        Bcommercial = (Button) findViewById(R.id.bBCommercial);
+        C1block = (Button) findViewById(R.id.bC1BLOCK);
+        C2block = (Button) findViewById(R.id.bC2BlOCK);
+        Ccommercial = (Button) findViewById(R.id.bCCommercial);
+        D1block = (Button) findViewById(R.id.bD1BlOCK);
+        D2block = (Button) findViewById(R.id.bD2BlOCK);
+        E1block = (Button) findViewById(R.id.bE1BlOCK);
+        E2block = (Button) findViewById(R.id.bE2BlOCK);
+        Gcommercial = (Button) findViewById(R.id.bGCommercial);
+
+        AOn = (Button) findViewById(R.id.bAOn);
+        B1On = (Button) findViewById(R.id.bB1On);
+        B2On = (Button) findViewById(R.id.bB2On);
+        C1On = (Button) findViewById(R.id.bC1On);
+        C2On = (Button) findViewById(R.id.bC2On);
+        D1On = (Button) findViewById(R.id.bD1On);
+        D2On = (Button) findViewById(R.id.bD2On);
+        E1On = (Button) findViewById(R.id.bE1On);
+        E2On = (Button) findViewById(R.id.bE2On);
+
+        AComOn = (Button) findViewById(R.id.bACommercialOn);
+        BComOn = (Button) findViewById(R.id.bBCommercialOn);
+        CComOn = (Button) findViewById(R.id.bCCommercialOn);
+        GComOn = (Button) findViewById(R.id.bGCommercialOn);
+
+        AOff = (Button) findViewById(R.id.bAOff);
+        B1Off = (Button) findViewById(R.id.bB1Off);
+        B2Off = (Button) findViewById(R.id.bB2Off);
+        C1Off = (Button) findViewById(R.id.bC1Off);
+        C2Off = (Button) findViewById(R.id.bC2Off);
+        D1Off = (Button) findViewById(R.id.bD1Off);
+        D2Off = (Button) findViewById(R.id.bD2Off);
+        E1Off = (Button) findViewById(R.id.bE1Off);
+        E2Off = (Button) findViewById(R.id.bE2Off);
+
+        AComOff = (Button) findViewById(R.id.bACommercialOff);
+        BComOff = (Button) findViewById(R.id.bBCommercialOff);
+        CComOff = (Button) findViewById(R.id.bCCommercialOff);
+        GComOff = (Button) findViewById(R.id.bGCommercialOff);
+
+        bFlatsOn = (Button) findViewById(R.id.bFlatsOn);
+        bFlatsOff = (Button) findViewById(R.id.bFlatsOff);
+
+        Ablock.setOnClickListener(this);
+        Acommercial.setOnClickListener(this);
+        B1block.setOnClickListener(this);
+        B2block.setOnClickListener(this);
+        Bcommercial.setOnClickListener(this);
+        C1block.setOnClickListener(this);
+        C2block.setOnClickListener(this);
+        Ccommercial.setOnClickListener(this);
+        D1block.setOnClickListener(this);
+        D2block.setOnClickListener(this);
+        E1block.setOnClickListener(this);
+        E2block.setOnClickListener(this);
+        Gcommercial.setOnClickListener(this);
+
+        AOn.setOnClickListener(this);
+        B1On.setOnClickListener(this);
+        B2On.setOnClickListener(this);
+        C1On.setOnClickListener(this);
+        C2On.setOnClickListener(this);
+        D1On.setOnClickListener(this);
+        D2On.setOnClickListener(this);
+        E1On.setOnClickListener(this);
+        E2On.setOnClickListener(this);
+
+        AComOn.setOnClickListener(this);
+        BComOn.setOnClickListener(this);
+        CComOn.setOnClickListener(this);
+        GComOn.setOnClickListener(this);
+
+        AOff.setOnClickListener(this);
+        B1Off.setOnClickListener(this);
+        B2Off.setOnClickListener(this);
+        C1Off.setOnClickListener(this);
+        C2Off.setOnClickListener(this);
+        D1Off.setOnClickListener(this);
+        D2Off.setOnClickListener(this);
+        E1Off.setOnClickListener(this);
+        E2Off.setOnClickListener(this);
+
+        AComOff.setOnClickListener(this);
+        BComOff.setOnClickListener(this);
+        CComOff.setOnClickListener(this);
+        GComOff.setOnClickListener(this);
+
+        bFlatsOn.setOnClickListener(this);
+        bFlatsOff.setOnClickListener(this);
         bDisconnect.setOnClickListener(this);
         bConnect.setOnClickListener(this);
         ButtonLEDOFF.setOnClickListener(this);
@@ -297,7 +394,7 @@ public class Opening extends Activity implements OnClickListener {
                     timerObj.cancel();
                 } else {
                     //---//
-                    Toast.makeText(getApplicationContext(), "Auto Effect Enabled ("+String.valueOf(time2Effect/60000)+"mins)", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Auto Effect Enabled (" + String.valueOf(time2Effect / 60000) + "mins)", Toast.LENGTH_LONG).show();
                     Message msg = new Message();
                     msg.arg1 = TIMER_RESET;
                     handler.sendMessage(msg);
@@ -317,23 +414,21 @@ public class Opening extends Activity implements OnClickListener {
                 np.setMaxValue(300);
                 np.setMinValue(1);
                 np.setWrapSelectorWheel(false);
-                b1.setOnClickListener(new OnClickListener()
-                {
+                b1.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         SharedPreferences sharedPref = getSharedPreferences("data",
                                 MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         String key = "effectTime";
-                        editor.putInt(key,np.getValue()*60*1000);
-                        time2Effect=np.getValue()*60*1000;
+                        editor.putInt(key, np.getValue() * 60 * 1000);
+                        time2Effect = np.getValue() * 60 * 1000;
                         editor.commit();
-                        Toast.makeText(getApplicationContext(), "Effect timer set for "+String.valueOf(np.getValue())+"mins.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Effect timer set for " + String.valueOf(np.getValue()) + "mins.", Toast.LENGTH_LONG).show();
                         d.dismiss();
                     }
                 });
-                b2.setOnClickListener(new OnClickListener()
-                {
+                b2.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         d.dismiss();
@@ -345,28 +440,19 @@ public class Opening extends Activity implements OnClickListener {
         });
 
         //--------------------------------------------------------------------------------------------//
-        bA1BlOCK = (Button) findViewById(R.id.bA1BlOCK);
-        bA2BlOCK = (Button) findViewById(R.id.bA2BlOCK);
         saleMode = (Button) findViewById(R.id.bSalesMode);
         //--------------------------------------------------------------------------------------------//
         bCommercialOn = (Button) findViewById(R.id.bCommercialOn);
         bCommercialOff = (Button) findViewById(R.id.bCommercialOff);
-        bFlatsOn = (Button) findViewById(R.id.bFlatsOn);
-        bFlatsOff = (Button) findViewById(R.id.bFlatsOff);
         bOnSaleType1 = (Button) findViewById(R.id.bOnSaleType1);
         bOnSaleType2 = (Button) findViewById(R.id.bOnSaleType2);
         bOnSale = (Button) findViewById(R.id.bOnSale);
         //bMainBlock = (Button) findViewById(R.id.bMainBlock);
 
-        bA1BlOCK.setOnClickListener(this);
-        bA2BlOCK.setOnClickListener(this);
-
         saleMode.setOnClickListener(this);
 
         bCommercialOff.setOnClickListener(this);
         bCommercialOn.setOnClickListener(this);
-        bFlatsOff.setOnClickListener(this);
-        bFlatsOn.setOnClickListener(this);
         bOnSaleType1.setOnClickListener(this);
         bOnSaleType2.setOnClickListener(this);
         bOnSale.setOnClickListener(this);
@@ -406,7 +492,7 @@ public class Opening extends Activity implements OnClickListener {
     public void BTOff(View view) {
         //TODO Check bt is connected , if yes then cut connection .If no then do nothing
         Log.i("::OPENING.java::", "::: BTOff() :::");
-        Log.i("::OPENING.java::", "::: - BT OFF Button Pressed - :::");
+        Log.i("::OPENING.java::", "::: - BT alloff Button Pressed - :::");
 
         bl.BT_onPause();
         // myBluetoothAdapter.disable();
@@ -483,8 +569,320 @@ public class Opening extends Activity implements OnClickListener {
 
                 break;
             */
+            case R.id.bAOn:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("1A","on");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bB1On:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("1B","on");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bB2On:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("2B","on");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bC1On:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("1C","on");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bC2On:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("2C","on");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bD1On:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("1D","on");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bD2On:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("2D","on");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bE1On:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("1E","on");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bE2On:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("2E","on");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bACommercialOn:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.commercialBuildingStatus("A","on");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bBCommercialOn:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.commercialBuildingStatus("B","on");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bCCommercialOn:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.commercialBuildingStatus("C","on");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bGCommercialOn:
+                mainL.setBackgroundResource(R.drawable.g);
+                try {
+                    RESTService.commercialBuildingStatus("G","on");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bAOff:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("1A","off");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bB1Off:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("1B","off");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bB2Off:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("2B","off");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bC1Off:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("1C","off");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bC2Off:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("2C","off");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bD1Off:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("1D","off");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bD2Off:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("2D","off");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bE1Off:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("1E","off");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bE2Off:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatBuildingStatus("2E","off");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bACommercialOff:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.commercialBuildingStatus("A","off");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bBCommercialOff:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.commercialBuildingStatus("B","off");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bCCommercialOff:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.commercialBuildingStatus("C","off");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
+            case R.id.bGCommercialOff:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.commercialBuildingStatus("G","off");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
+
             case R.id.bCommercialOff:
-                //mainL.setBackgroundResource(R.drawable.block_e);
+                mainL.setBackgroundResource(R.drawable.alloff);
                 try {
                     RESTService.commercialsOff();
                 } catch (ExecutionException e) {
@@ -495,7 +893,7 @@ public class Opening extends Activity implements OnClickListener {
                 resetTimer();
                 break;
             case R.id.bCommercialOn:
-                //mainL.setBackgroundResource(R.drawable.block_e);
+                mainL.setBackgroundResource(R.drawable.all);
                 try {
                     RESTService.commercialsOn();
                 } catch (ExecutionException e) {
@@ -505,19 +903,8 @@ public class Opening extends Activity implements OnClickListener {
                 }
                 resetTimer();
                 break;
-            case R.id.bFlatsOff:
-                mainL.setBackgroundResource(R.drawable.kazak);
-                try {
-                    RESTService.flatsOff();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                resetTimer();
-                break;
             case R.id.bFlatsOn:
-                mainL.setBackgroundResource(R.drawable.kazak_allon);
+                mainL.setBackgroundResource(R.drawable.all);
                 try {
                     RESTService.flatsOn();
                 } catch (ExecutionException e) {
@@ -527,15 +914,26 @@ public class Opening extends Activity implements OnClickListener {
                 }
                 resetTimer();
                 break;
+            case R.id.bFlatsOff:
+                mainL.setBackgroundResource(R.drawable.alloff);
+                try {
+                    RESTService.flatsOff();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resetTimer();
+                break;
 
-            case R.id.bA1BlOCK:
+            case R.id.bABlOCK:
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mainL.setBackgroundResource(R.drawable.kazak_a1);
+                        mainL.setBackgroundResource(R.drawable.a);
                     }
                 });
-                name = "A-1";
+                name = "A";
                 editor.putString(key, name);
                 editor.commit();
                 openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
@@ -543,15 +941,180 @@ public class Opening extends Activity implements OnClickListener {
                 startActivity(openMain);
                 break;
 
-            case R.id.bA2BlOCK:
+            case R.id.bB1BlOCK:
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mainL.setBackgroundResource(R.drawable.kazak_a2);
+                        mainL.setBackgroundResource(R.drawable.b1);
                     }
                 });
 
-                name = "A-2";
+                name = "B1";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                resetTimer();
+                startActivity(openMain);
+                break;
+            case R.id.bB2BlOCK:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainL.setBackgroundResource(R.drawable.b2);
+                    }
+                });
+
+                name = "B2";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                resetTimer();
+                startActivity(openMain);
+                break;
+            case R.id.bC1BLOCK:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainL.setBackgroundResource(R.drawable.c1);
+                    }
+                });
+
+                name = "C1";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                resetTimer();
+                startActivity(openMain);
+                break;
+            case R.id.bC2BlOCK:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainL.setBackgroundResource(R.drawable.c2);
+                    }
+                });
+
+                name = "C2";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                resetTimer();
+                startActivity(openMain);
+                break;
+            case R.id.bD1BlOCK:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainL.setBackgroundResource(R.drawable.d1);
+                    }
+                });
+
+                name = "D1";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                resetTimer();
+                startActivity(openMain);
+                break;
+            case R.id.bD2BlOCK:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainL.setBackgroundResource(R.drawable.d2);
+                    }
+                });
+
+                name = "D2";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                resetTimer();
+                startActivity(openMain);
+                break;
+            case R.id.bE1BlOCK:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainL.setBackgroundResource(R.drawable.e1);
+                    }
+                });
+
+                name = "E1";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                resetTimer();
+                startActivity(openMain);
+                break;
+            case R.id.bE2BlOCK:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainL.setBackgroundResource(R.drawable.e2);
+                    }
+                });
+
+                name = "E2";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                resetTimer();
+                startActivity(openMain);
+                break;
+            case R.id.bACommercial:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainL.setBackgroundResource(R.drawable.alloff);
+                    }
+                });
+
+                name = "A Commercial";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                resetTimer();
+                startActivity(openMain);
+                break;
+            case R.id.bBCommercial:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainL.setBackgroundResource(R.drawable.alloff);
+                    }
+                });
+
+                name = "B Commercial";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                resetTimer();
+                startActivity(openMain);
+                break;
+            case R.id.bCCommercial:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainL.setBackgroundResource(R.drawable.alloff);
+                    }
+                });
+
+                name = "C Commercial";
+                editor.putString(key, name);
+                editor.commit();
+                openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
+                resetTimer();
+                startActivity(openMain);
+                break;
+            case R.id.bGCommercial:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainL.setBackgroundResource(R.drawable.alloff);
+                    }
+                });
+
+                name = "G Commercial";
                 editor.putString(key, name);
                 editor.commit();
                 openMain = new Intent("com.bkocak.ledcontrol.MainActivity");
@@ -569,8 +1132,8 @@ public class Opening extends Activity implements OnClickListener {
                         //turn off
                         isVillaOn[0]=false;
                         bl.sendData("0001");
-                        Log.v("::OPENING.java::", "[ VILLLA 1 ][ OFF ]");
-                        Toast.makeText(getApplicationContext(), "Villa 1 OFF",
+                        Log.v("::OPENING.java::", "[ VILLLA 1 ][ alloff ]");
+                        Toast.makeText(getApplicationContext(), "Villa 1 alloff",
                                 Toast.LENGTH_SHORT).show();
                     }else
                     {
@@ -594,7 +1157,7 @@ public class Opening extends Activity implements OnClickListener {
                         //turn off
                         isVillaOn[1]=false;
                         bl.sendData("0002");
-                        Toast.makeText(getApplicationContext(), "Villa 2 OFF",
+                        Toast.makeText(getApplicationContext(), "Villa 2 alloff",
                                 Toast.LENGTH_SHORT).show();
                     }else
                     {
@@ -608,10 +1171,10 @@ public class Opening extends Activity implements OnClickListener {
                 break;
             */
             //--------------------------------------------------------------------------------------------//
-            // ALL ON
+            // all ON
             case R.id.ButtonLEDON:
-                Log.v("::OPENING.java::", "[ ALL ON ][ 8888 ]");
-                mainL.setBackgroundResource(R.drawable.kazak_allon);
+                Log.v("::OPENING.java::", "[ all ON ][ 8888 ]");
+                mainL.setBackgroundResource(R.drawable.all);
                 //bl.sendData(codeAllOn);
                 //setAllFlatStatusOff();
                 try {
@@ -625,11 +1188,11 @@ public class Opening extends Activity implements OnClickListener {
                         Toast.LENGTH_SHORT).show();
                 resetTimer();
                 break;
-            //ALL OFF
+            //all alloff
             case R.id.ButtonLEDOFF:
-                Log.v("::OPENING.java::", "[ ALL OFF ][ 0000 ]");
-                mainL.setBackgroundResource(R.drawable.kazak);
-                Toast.makeText(getApplicationContext(), "All OFF",
+                Log.v("::OPENING.java::", "[ all alloff ][ 0000 ]");
+                mainL.setBackgroundResource(R.drawable.alloff);
+                Toast.makeText(getApplicationContext(), "All alloff",
                         Toast.LENGTH_SHORT).show();
                 //bl.sendData(codeAllOff);
                 //setAllFlatStatusOff();
@@ -644,7 +1207,7 @@ public class Opening extends Activity implements OnClickListener {
                 break;
             //EFFECT MODE
             case R.id.bEffect:
-                mainL.setBackgroundResource(R.drawable.kazak_allon);
+                mainL.setBackgroundResource(R.drawable.all);
                 Log.v(":::OPENING.java::", "[ Effect ][ 9100 ]");
                 //bl.sendData(codeEffect);
                 try {
@@ -658,8 +1221,8 @@ public class Opening extends Activity implements OnClickListener {
                 break;
             //ON SALE
             case R.id.bOnSale:
-                mainL.setBackgroundResource(R.drawable.kazak_allon);
-                Log.v("::OPENING.java::", "[ ON SALE ALL ][ 9400 ]:::");
+                mainL.setBackgroundResource(R.drawable.all);
+                Log.v("::OPENING.java::", "[ ON SALE all ][ 9400 ]:::");
                 //bl.sendData(codeOnSale);
                 try {
                     RESTService.showOnSale();
@@ -711,7 +1274,7 @@ public class Opening extends Activity implements OnClickListener {
     }
 
     // *********************************************************
-    // ------------------------BT OFF--------------------------
+    // ------------------------BT alloff--------------------------
     //********************************************************************************************************
     public void off(View view) {
         // Indicator.setBackgroundResource(R.drawable.red);
@@ -739,9 +1302,8 @@ public class Opening extends Activity implements OnClickListener {
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        mainL.setBackgroundResource(R.drawable.kazak);
-        if(isAutoEffect)
-        {
+        mainL.setBackgroundResource(R.drawable.alloff);
+        if (isAutoEffect) {
             autoEffect.setChecked(true);
         }
         final Dialog emailDialog = new Dialog(Opening.this,
