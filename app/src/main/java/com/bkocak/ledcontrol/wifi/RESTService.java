@@ -26,7 +26,10 @@ import static com.google.android.gms.common.ConnectionResult.TIMEOUT;
  */
 
 public class RESTService {
-    private static String deviceIP = "http://192.168.0.1:3000";
+    private static String deviceIP = "http://192.168.0.1:8484";
+    //private static String deviceIP = "http://192.168.2.3:8484";
+    //private static String deviceIP = "http://192.168.1.28:8484";
+
     private static String userID = "";
     private static String endpoint = "";
     private static AsyncHttpClient client = new AsyncHttpClient();
@@ -327,12 +330,14 @@ public class RESTService {
                         public void onSuccess(int statusCode, Header[] headers, String res) {
                             // called when response HTTP status is "200 OK"
                             Config.dataSendingInProgress=false;
+                            Log.e("Response : ( "+Integer.toString(statusCode)+" ) ",res);
                         }
 
                         @Override
                         public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
                             // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                             Config.dataSendingInProgress=false;
+                            Log.e("Response : ( "+Integer.toString(statusCode)+" ) ",res);
                         }
                     }
             );
