@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/park_moza"
+    android:background="@drawable/bel_beton"
     tools:context="com.bkocak.ledcontrol.Opening"
     android:id="@+id/MainLayout">
 
@@ -56,13 +56,13 @@
         android:textColor="@android:color/background_light" />
 
     <Button
-        android:id="@+id/ButtonLEDON"
+        android:id="@+id/ButtonLEDOFF"
         android:layout_width="127dp"
         android:layout_height="40dp"
         android:layout_x="885dp"
         android:layout_y="527dp"
-        android:background="@drawable/nawroz_button"
-        android:text="All On"
+        android:background="@drawable/button_off_v2"
+        android:text="All"
         android:textColor="@android:color/background_light"
         android:textSize="15dp" />
 
@@ -92,19 +92,19 @@
         android:layout_height="40dp"
         android:layout_x="885dp"
         android:layout_y="431dp"
-        android:background="@drawable/nawroz_button"
+        android:background="@drawable/button_normal_v2"
         android:text="Effect"
         android:textColor="@android:color/background_light"
         android:textSize="15dp" />
 
     <Button
-        android:id="@+id/ButtonLEDOFF"
+        android:id="@+id/ButtonLEDON"
         android:layout_width="127dp"
         android:layout_height="40dp"
         android:layout_x="885dp"
         android:layout_y="479dp"
-        android:background="@drawable/nawroz_button"
-        android:text="All Off"
+        android:background="@drawable/button_on_v2"
+        android:text="All"
         android:textColor="@android:color/background_light"
         android:textSize="15dp" />
 
@@ -135,19 +135,21 @@
 
     <ImageView
         android:id="@+id/salesListBackground"
-        android:layout_width="190dp"
+        android:layout_width="89dp"
+        android:layout_height="116dp"
+        android:layout_x="71dp"
+        android:layout_y="438dp"
         android:background="@drawable/sales_list"
-        android:layout_height="400dp"
-        android:layout_x="-73dp"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
+
     <ListView
         android:id="@+id/lvSoldList"
         style="@style/horizontalList"
-        android:layout_width="105dp"
-        android:layout_height="380dp"
+        android:layout_width="45dp"
+        android:layout_height="101dp"
         android:layout_gravity="center_horizontal"
-        android:layout_x="4dp"
-        android:layout_y="5dp"
+        android:layout_x="0dp"
+        android:layout_y="452dp"
         android:gravity="center_vertical"
         android:paddingTop="50px"
         android:textColor="@android:color/holo_green_light"
@@ -156,16 +158,70 @@
 
 
     <Button
-        android:id="@+id/bFlats"
-        android:layout_width="409dp"
-        android:layout_height="488dp"
+        android:id="@+id/bA_BLOCK"
+        android:layout_width="81dp"
+        android:layout_height="176dp"
         android:layout_marginLeft="64dp"
         android:layout_marginTop="28dp"
-        android:layout_x="295dp"
-        android:layout_y="14dp"
+        android:layout_x="56dp"
+        android:layout_y="139dp"
         android:background="@drawable/selectblock"
         android:textColor="@android:color/background_light" />
 
+    <Button
+        android:id="@+id/bB_BLOCK"
+        android:layout_width="82dp"
+        android:layout_height="185dp"
+        android:layout_marginLeft="64dp"
+        android:layout_marginTop="28dp"
+        android:layout_x="140dp"
+        android:layout_y="172dp"
+        android:background="@drawable/selectblock"
+        android:textColor="@android:color/background_light" />
+
+    <Button
+        android:id="@+id/bC_BLOCK"
+        android:layout_width="88dp"
+        android:layout_height="190dp"
+        android:layout_marginLeft="64dp"
+        android:layout_marginTop="28dp"
+        android:layout_x="257dp"
+        android:layout_y="181dp"
+        android:background="@drawable/selectblock"
+        android:textColor="@android:color/background_light" />
+
+    <Button
+        android:id="@+id/bD_BLOCK"
+        android:layout_width="82dp"
+        android:layout_height="185dp"
+        android:layout_marginLeft="64dp"
+        android:layout_marginTop="28dp"
+        android:layout_x="379dp"
+        android:layout_y="214dp"
+        android:background="@drawable/selectblock"
+        android:textColor="@android:color/background_light" />
+
+    <Button
+        android:id="@+id/bE_BLOCK"
+        android:layout_width="88dp"
+        android:layout_height="198dp"
+        android:layout_marginLeft="64dp"
+        android:layout_marginTop="28dp"
+        android:layout_x="463dp"
+        android:layout_y="227dp"
+        android:background="@drawable/selectblock"
+        android:textColor="@android:color/background_light" />
+
+    <Button
+        android:id="@+id/bF_BLOCK"
+        android:layout_width="155dp"
+        android:layout_height="254dp"
+        android:layout_marginLeft="64dp"
+        android:layout_marginTop="28dp"
+        android:layout_x="662dp"
+        android:layout_y="224dp"
+        android:background="@drawable/selectblock"
+        android:textColor="@android:color/background_light" />
 
     <Switch
         android:id="@+id/autoEffect"
@@ -176,171 +232,243 @@
         android:switchTextAppearance="@style/TextAppearance.AppCompat.Widget.Button.Colored"
         android:text="Auto Effect "
         android:textAppearance="@style/TextAppearance.AppCompat"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
+        android:background="#60000000"
         tools:layout_editor_absoluteX="906dp"
         tools:layout_editor_absoluteY="27dp" />
 
     <Button
-        android:id="@+id/b1_1ON"
-        android:layout_width="135dp"
-        android:layout_height="40dp"
-        android:layout_x="12dp"
-        android:layout_y="383dp"
-        android:background="@drawable/nawroz_button"
-        android:text="1+1 On"
-        android:textColor="@android:color/background_light"
-        android:textSize="15dp"
-        tools:layout_editor_absoluteX="255dp"
-        tools:layout_editor_absoluteY="484dp" />
-
-    <Button
-        android:id="@+id/b1_1OFF"
-        android:layout_width="135dp"
-        android:layout_height="40dp"
-        android:layout_x="12dp"
-        android:layout_y="431dp"
-        android:background="@drawable/nawroz_button"
-        android:text="1+1 Off"
-        android:textColor="@android:color/background_light"
-        android:textSize="15dp"
-        tools:layout_editor_absoluteX="255dp"
-        tools:layout_editor_absoluteY="484dp" />
-
-
-    <Button
-        android:id="@+id/b3_1ON"
-        android:layout_width="135dp"
-        android:layout_height="40dp"
-        android:layout_x="12dp"
-        android:layout_y="479dp"
-        android:background="@drawable/nawroz_button"
-        android:text="3+1 On"
-        android:textColor="@android:color/background_light"
-        android:textSize="15dp"
-        tools:layout_editor_absoluteX="255dp"
-        tools:layout_editor_absoluteY="484dp" />
-    <Button
-        android:id="@+id/b3_1OFF"
-        android:layout_width="135dp"
-        android:layout_height="40dp"
-        android:layout_x="12dp"
-        android:layout_y="527dp"
-        android:background="@drawable/nawroz_button"
-        android:text="3+1 Off"
-        android:textColor="@android:color/background_light"
-        android:textSize="15dp"
-        tools:layout_editor_absoluteX="255dp"
-        tools:layout_editor_absoluteY="484dp" />
-
-    <Button
-        android:id="@+id/bCommercialControl"
-        android:layout_width="241dp"
-        android:layout_height="40dp"
-        android:layout_x="393dp"
-        android:layout_y="527dp"
-        android:background="@drawable/nawroz_button"
-        android:text="Commercial Control"
-        android:textColor="@android:color/background_light"
-        android:textSize="15dp"
-        tools:layout_editor_absoluteX="255dp"
-        tools:layout_editor_absoluteY="484dp" />
-
-    <Button
-        android:id="@+id/bCommercialOn"
-        android:layout_width="135dp"
-        android:layout_height="40dp"
-        android:layout_x="12dp"
-        android:layout_y="189dp"
-        android:background="@drawable/nawroz_button"
-        android:text="Commercial On"
-        android:textColor="@android:color/background_light"
-        android:textSize="15dp"
-        tools:layout_editor_absoluteX="255dp"
-        tools:layout_editor_absoluteY="484dp" />
-
-    <Button
-        android:id="@+id/bCommercialOff"
-        android:layout_width="135dp"
-        android:layout_height="40dp"
-        android:layout_x="12dp"
-        android:layout_y="238dp"
-        android:background="@drawable/nawroz_button"
-        android:text="Commercial Off"
-        android:textColor="@android:color/background_light"
-        android:textSize="15dp"
-        tools:layout_editor_absoluteX="255dp"
-        tools:layout_editor_absoluteY="484dp" />
-
-    <Button
-        android:id="@+id/bFlatsOn"
+        android:id="@+id/b5_1ON"
         android:layout_width="135dp"
         android:layout_height="40dp"
         android:layout_x="885dp"
-        android:layout_y="189dp"
-        android:background="@drawable/nawroz_button"
-        android:text="Flats On"
+        android:layout_y="125dp"
+        android:background="@drawable/button_on_v2"
+        android:text="5+1"
         android:textColor="@android:color/background_light"
         android:textSize="15dp"
         tools:layout_editor_absoluteX="255dp"
         tools:layout_editor_absoluteY="484dp" />
 
     <Button
-        android:id="@+id/bFlatsOff"
+        android:id="@+id/b5_1OFF"
         android:layout_width="135dp"
         android:layout_height="40dp"
         android:layout_x="885dp"
-        android:layout_y="238dp"
-        android:background="@drawable/nawroz_button"
-        android:text="Flats Off"
+        android:layout_y="175dp"
+        android:background="@drawable/button_off_v2"
+        android:text="5+1"
         android:textColor="@android:color/background_light"
         android:textSize="15dp"
         tools:layout_editor_absoluteX="255dp"
         tools:layout_editor_absoluteY="484dp" />
+
+
     <Button
-        android:id="@+id/bEntrance2On"
+        android:id="@+id/bDublexesON"
+        android:layout_width="135dp"
+        android:layout_height="40dp"
+        android:layout_x="885dp"
+        android:layout_y="225dp"
+        android:background="@drawable/button_on_v2"
+        android:text="Dublex"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="484dp" />
+
+    <Button
+        android:id="@+id/bDublexesOFF"
+        android:layout_width="135dp"
+        android:layout_height="40dp"
+        android:layout_x="885dp"
+        android:layout_y="275dp"
+        android:background="@drawable/button_off_v2"
+        android:text="Dublex"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="484dp" />
+
+
+    <Button
+        android:id="@+id/bB_BLOCK_ON"
+        android:layout_width="101dp"
+        android:layout_height="38dp"
+        android:layout_x="147dp"
+        android:layout_y="25dp"
+        android:background="@drawable/button_on_v2"
+        android:text="B"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="484dp" />
+
+    <Button
+        android:id="@+id/bB_BLOCK_OFF"
+        android:layout_width="101dp"
+        android:layout_height="38dp"
+        android:layout_x="147dp"
+        android:layout_y="75dp"
+        android:background="@drawable/button_off_v2"
+        android:text="B"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="484dp" />
+
+
+    <Button
+        android:id="@+id/bC_BLOCK_ON"
+        android:layout_width="101dp"
+        android:layout_height="38dp"
+        android:layout_x="259dp"
+        android:layout_y="25dp"
+        android:background="@drawable/button_on_v2"
+        android:text="C"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="484dp" />
+
+    <Button
+        android:id="@+id/bC_BLOCK_OFF"
+        android:layout_width="101dp"
+        android:layout_height="38dp"
+        android:layout_x="259dp"
+        android:layout_y="75dp"
+        android:background="@drawable/button_off_v2"
+        android:text="C"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="484dp" />
+
+    <Button
+        android:id="@+id/bD_BLOCK_ON"
+        android:layout_width="101dp"
+        android:layout_height="38dp"
+        android:layout_x="371dp"
+        android:layout_y="25dp"
+        android:background="@drawable/button_on_v2"
+        android:text="D"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="484dp" />
+
+    <Button
+        android:id="@+id/bD_BLOCK_OFF"
+        android:layout_width="101dp"
+        android:layout_height="38dp"
+        android:layout_x="371dp"
+        android:layout_y="75dp"
+        android:background="@drawable/button_off_v2"
+        android:text="D"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="484dp" />
+
+    <Button
+        android:id="@+id/bE_BLOCK_ON"
+        android:layout_width="101dp"
+        android:layout_height="38dp"
+        android:layout_x="483dp"
+        android:layout_y="25dp"
+        android:background="@drawable/button_on_v2"
+        android:text="E"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="484dp" />
+
+    <Button
+        android:id="@+id/bE_BLOCK_OFF"
+        android:layout_width="101dp"
+        android:layout_height="38dp"
+        android:layout_x="483dp"
+        android:layout_y="75dp"
+        android:background="@drawable/button_off_v2"
+        android:text="E"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="484dp" />
+
+    <Button
+        android:id="@+id/bF_BLOCK_ON"
+        android:layout_width="101dp"
+        android:layout_height="38dp"
+        android:layout_x="595dp"
+        android:layout_y="25dp"
+        android:background="@drawable/button_on_v2"
+        android:text="F"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="484dp" />
+
+    <Button
+        android:id="@+id/bF_BLOCK_OFF"
+        android:layout_width="101dp"
+        android:layout_height="38dp"
+        android:layout_x="595dp"
+        android:layout_y="75dp"
+        android:background="@drawable/button_off_v2"
+        android:text="F"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="484dp" />
+
+
+    <Button
+        android:id="@+id/bA_BLOCK_ON"
+        android:layout_width="101dp"
+        android:layout_height="38dp"
+        android:layout_x="35dp"
+        android:layout_y="25dp"
+        android:background="@drawable/button_on_v2"
+        android:text="A"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="484dp" />
+
+    <Button
+        android:id="@+id/bA_BLOCK_OFF"
+        android:layout_width="101dp"
+        android:layout_height="38dp"
+        android:layout_x="35dp"
+        android:layout_y="75dp"
+        android:background="@drawable/button_off_v2"
+        android:text="A"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="484dp" />
+
+    <Button
+        android:id="@+id/b4_1ON"
         android:layout_width="135dp"
         android:layout_height="40dp"
         android:layout_x="885dp"
         android:layout_y="25dp"
-        android:background="@drawable/nawroz_button"
-        android:text="Entrance 2 On"
+        android:background="@drawable/button_on_v2"
+        android:text="4+1"
         android:textColor="@android:color/background_light"
         android:textSize="15dp"
         tools:layout_editor_absoluteX="255dp"
         tools:layout_editor_absoluteY="484dp" />
     <Button
-        android:id="@+id/bEntrance2Off"
+        android:id="@+id/b4_1OFF"
         android:layout_width="135dp"
         android:layout_height="40dp"
         android:layout_x="885dp"
-        android:layout_y="73dp"
-        android:background="@drawable/nawroz_button"
-        android:text="Entrance 2 Off"
-        android:textColor="@android:color/background_light"
-        android:textSize="15dp"
-        tools:layout_editor_absoluteX="255dp"
-        tools:layout_editor_absoluteY="484dp" />
-
-    <Button
-        android:id="@+id/bEntrance1On"
-        android:layout_width="135dp"
-        android:layout_height="40dp"
-        android:layout_x="12dp"
-        android:layout_y="25dp"
-        android:background="@drawable/nawroz_button"
-        android:text="Entrance 1 On"
-        android:textColor="@android:color/background_light"
-        android:textSize="15dp"
-        tools:layout_editor_absoluteX="255dp"
-        tools:layout_editor_absoluteY="484dp" />
-    <Button
-        android:id="@+id/bEntrance1Off"
-        android:layout_width="135dp"
-        android:layout_height="40dp"
-        android:layout_x="12dp"
-        android:layout_y="73dp"
-        android:background="@drawable/nawroz_button"
-        android:text="Entrance 1 Off"
+        android:layout_y="75dp"
+        android:background="@drawable/button_off_v2"
+        android:text="4+1"
         android:textColor="@android:color/background_light"
         android:textSize="15dp"
         tools:layout_editor_absoluteX="255dp"

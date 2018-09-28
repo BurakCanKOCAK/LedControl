@@ -330,14 +330,14 @@ public class RESTService {
                         public void onSuccess(int statusCode, Header[] headers, String res) {
                             // called when response HTTP status is "200 OK"
                             Config.dataSendingInProgress=false;
-                            Log.e("Response : ( "+Integer.toString(statusCode)+" ) ",res);
+                            Log.e("Response : ","( "+Integer.toString(statusCode)+" ) "+res);
                         }
 
                         @Override
                         public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
                             // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                             Config.dataSendingInProgress=false;
-                            Log.e("Response : ( "+Integer.toString(statusCode)+" ) ",res);
+                            Log.e("Response : ","( "+Integer.toString(statusCode)+" ) "+res);
                         }
                     }
             );
