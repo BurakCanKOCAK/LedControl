@@ -116,20 +116,7 @@ public class MainActivity extends Activity implements OnClickListener {
             }
         });
         //
-        if (!config.isEmulatorMode()) {
-            bl = new cBluetooth(this, mHandler);
-            bl.sendData("9999");
-            // take an instance of BluetoothAdapter - Bluetooth radio
-            myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            // setPrefButtons();
-            if (myBluetoothAdapter == null) {
-                // Bluetooth adapter yoksa disable et
 
-                Toast.makeText(getApplicationContext(),
-                        "Your device does not support Bluetooth", Toast.LENGTH_LONG)
-                        .show();
-            }
-        }
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Power Lock On");
@@ -244,7 +231,7 @@ public class MainActivity extends Activity implements OnClickListener {
         tvDatatoSend = (TextView) findViewById(R.id.tvDatatoSend);
         tvBlock = (TextView) findViewById(R.id.tvBlock);
 
-        tvBlock.setText(block_name + " Block Selected");
+        tvBlock.setText(block_name + " Selected");
 
         tvBTStatus = (TextView) findViewById(R.id.tvBTStatus);
         RelLay = (RelativeLayout) findViewById(R.id.RelLay_keyboard);
