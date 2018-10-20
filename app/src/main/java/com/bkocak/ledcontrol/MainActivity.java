@@ -1,6 +1,7 @@
 package com.bkocak.ledcontrol;
 //**************************************************************************************************
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -95,6 +96,7 @@ public class MainActivity extends Activity implements OnClickListener {
     Config config = new Config();
 
     // --------ON CREATE -------------------------------
+    @SuppressLint("InvalidWakeLockTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -608,33 +610,10 @@ public class MainActivity extends Activity implements OnClickListener {
 
                 int aa = Integer.parseInt(eT_sell.getText().toString());
 
-                if (block_name.equals("A Block")) {
-                    if (aa > 63) {
+                if (block_name.equals("Building")) {
+                    if (aa > 50) {
                         Toast.makeText(this.getBaseContext(),
-                                "There are 63 flats on the A block!",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        //aa += 3000;
-                        //bl.sendData(Integer.toString(aa));
-                        try {
-                            RESTService.changeFlatStatus("A_" + String.valueOf(aa), "sell");
-                            Toast.makeText(this.getBaseContext(),
-                                    String.valueOf(aa) + " Sold!",
-                                    Toast.LENGTH_SHORT).show();
-                            Opening.resetTimer();
-                            Log.v(block_name + " den SATILDI : ",
-                                    Integer.toString(aa));
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                } else if (block_name.equals("B Block")) {
-                    if (aa > 69) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 69 flats on the B block!",
+                                "There are 50 flats on the building !",
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         //aa += 3000;
@@ -653,82 +632,17 @@ public class MainActivity extends Activity implements OnClickListener {
                             e.printStackTrace();
                         }
                     }
-                } else if (block_name.equals("C Block")) {
-                    if (aa > 88) {
+
+                } else if (block_name.equals("Commercial")) {
+                    if (aa > 4) {
                         Toast.makeText(this.getBaseContext(),
-                                "There are 88 flats on the C block!",
+                                "There are 4 commercial on the commercial building !",
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         //aa += 3000;
                         //bl.sendData(Integer.toString(aa));
                         try {
                             RESTService.changeFlatStatus("C_" + String.valueOf(aa), "sell");
-                            Toast.makeText(this.getBaseContext(),
-                                    String.valueOf(aa) + " Sold!",
-                                    Toast.LENGTH_SHORT).show();
-                            Opening.resetTimer();
-                            Log.v(block_name + " den SATILDI : ",
-                                    Integer.toString(aa));
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else if (block_name.equals("D Block")) {
-                    if (aa > 77) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 77 flats on the D block!",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        //aa += 3000;
-                        //bl.sendData(Integer.toString(aa));
-                        try {
-                            RESTService.changeFlatStatus("D_" + String.valueOf(aa), "sell");
-                            Toast.makeText(this.getBaseContext(),
-                                    String.valueOf(aa) + " Sold!",
-                                    Toast.LENGTH_SHORT).show();
-                            Opening.resetTimer();
-                            Log.v(block_name + " den SATILDI : ",
-                                    Integer.toString(aa));
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else if (block_name.equals("E Block")) {
-                    if (aa > 82) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 82 flats on the E block!",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        //aa += 3000;
-                        //bl.sendData(Integer.toString(aa));
-                        try {
-                            RESTService.changeFlatStatus("E_" + String.valueOf(aa), "sell");
-                            Toast.makeText(this.getBaseContext(),
-                                    String.valueOf(aa) + " Sold!",
-                                    Toast.LENGTH_SHORT).show();
-                            Opening.resetTimer();
-                            Log.v(block_name + " den SATILDI : ",
-                                    Integer.toString(aa));
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else if (block_name.equals("F Block")) {
-                    if (aa > 114) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 114 flats on the F block!",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        //aa += 3000;
-                        //bl.sendData(Integer.toString(aa));
-                        try {
-                            RESTService.changeFlatStatus("F_" + String.valueOf(aa), "sell");
                             Toast.makeText(this.getBaseContext(),
                                     String.valueOf(aa) + " Sold!",
                                     Toast.LENGTH_SHORT).show();
@@ -755,33 +669,10 @@ public class MainActivity extends Activity implements OnClickListener {
                     break;
                 }
                 int aa2 = Integer.parseInt(eT_sell.getText().toString());
-                if (block_name.equals("A Block")) {
-                    if (aa2 > 63) {
+                if (block_name.equals("Building")) {
+                    if (aa2 > 50) {
                         Toast.makeText(this.getBaseContext(),
-                                "There are 63 flats on the A block!",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        //aa += 3000;
-                        //bl.sendData(Integer.toString(aa));
-                        try {
-                            RESTService.changeFlatStatus("A_" + String.valueOf(aa2), "onsale");
-                            Toast.makeText(this.getBaseContext(),
-                                    String.valueOf(aa2) + " is onSale!",
-                                    Toast.LENGTH_SHORT).show();
-                            Opening.resetTimer();
-                            Log.v(block_name + " den SATILDI : ",
-                                    Integer.toString(aa2));
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                } else if (block_name.equals("B Block")) {
-                    if (aa2 > 69) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 69 flats on the B block!",
+                                "There are 50 flats on the building !",
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         //aa += 3000;
@@ -800,10 +691,11 @@ public class MainActivity extends Activity implements OnClickListener {
                             e.printStackTrace();
                         }
                     }
-                } else if (block_name.equals("C Block")) {
-                    if (aa2 > 88) {
+
+                } else if (block_name.equals("Commercial")) {
+                    if (aa2 > 4) {
                         Toast.makeText(this.getBaseContext(),
-                                "There are 88 flats on the C block!",
+                                "There are 4 commercial on the commercial building !",
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         //aa += 3000;
@@ -822,90 +714,16 @@ public class MainActivity extends Activity implements OnClickListener {
                             e.printStackTrace();
                         }
                     }
-                } else if (block_name.equals("D Block")) {
-                    if (aa2 > 77) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 77 flats on the D block!",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        //aa += 3000;
-                        //bl.sendData(Integer.toString(aa));
-                        try {
-                            RESTService.changeFlatStatus("D_" + String.valueOf(aa2), "onsale");
-                            Toast.makeText(this.getBaseContext(),
-                                    String.valueOf(aa2) + " is onSale!",
-                                    Toast.LENGTH_SHORT).show();
-                            Opening.resetTimer();
-                            Log.v(block_name + " den SATILDI : ",
-                                    Integer.toString(aa2));
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else if (block_name.equals("E Block")) {
-                    if (aa2 > 82) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 82 flats on the E block!",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        //aa += 3000;
-                        //bl.sendData(Integer.toString(aa));
-                        try {
-                            RESTService.changeFlatStatus("E_" + String.valueOf(aa2), "onsale");
-                            Toast.makeText(this.getBaseContext(),
-                                    String.valueOf(aa2) + " is onSale!",
-                                    Toast.LENGTH_SHORT).show();
-                            Opening.resetTimer();
-                            Log.v(block_name + " den SATILDI : ",
-                                    Integer.toString(aa2));
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else if (block_name.equals("F Block")) {
-                    if (aa2 > 114) {
-                        Toast.makeText(this.getBaseContext(),
-                                "There are 114 flats on the F block!",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        //aa += 3000;
-                        //bl.sendData(Integer.toString(aa));
-                        try {
-                            RESTService.changeFlatStatus("F_" + String.valueOf(aa2), "onsale");
-                            Toast.makeText(this.getBaseContext(),
-                                    String.valueOf(aa2) + " is onSale!",
-                                    Toast.LENGTH_SHORT).show();
-                            Opening.resetTimer();
-                            Log.v(block_name + " den SATILDI : ",
-                                    Integer.toString(aa2));
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
                 }
 
                 break;
             //--------------------------------------------------------------------------------------------//
             case R.id.bOn:
                 try {
-                    if (block_name == "A Block") {
-                        RESTService.changeFlatStatus("A_" + String.valueOf(daire), "on");
-                    } else if (block_name == "B Block") {
+                    if (block_name.equals("Building")) {
                         RESTService.changeFlatStatus("B_" + String.valueOf(daire), "on");
-                    } else if (block_name == "C Block") {
+                    } else if (block_name.equals("Commercial")) {
                         RESTService.changeFlatStatus("C_" + String.valueOf(daire), "on");
-                    } else if (block_name == "D Block") {
-                        RESTService.changeFlatStatus("D_" + String.valueOf(daire), "on");
-                    } else if (block_name == "E Block") {
-                        RESTService.changeFlatStatus("E_" + String.valueOf(daire), "on");
-                    } else if (block_name == "F Block") {
-                        RESTService.changeFlatStatus("F_" + String.valueOf(daire), "on");
                     }
 
                     Opening.resetTimer();
@@ -922,18 +740,10 @@ public class MainActivity extends Activity implements OnClickListener {
             //--------------------------------------------------------------------------------------------//
             case R.id.bOff:
                 try {
-                    if (block_name == "A Block") {
-                        RESTService.changeFlatStatus("A_" + String.valueOf(daire), "off");
-                    } else if (block_name == "B Block") {
+                    if (block_name.equals("Building")) {
                         RESTService.changeFlatStatus("B_" + String.valueOf(daire), "off");
-                    } else if (block_name == "C Block") {
+                    } else if (block_name.equals("Commercial")) {
                         RESTService.changeFlatStatus("C_" + String.valueOf(daire), "off");
-                    } else if (block_name == "D Block") {
-                        RESTService.changeFlatStatus("D_" + String.valueOf(daire), "off");
-                    } else if (block_name == "E Block") {
-                        RESTService.changeFlatStatus("E_" + String.valueOf(daire), "off");
-                    } else if (block_name == "F Block") {
-                        RESTService.changeFlatStatus("F_" + String.valueOf(daire), "off");
                     }
 
                     Opening.resetTimer();
