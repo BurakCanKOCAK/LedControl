@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bel_beton"
+    android:background="@drawable/background_villa_2"
     tools:context="com.bkocak.ledcontrol.Opening"
     android:id="@+id/MainLayout">
 

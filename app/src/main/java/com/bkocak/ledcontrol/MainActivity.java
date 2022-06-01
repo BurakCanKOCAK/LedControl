@@ -1,6 +1,7 @@
 package com.bkocak.ledcontrol;
 //**************************************************************************************************
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -95,6 +96,7 @@ public class MainActivity extends Activity implements OnClickListener {
     Config config = new Config();
 
     // --------ON CREATE -------------------------------
+    @SuppressLint("InvalidWakeLockTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -894,17 +896,17 @@ public class MainActivity extends Activity implements OnClickListener {
             //--------------------------------------------------------------------------------------------//
             case R.id.bOn:
                 try {
-                    if (block_name == "A Block") {
+                    if (block_name.equals("A Block")) {
                         RESTService.changeFlatStatus("A_" + String.valueOf(daire), "on");
-                    } else if (block_name == "B Block") {
+                    } else if (block_name.equals("B Block")) {
                         RESTService.changeFlatStatus("B_" + String.valueOf(daire), "on");
-                    } else if (block_name == "C Block") {
+                    } else if (block_name.equals("C Block")) {
                         RESTService.changeFlatStatus("C_" + String.valueOf(daire), "on");
-                    } else if (block_name == "D Block") {
+                    } else if (block_name.equals("D Block")) {
                         RESTService.changeFlatStatus("D_" + String.valueOf(daire), "on");
-                    } else if (block_name == "E Block") {
+                    } else if (block_name.equals("E Block")) {
                         RESTService.changeFlatStatus("E_" + String.valueOf(daire), "on");
-                    } else if (block_name == "F Block") {
+                    } else if (block_name.equals("F Block")) {
                         RESTService.changeFlatStatus("F_" + String.valueOf(daire), "on");
                     }
 
@@ -922,17 +924,17 @@ public class MainActivity extends Activity implements OnClickListener {
             //--------------------------------------------------------------------------------------------//
             case R.id.bOff:
                 try {
-                    if (block_name == "A Block") {
+                    if (block_name.equals("A Block")) {
                         RESTService.changeFlatStatus("A_" + String.valueOf(daire), "off");
-                    } else if (block_name == "B Block") {
+                    } else if (block_name.equals("B Block")) {
                         RESTService.changeFlatStatus("B_" + String.valueOf(daire), "off");
-                    } else if (block_name == "C Block") {
+                    } else if (block_name.equals("C Block")) {
                         RESTService.changeFlatStatus("C_" + String.valueOf(daire), "off");
-                    } else if (block_name == "D Block") {
+                    } else if (block_name.equals("D Block")) {
                         RESTService.changeFlatStatus("D_" + String.valueOf(daire), "off");
-                    } else if (block_name == "E Block") {
+                    } else if (block_name.equals("E Block")) {
                         RESTService.changeFlatStatus("E_" + String.valueOf(daire), "off");
-                    } else if (block_name == "F Block") {
+                    } else if (block_name.equals("F Block")) {
                         RESTService.changeFlatStatus("F_" + String.valueOf(daire), "off");
                     }
 

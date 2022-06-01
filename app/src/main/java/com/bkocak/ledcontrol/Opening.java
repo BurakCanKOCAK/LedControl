@@ -5,6 +5,7 @@ package com.bkocak.ledcontrol;
  */
 //********************************************************************************************************
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -78,7 +79,8 @@ public class Opening extends Activity implements OnClickListener {
     //private static String address = "20:16:03:10:85:85"; //1071 Manzara - 2016
     //private static String address = "98:D3:32:10:52:F6"; //Karabuk (Patyo) - 2016
     //private static String address = "20:15:04:29:57:32"; //Huseyin Test(Patyo) - 2016
-    private static String address = "30:14:06:26:03:67"; //Villa Project(Patyo) - 20.02.2017
+    //private static String address = "30:14:06:26:03:67"; //Villa Project(Patyo) - 20.02.2017
+    private static String address = "00:18:E4:34:F3:20"; //Villa Project 2 (Patyo) - 21.08.2021
     //--------------------------------------------------------------------------------------------//
     private static Button bOnSaleType1, bOnSaleType2, bEffect, bOnSale;
     //Test Mode Buttons
@@ -98,7 +100,7 @@ public class Opening extends Activity implements OnClickListener {
     public ArrayList<String> SoldListArray;
     ArrayAdapter<String> adapter;
     private static Boolean[] isVillaSoldList;
-    private static Boolean[] isVillaOn = {false, false, false, false, false, false, false, false, false, false, false, false, false};
+    private static Boolean[] isVillaOn = {false, false, false, false, false, false, false, false, false, false, false, false, false,false,false,false,false,false};
     //********************************************************************************************************
     // ------------------BROADCAST RECEIVER ----------------------
     final BroadcastReceiver bReceiver = new BroadcastReceiver() {
@@ -148,6 +150,7 @@ public class Opening extends Activity implements OnClickListener {
     }
 
     //********************************************************************************************************
+    @SuppressLint("InvalidWakeLockTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("::OPENING.java::", "::: onCreate() :::");
@@ -229,7 +232,7 @@ public class Opening extends Activity implements OnClickListener {
 
         salesListBackgroundImage = (ImageView) findViewById(R.id.salesListBackground);
         SoldList = (ListView) findViewById(R.id.lvSoldList);
-        isVillaSoldList = new Boolean[13];
+        isVillaSoldList = new Boolean[18];
         SoldListArray = new ArrayList<String>();
         adapter = new ArrayAdapter<String>(this, R.layout.list_item, R.id.txtItem, SoldListArray);
         SoldList.setAdapter(adapter);
@@ -1040,7 +1043,7 @@ public class Opening extends Activity implements OnClickListener {
     }
 
     public void setAllFlatStatusOff() {
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < isVillaOn.length; i++) {
             isVillaOn[i] = false;
         }
         Log.e("Opening.java", "...All flat status cleared !...");
@@ -1118,7 +1121,7 @@ public class Opening extends Activity implements OnClickListener {
     }   //********************************************************
 
     public void getVillaStatus() {
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < isVillaSoldList.length; i++) {
             try {
                 isVillaSoldList[i] = sharedPref.getBoolean(blocks[0] + "_" + i, false);
                 if (isVillaSoldList[i] == true) {

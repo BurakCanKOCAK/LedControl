@@ -5,6 +5,7 @@ package com.bkocak.ledcontrol;
  */
 
 //********************************************************************************************************
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
@@ -18,6 +19,7 @@ public class logoActivity extends Activity {
 
 
     // ********************************************************************************************************
+    @SuppressLint("InvalidWakeLockTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
