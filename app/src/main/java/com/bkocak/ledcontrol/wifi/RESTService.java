@@ -23,7 +23,7 @@ public class RESTService {
 
     public static String changeFlatStatus(String flatID, String status) throws ExecutionException, InterruptedException {
         try {
-            endpoint = Config.getServerAddress()+ "/api/flat/" + flatID + "/" + status;
+            endpoint = Config.getServerAddress() + "/api/flat/" + flatID + "/" + status;
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -34,7 +34,7 @@ public class RESTService {
 
     public static String changeCommercialStatus(String commercialID, String status) throws ExecutionException, InterruptedException {
         try {
-            endpoint = Config.getServerAddress()+ "/api/commercial/" + commercialID + "/" + status;
+            endpoint = Config.getServerAddress() + "/api/commercial/" + commercialID + "/" + status;
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -46,7 +46,7 @@ public class RESTService {
 
     public static String flatBuildingStatus(String buildingId, String status) throws ExecutionException, InterruptedException {
         try {
-            endpoint = Config.getServerAddress()+ "/api/building/flat/" + buildingId + "/" + status;
+            endpoint = Config.getServerAddress() + "/api/building/flat/" + buildingId + "/" + status;
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -58,7 +58,7 @@ public class RESTService {
 
     public static String commercialBuildingStatus(String buildingId, String status) throws ExecutionException, InterruptedException {
         try {
-            endpoint = Config.getServerAddress()+ "/api/building/commercial/" + buildingId + "/" + status;
+            endpoint = Config.getServerAddress() + "/api/building/commercial/" + buildingId + "/" + status;
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -70,7 +70,7 @@ public class RESTService {
 
     public static String showOnSale() throws ExecutionException, InterruptedException {
         try {
-            endpoint = Config.getServerAddress()+ "/api/show/onsale";
+            endpoint = Config.getServerAddress() + "/api/show/onsale";
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -82,7 +82,7 @@ public class RESTService {
 
     public static String flatsOff() throws ExecutionException, InterruptedException {
         try {
-            endpoint = Config.getServerAddress()+ "/api/flat/off";
+            endpoint = Config.getServerAddress() + "/api/flat/off";
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -94,7 +94,7 @@ public class RESTService {
 
     public static String flatsOn() throws ExecutionException, InterruptedException {
         try {
-            endpoint = Config.getServerAddress()+ "/api/flat/on";
+            endpoint = Config.getServerAddress() + "/api/flat/on";
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -105,7 +105,7 @@ public class RESTService {
 
     public static String allOn() throws ExecutionException, InterruptedException {
         try {
-            endpoint = Config.getServerAddress()+ "/api/allon";
+            endpoint = Config.getServerAddress() + "/api/allon";
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -116,7 +116,7 @@ public class RESTService {
 
     public static String allOff() throws ExecutionException, InterruptedException {
         try {
-            endpoint = Config.getServerAddress()+ "/api/alloff";
+            endpoint = Config.getServerAddress() + "/api/alloff";
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -127,7 +127,7 @@ public class RESTService {
 
     public static String effect() throws ExecutionException, InterruptedException {
         try {
-            endpoint = Config.getServerAddress()+ "/api/show/effect";
+            endpoint = Config.getServerAddress() + "/api/show/effect";
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -139,15 +139,15 @@ public class RESTService {
     public static String effectAsync() throws ExecutionException, InterruptedException {
         try {
             //endpoint="http://192.168.1.34:3000/effect";
-            endpoint = Config.getServerAddress()+ "/api/show/effect";
+            endpoint = Config.getServerAddress() + "/api/show/effect";
             Log.e("Log : ", endpoint);
             SyncHttpClient client = new SyncHttpClient();
-            if(!Config.dataSendingInProgressAsyncEffect) {
-                Config.dataSendingInProgressAsyncEffect=true;
+            if (!Config.dataSendingInProgressAsyncEffect) {
+                Config.dataSendingInProgressAsyncEffect = true;
                 client.get(endpoint, new ResponseHandlerInterface() {
                     @Override
                     public void sendResponseMessage(HttpResponse response) throws IOException {
-                        Config.dataSendingInProgressAsyncEffect=false;
+                        Config.dataSendingInProgressAsyncEffect = false;
                     }
 
                     @Override
@@ -172,12 +172,12 @@ public class RESTService {
 
                     @Override
                     public void sendSuccessMessage(int statusCode, Header[] headers, byte[] responseBody) {
-                        Config.dataSendingInProgressAsyncEffect=false;
+                        Config.dataSendingInProgressAsyncEffect = false;
                     }
 
                     @Override
                     public void sendFailureMessage(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                        Config.dataSendingInProgressAsyncEffect=false;
+                        Config.dataSendingInProgressAsyncEffect = false;
                     }
 
                     @Override
@@ -232,7 +232,7 @@ public class RESTService {
 
                     @Override
                     public void onPostProcessResponse(ResponseHandlerInterface instance, HttpResponse response) {
-                        Config.dataSendingInProgressAsyncEffect=false;
+                        Config.dataSendingInProgressAsyncEffect = false;
                     }
 
                     @Override
@@ -254,7 +254,7 @@ public class RESTService {
 
     public static String commercialsOn() throws ExecutionException, InterruptedException {
         try {
-            endpoint = Config.getServerAddress()+ "/api/commercial/on";
+            endpoint = Config.getServerAddress() + "/api/commercial/on";
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -265,7 +265,7 @@ public class RESTService {
 
     public static String commercialsOff() throws ExecutionException, InterruptedException {
         try {
-            endpoint = Config.getServerAddress()+ "/api/commercial/off";
+            endpoint = Config.getServerAddress() + "/api/commercial/off";
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -277,7 +277,7 @@ public class RESTService {
 
     public static String setSingleCommercialOn(int commercialID) throws ExecutionException, InterruptedException {
         try {
-            endpoint = Config.getServerAddress()+ "/api/commercial/" + String.valueOf(commercialID) + "/on";
+            endpoint = Config.getServerAddress() + "/api/commercial/" + String.valueOf(commercialID) + "/on";
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -289,7 +289,7 @@ public class RESTService {
 
     public static String setSingleCommercialOff(int commercialID) throws ExecutionException, InterruptedException {
         try {
-            endpoint = Config.getServerAddress()+ "/api/commercial/" + String.valueOf(commercialID) + "/off";
+            endpoint = Config.getServerAddress() + "/api/commercial/" + String.valueOf(commercialID) + "/off";
             Log.e("Log : ", endpoint);
             sendGETCommand(endpoint);
             return "ok";
@@ -309,27 +309,27 @@ public class RESTService {
         result = getRequest.execute(url).get();
         return result;*/
         if (!Config.dataSendingInProgress) {
-            Log.e("Data Status :","SENT");
-            Config.dataSendingInProgress=true;
+            Log.e("Data Status :", "SENT");
+            Config.dataSendingInProgress = true;
             AsyncHttpClient client = new AsyncHttpClient();
             client.get(url, null, new TextHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, String res) {
                             // called when response HTTP status is "200 OK"
-                            Config.dataSendingInProgress=false;
-                            Log.e("Response : ","( "+Integer.toString(statusCode)+" ) "+res);
+                            Config.dataSendingInProgress = false;
+                            Log.e("Response : ", "( " + Integer.toString(statusCode) + " ) " + res);
                         }
 
                         @Override
                         public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
                             // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                            Config.dataSendingInProgress=false;
-                            Log.e("Response : ","( "+Integer.toString(statusCode)+" ) "+res);
+                            Config.dataSendingInProgress = false;
+                            Log.e("Response : ", "( " + Integer.toString(statusCode) + " ) " + res);
                         }
                     }
             );
-        }else{
-            Log.e("Data Status :","NOT SEND");
+        } else {
+            Log.e("Data Status :", "NOT SEND");
         }
     }
 }

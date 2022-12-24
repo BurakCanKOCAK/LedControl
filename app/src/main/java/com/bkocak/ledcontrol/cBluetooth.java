@@ -2,44 +2,10 @@ package com.bkocak.ledcontrol;
 
 /**
  * Created by BurakCan on 18/06/2016.
- * <p>
- * Class for Bluetooth
- *
- * @version 1.2.1
- * 14.08.2013
- * Koltykov a.V. http://cxem.net, http://english.cxem.net
- * <p>
  * Class for Bluetooth
  * @version 1.2.1
  * 14.08.2013
  * Koltykov a.V. http://cxem.net, http://english.cxem.net
- * <p>
- * Class for Bluetooth
- * @version 1.2.1
- * 14.08.2013
- * Koltykov a.V. http://cxem.net, http://english.cxem.net
- * <p>
- * Class for Bluetooth
- * @version 1.2.1
- * 14.08.2013
- * Koltykov a.V. http://cxem.net, http://english.cxem.net
- * <p>
- * Class for Bluetooth
- * @version 1.2.1
- * 14.08.2013
- * Koltykov a.V. http://cxem.net, http://english.cxem.net
- * <p>
- * Class for Bluetooth
- * @version 1.2.1
- * 14.08.2013
- * Koltykov a.V. http://cxem.net, http://english.cxem.net
- */
-/**
- *  Class for Bluetooth
- *  @version 1.2.1
- *  14.08.2013
- *  Koltykov a.V. http://cxem.net, http://english.cxem.net
- *
  */
 
 import java.io.DataInputStream;

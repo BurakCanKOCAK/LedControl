@@ -8,7 +8,7 @@ public class Config {
     public static boolean dataSendingInProgress= false;
     public static boolean dataSendingInProgressAsyncEffect= false;
 
-    private static final String serverAddress = "http://192.168.0.1";
+    private static final String serverAddress = "http://192.168.1.10";
     private static String testServerAddress="0.0.0.0";
     private static final String serverPort="8484";
 
